@@ -55,7 +55,7 @@ app.use(morgan(":date[web] :method :url :status - :response-time ms (key: :api-k
 app.use(zip());
 
 mongoose
-	.connect(keys.mongoURI, {
+	.connect(keys.MONGO_URI, {
 		useNewUrlParser: true,
 		useFindAndModify: true,
 		useCreateIndex: true,
