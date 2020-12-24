@@ -4,16 +4,16 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import { Colors, Breakpoints } from "./constants";
 import { USERNAME_STORAGE_KEY, BASE_API_URL, ENVIRONMENT, LAST_VISIT_STORAGE_KEY } from "./env";
-import useWindowWidth from "./hooks/useWindowWidth";
+import useWindowWidth from "./_hooks/useWindowWidth";
 import axios from "axios";
 import { StateProvider } from "./store";
 import ReactGA from "react-ga";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-const Space = React.lazy(() => import("./pages/Space"));
-const Landing = React.lazy(() => import("./pages/Landing"));
-const SpaceValidator = React.lazy(() => import("./components/SpaceValidator"));
-const NotFound = React.lazy(() => import("./pages/NotFound"));
-const TestSpace = React.lazy(() => import("./pages/TestSpace"));
+const Space = React.lazy(() => import("./_pages/Space"));
+const Landing = React.lazy(() => import("./_pages/Landing"));
+const SpaceValidator = React.lazy(() => import("./_components/SpaceValidator"));
+const NotFound = React.lazy(() => import("./_pages/NotFound"));
 
 ReactGA.initialize("UA-159864166-1", { debug: ENVIRONMENT === "development" });
 
@@ -43,6 +43,7 @@ const App = () => {
 	const classes = useStyles();
 	const windowWidth = useWindowWidth();
 	const [loading, setLoading] = useState(true);
+	const queryClient = new QueryClient();
 
 	useEffect(() => {
 		const lastVisit = localStorage.getItem(LAST_VISIT_STORAGE_KEY);
@@ -68,40 +69,39 @@ const App = () => {
 	} else {
 		return (
 			<div className={classes.root}>
-				<SnackbarProvider
-					maxSnack={3}
-					classes={{
-						variantSuccess: classes.success,
-						variantError: classes.error,
-						variantWarning: classes.warning,
-						variantInfo: classes.info,
-					}}
-					anchorOrigin={{
-						vertical: windowWidth > Breakpoints.MD ? "bottom" : "top",
-						horizontal: windowWidth > Breakpoints.MD ? "right" : "center",
-					}}
-				>
-					<header className="App-header">
-						<Router>
-							<Suspense fallback={null}>
-								<Switch>
-									<Route exact path="/" component={Landing} />
-									<Route path="/s">
-										<StateProvider>
-											<SpaceValidator>
-												<Space />
-											</SpaceValidator>
-										</StateProvider>
-									</Route>
-									<Route path="/t">
-										<TestSpace />
-									</Route>
-									<Route component={NotFound} />
-								</Switch>
-							</Suspense>
-						</Router>
-					</header>
-				</SnackbarProvider>
+				<QueryClientProvider client={queryClient}>
+					<SnackbarProvider
+						maxSnack={3}
+						classes={{
+							variantSuccess: classes.success,
+							variantError: classes.error,
+							variantWarning: classes.warning,
+							variantInfo: classes.info,
+						}}
+						anchorOrigin={{
+							vertical: windowWidth > Breakpoints.MD ? "bottom" : "top",
+							horizontal: windowWidth > Breakpoints.MD ? "right" : "center",
+						}}
+					>
+						<header className="App-header">
+							<Router>
+								<Suspense fallback={null}>
+									<Switch>
+										<Route exact path="/" component={Landing} />
+										<Route path="/s/:code">
+											<StateProvider>
+												<SpaceValidator>
+													<Space />
+												</SpaceValidator>
+											</StateProvider>
+										</Route>
+										<Route component={NotFound} />
+									</Switch>
+								</Suspense>
+							</Router>
+						</header>
+					</SnackbarProvider>
+				</QueryClientProvider>
 			</div>
 		);
 	}
