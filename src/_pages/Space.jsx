@@ -533,7 +533,7 @@ export default function Space() {
 				</div>
 				<div style={{ display: activePanel === 3 ? "inherit" : "none" }}>
 					<Suspense fallback={panelFallback}>
-						<UsersPanel users={[]} mySocketId={socket.id} />
+						<UsersPanel mySocketId={socket.id} />
 					</Suspense>
 				</div>
 				<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>Settings</div>
@@ -606,7 +606,7 @@ export default function Space() {
 									</div>
 									<div style={{ display: activePanel === 3 ? "inherit" : "none" }}>
 										<Suspense fallback={panelFallback}>
-											<UsersPanel users={[]} collapsed mySocketId={socket.id} />
+											<UsersPanel collapsed mySocketId={socket.id} />
 										</Suspense>
 									</div>
 									<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>Settings</div>

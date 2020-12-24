@@ -3,6 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Colors, Elevation } from "../constants";
 import FaceIcon from "@material-ui/icons/Face";
 import Center from "./Center";
+import useUsers from "../_queries/useUsers";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -43,8 +45,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function UsersPanel(props) {
-	const { users, mySocketId, collapsed } = props;
+	const { mySocketId, collapsed } = props;
+	const { code } = useParams();
+	const { data: users } = useUsers(code);
+
 	const cls = useStyles();
+
 	return (
 		<div className={cls.root}>
 			<h2 className={cls.title}>Users</h2>
