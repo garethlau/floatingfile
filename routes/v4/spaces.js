@@ -478,49 +478,57 @@ router.get("/:code/files", async (req, res) => {
 });
 
 router.get("/:code/files/zip", async (req, res) => {
-	const fileIds = JSON.parse(req.query.files);
+	const { code } = req.params;
+	const s3Keys = JSON.parse(req.query.keys);
 
 	try {
+		// Find the space
+		const space = await Space.findOne({ code }).exec();
+
+		// Get the file objects to zip
+		const files = space.files.filter((file) => s3Keys.includes(file.key));
+
+		// Create a hash as the folder name
 		const currentDate = new Date().valueOf().toString();
+		fs.mkdirSync(path.join(__dirname, "..", "..", "tmp"));
 		const random = Math.random().toString();
 		const folderName = crypto
 			.createHash("sha1")
 			.update(currentDate + random)
 			.digest("hex");
-
 		fs.mkdirSync(path.join(__dirname, "..", "..", "tmp", folderName));
-		const files = await Promise.all(
-			fileIds.map(
-				(id) =>
-					new Promise(async (resolve, reject) => {
-						try {
-							const meta = await File.findById(mongoose.Types.ObjectId(id)).exec();
-							const filename = meta.filename;
-							const filepath = path.join(__dirname, "..", "..", "tmp", folderName, filename);
-							const writeStream = fs.createWriteStream(filepath);
-							let response = await axios({
-								method: "GET",
-								url: meta.location,
-								responseType: "stream",
-							});
-							response.data.pipe(writeStream);
-							writeStream.on("finish", () => {
-								resolve({ path: filepath, name: filename });
-							});
-						} catch (err) {
-							reject(err);
-						}
-					})
-			)
-		);
 
-		res.zip({
-			files,
-			filename: `${folderName}.zip`,
-		});
-	} catch (err) {
-		console.log(err);
-		return res.status(500).send(err);
+		// Download each file from s3
+		const promises = files.map(
+			(file) =>
+				new Promise((resolve, reject) => {
+					const params = {
+						Key: file.key,
+						Bucket: keys.S3_BUCKET_NAME,
+					};
+					const filepath = path.join(__dirname, "..", "..", "tmp", folderName, file.name);
+					const fileStream = fs.createWriteStream(filepath);
+					const s3Stream = s3.getObject(params).createReadStream();
+					s3Stream.on("error", (error) => {
+						reject(error);
+					});
+
+					s3Stream
+						.pipe(fileStream)
+						.on("error", (error) => {
+							reject(error);
+						})
+						.on("close", () => {
+							resolve({ path: filepath, name: file.name });
+						});
+				})
+		);
+		const values = await Promise.all(promises);
+		// TODO Add zip action to space history
+		return res.zip({ files: values, filename: `${folderName}.zip` });
+	} catch (error) {
+		console.error(error);
+		return res.status(500).send(error);
 	}
 });
 
