@@ -10,6 +10,7 @@ import { useSnackbar } from "notistack";
 import Center from "./Center";
 import useSpace from "../_queries/useSpace";
 import { useParams, useHistory } from "react-router-dom";
+import useDeleteSpace from "../_mutations/useDeleteSpace";
 
 const THIRTY_MINUTES = 30 * 60 * 1000;
 const FIVE_MINUTES = 5 * 60 * 1000;
@@ -43,14 +44,24 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function ConnectPanel({ closeSpace }) {
+export default function ConnectPanel() {
 	const cls = useStyles();
 	const { code } = useParams();
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 	const { data: space } = useSpace(code);
 	const history = useHistory();
+	const { mutateAsync: deleteSpace } = useDeleteSpace(code);
 
 	const [timeLeft, setTimeLeft] = useState(); // In seconds
+
+	async function close() {
+		try {
+			await deleteSpace();
+			history.push("/");
+		} catch (error) {
+			console.error(error);
+		}
+	}
 
 	useEffect(() => {
 		let timers = {};
@@ -161,7 +172,7 @@ export default function ConnectPanel({ closeSpace }) {
 					<MoonLoader css="margin: auto; padding: 10px" loading color={Colors.MAIN_BRAND} size={32} />
 				)}
 				<div>
-					<GButton text="Destroy Now" variant="danger" onClick={closeSpace} debounce={5} />
+					<GButton text="Destroy Now" variant="danger" onClick={close} debounce={5} />
 				</div>
 			</Center>
 		</div>
