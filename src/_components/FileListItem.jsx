@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Colors, Elevation } from "../constants";
 import GButton from "./GButton";
@@ -42,6 +42,12 @@ import {
 } from "@mdi/js";
 import Icon from "@mdi/react";
 import { isMobile } from "react-device-detect";
+import useRemoveFile from "../_mutations/useRemoveFile";
+import { useParams } from "react-router-dom";
+import { SelectedFilesContext } from "../_contexts/selectedFiles";
+import axios from "axios";
+import { saveBlob } from "../_utils";
+import { BASE_API_URL } from "../env";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -136,8 +142,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function renderIcon(filename) {
-	const extension = filename.split(".")[filename.split(".").length - 1];
+function renderIcon(extension) {
 	let path = mdiFileQuestionOutline;
 	switch (extension) {
 		case "c":
@@ -242,17 +247,47 @@ function renderIcon(filename) {
 	return <Icon path={path} size={"42px"} style={{ marginTop: "5px", opacity: 0.75 }} />;
 }
 
-export default function FileListItem(props) {
-	const { active, filename, size, select, remove, download } = props;
+export default function FileListItem({ file, ...others }) {
+	const { name, type, key, ext, size, signedUrl } = file;
 	const windowWidth = useWindowWidth();
 	const cls = useStyles();
+	const { code } = useParams();
+	const { mutateAsync: removeFile } = useRemoveFile(code);
+	const { toggleSelect, isSelected } = useContext(SelectedFilesContext);
+
+	async function download() {
+		if (isMobile) {
+			window.open(signedUrl, "_blank");
+		} else {
+			try {
+				const response = await axios.get(signedUrl, { responseType: "blob" });
+				const { data } = response;
+				await saveBlob(data, name);
+				await axios.patch(`${BASE_API_URL}/api/v4/spaces/${code}/history`, {
+					action: "DOWNLOAD_FILE",
+					payload: key,
+				});
+				console.log("Succesfully downloaded ", name);
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	}
+
+	async function remove() {
+		try {
+			await removeFile(key);
+		} catch (error) {
+			console.error(error);
+		}
+	}
 
 	return (
-		<div className={cls.root} style={{ backgroundColor: active ? "#DDE8F8" : Colors.WHITE }}>
-			<div className={cls.icon} onClick={select}>
-				<Center>{renderIcon(filename)}</Center>
+		<div className={cls.root} style={{ backgroundColor: isSelected(key) ? "#DDE8F8" : Colors.WHITE }}>
+			<div className={cls.icon} onClick={() => toggleSelect(key)}>
+				<Center>{renderIcon(ext)}</Center>
 			</div>
-			<div style={{ marginTop: "10px", minWidth: 0 }} className={cls.text} onClick={select}>
+			<div style={{ marginTop: "10px", minWidth: 0 }} className={cls.text} onClick={() => toggleSelect(key)}>
 				<p
 					style={{
 						margin: 0,
@@ -262,7 +297,7 @@ export default function FileListItem(props) {
 						textOverflow: "ellipsis",
 					}}
 				>
-					{filename}
+					{name}
 				</p>
 				<p style={{ margin: 0, opacity: 0.7, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
 					{!isNaN(size / 1000)
