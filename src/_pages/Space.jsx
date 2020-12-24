@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Suspense } from "react";
+import React, { useState, useEffect, useCallback, Suspense, useContext } from "react";
 import { SOCKET_URL, BASE_API_URL, USERNAME_STORAGE_KEY, LAST_VISIT_STORAGE_KEY } from "../env";
 import { Colors, Breakpoints } from "../constants";
 import { useHistory, useParams } from "react-router-dom";
@@ -34,6 +34,10 @@ import GButton from "../_components/GButton";
 import NavTile from "../_components/NavTile";
 import GIconButton from "../_components/GIconButton";
 import IntroToast from "../_components/IntroToast";
+import { v4 as uuidv4 } from "uuid";
+import useFiles from "../_queries/useFiles";
+import useUploadFile from "../_mutations/useUploadFile";
+import { SelectedFilesContext } from "../_contexts/selectedFiles";
 
 const ConnectPanel = React.lazy(() => import("../_components/ConnectPanel"));
 const HistoryPanel = React.lazy(() => import("../_components/HistoryPanel"));
@@ -150,6 +154,7 @@ export default function Space() {
 	const windowWidth = useWindowWidth();
 	const history = useHistory();
 	const { code } = useParams();
+	const { selected } = useContext(SelectedFilesContext);
 
 	useDocumentTitle(`floatingfile | ${code}`);
 
@@ -158,55 +163,15 @@ export default function Space() {
 	const [activePanel, setActivePanel] = useState(1);
 	const [collapsed, setCollapsed] = useState(null);
 
-	const [selected, setSelected] = useState([]);
 	const [secondsRemaining, setSecondsRemaining] = useState(-1);
 
 	const [uploadProgress, setUploadProgress] = useState({ loaded: null, total: null });
 
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-	const { mutateAsync: removeFiles, status: removeFilesStatus } = useRemoveFiles({
-		code: getCodeFromWindow(window),
-		onSuccess: () => setSelected([]),
-	});
+	const { mutateAsync: uploadFile } = useUploadFile(code);
 
-	const { mutateAsync: uploadFiles, status: uploadStatus } = useUploadFiles({ code: getCodeFromWindow(window) });
-
-	const fileTransitions = useTransition(
-		space?.files.sort((a, b) => new Date(parseInt(b.timestamp)) - new Date(parseInt(a.timestamp))),
-		(file) => file._id,
-		{
-			from: { transform: "translate3d(0,-100px,0)", opacity: 0 },
-			enter: { transform: "translate3d(0,0,0)", opacity: 1 },
-			leave: { transform: "translate3d(0,-200px,0)", opacity: 0 },
-		}
-	);
-
-	const selectFile = (id) => () => {
-		// Prevent item select in mobile
-		if (isMobile) return;
-		if (selected.includes(id)) {
-			// Remove from array
-			let filtered = selected.filter((x) => x !== id);
-			setSelected(filtered);
-		} else {
-			// Add to array
-			setSelected([...selected, id]);
-		}
-	};
-
-	const removeFile = (id) => () => {
-		ReactGA.event({
-			category: "File",
-			action: "Removed file",
-		});
-		removeFiles([id]);
-	};
-
-	function removeSelected() {
-		ReactGA.event({ category: "File", action: "Removed selected files" });
-		removeFiles(selected);
-	}
+	const { data: files } = useFiles(code);
 
 	const downloadFile = (id, filename) => async () => {
 		if (isMobile) {
@@ -246,14 +211,6 @@ export default function Space() {
 			}
 		}
 	};
-
-	function selectAll() {
-		setSelected(space.files.map((x) => x._id));
-	}
-
-	function deselectAll() {
-		setSelected([]);
-	}
 
 	async function closeSpace() {
 		ReactGA.event({
@@ -499,62 +456,25 @@ export default function Space() {
 		setActivePanel(index);
 	};
 
-	const onDrop = useCallback(
-		(acceptedFiles) => {
-			let showLargeFileWarning = false;
-			let exceededFileSizeLimit = false;
-			acceptedFiles.forEach((file) => {
-				if (file.size > 314572800) {
-					// Greater than 300 MB
-					exceededFileSizeLimit = true;
-				}
-				if (file.size > 104857600) {
-					// Greater than 100 MB
-					showLargeFileWarning = true;
-				}
-			});
-			if (exceededFileSizeLimit) {
-				enqueueSnackbar("A file you are trying to upload is too large.", {
-					autoHideDuration: 5000,
-					variant: "error",
-					action: !isMobile && (
-						<GButton
-							text="Learn More"
-							variant="danger"
-							inverse
-							target="_blank"
-							href="https://floatingfile.space/faq?active=2"
-						/>
-					),
-				});
-				return;
-			}
-			if (showLargeFileWarning) {
-				enqueueSnackbar("You're uploading a large file. Please be patient as the upload will take some time.", {
-					variant: "warning",
-					autoHideDuration: 5000,
-				});
-			}
+	const onDrop = useCallback(async (acceptedFiles) => {
+		let queue = [
+			...acceptedFiles.map((file) => {
+				const key = uuidv4();
+				const ext = file.name.split(".")[file.name.split(".").length - 1];
 
-			ReactGA.event({ category: "File", action: "Uploaded files", value: acceptedFiles.length });
+				file.key = key;
+				file.ext = ext;
+				return file;
+			}),
+		];
 
-			const config = {
-				withCredentials: true,
-				headers: {
-					"content-Type": "application/json",
-				},
-				onUploadProgress: (event) => {
-					const { loaded, total } = event;
-					setUploadProgress({ loaded, total });
-					if (loaded === total) {
-						setUploadProgress({ loaded: null, total: null });
-					}
-				},
-			};
-			uploadFiles({ files: acceptedFiles, config });
-		},
-		[code]
-	);
+		while (queue.length > 0) {
+			const file = queue.shift();
+			console.log("Start file upload ", file.name);
+			await uploadFile(file);
+			console.log("Done file upload ", file.name);
+		}
+	}, []);
 
 	const { getRootProps, getInputProps } = useDropzone({
 		onDrop,
@@ -594,10 +514,10 @@ export default function Space() {
 				<div className={cls.centerWrapper}>
 					<div className={cls.center} style={{ textAlign: "left" }}>
 						{selected.length === space.files.length ? (
-							<GButton text="Deselect All" variant="primary" inverse startIcon={<ClearIcon />} onClick={deselectAll} />
+							<GButton text="Deselect All" variant="primary" inverse startIcon={<ClearIcon />} onClick={null} />
 						) : (
 							<GButton
-								onClick={selectAll}
+								onClick={null}
 								text="Select All"
 								variant="primary"
 								inverse
@@ -646,7 +566,7 @@ export default function Space() {
 							disabled={selected.length === 0}
 							inverse
 							startIcon={<DeleteIcon />}
-							onClick={removeSelected}
+							onClick={null}
 							debounce={5}
 						/>
 					</div>
@@ -762,24 +682,11 @@ export default function Space() {
 												</div>
 											)}
 											<div>
-												{fileTransitions.map(({ item, props, key }) => {
-													const { _id, filename } = item;
-													return (
-														<animated.div key={key} style={props}>
-															<div key={_id}>
-																<Suspense fallback={null}>
-																	<FileListItem
-																		remove={removeFile(_id)}
-																		download={downloadFile(_id, filename)}
-																		active={selected.includes(_id)}
-																		select={selectFile(_id)}
-																		{...item}
-																	/>
-																</Suspense>
-															</div>
-														</animated.div>
-													);
-												})}
+												{files?.map((file) => (
+													<Suspense fallback={null}>
+														<FileListItem file={file} />
+													</Suspense>
+												))}
 											</div>
 										</>
 									) : uploadProgress.loaded ? (
