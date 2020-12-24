@@ -50,7 +50,3 @@ export function saveBlob(data, filename) {
 		}
 	});
 }
-
-export function getCodeFromWindow(window) {
-	return window.location.href.split("/")[window.location.href.split("/").length - 1];
-}

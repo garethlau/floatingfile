@@ -13,7 +13,7 @@ import ReactGA from "react-ga";
 import useWindowWidth from "../_hooks/useWindowWidth";
 import useSpace from "../_queries/useSpace";
 import useDocumentTitle from "../_hooks/useDocumentTitle";
-import { saveBlob, getCodeFromWindow } from "../_utils";
+import { saveBlob } from "../_utils";
 import { makeStyles } from "@material-ui/core/styles";
 import PublicIcon from "@material-ui/icons/Public";
 import HistoryIcon from "@material-ui/icons/History";
