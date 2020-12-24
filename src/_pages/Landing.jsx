@@ -10,6 +10,7 @@ import GButton from "../_components/GButton";
 import Seperator from "../_components/Seperator";
 import ReactGA from "react-ga";
 import useDocumentTitle from "../_hooks/useDocumentTitle";
+import useCreateSpace from "../_mutations/useCreateSpace";
 
 ReactGA.pageview(window.location.pathname + window.location.search);
 
@@ -47,6 +48,7 @@ export default function Landing() {
 	const cls = useStyles();
 	const history = useHistory();
 	const [code, setCode] = useState("");
+	const { mutateAsync: createSpace } = useCreateSpace();
 	useDocumentTitle("floatingfile");
 
 	function handleCodeChange(e) {
@@ -105,18 +107,9 @@ export default function Landing() {
 
 	async function create() {
 		try {
-			const res = await axios.post(`${BASE_API_URL}/api/v3/space`);
-			if (res.status === 200) {
-				enqueueSnackbar("Space created. Redirecting...", {
-					variant: "success",
-					anchorOrigin,
-				});
-				setTimeout(() => {
-					closeSnackbar();
-					if (res.data.space && res.data.space.code) {
-						history.push("/s/" + res.data.space.code);
-					}
-				}, 1500);
+			const space = await createSpace();
+			if (space && space.code) {
+				history.push("/s/" + space.code);
 			}
 		} catch {
 			enqueueSnackbar("There was an error.", {
