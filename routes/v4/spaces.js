@@ -127,6 +127,59 @@ router.delete("/:code", async (req, res) => {
 	}
 });
 
+router.delete("/:code/files/:key", async (req, res) => {
+	const { code, key } = req.params;
+	const { username } = req.headers;
+
+	try {
+		// Find the space
+		const space = await Space.findOne({ code }).exec();
+
+		// Remove the file from s3
+		const params = {
+			Key: key,
+			Bucket: keys.S3_BUCKET_NAME,
+		};
+		await s3.deleteObject(params);
+
+		// Remove the file from the space
+		const removedFile = space.files.find((file) => file.key === key);
+		space.files = space.files.filter((file) => file.key !== key);
+
+		// Adjust the used size of the space
+		space.size = space.size - removedFile.size;
+
+		// Update the history of the space
+		const historyRecord = {
+			action: "REMOVE",
+			payload: removedFile.name,
+			author: username,
+			timestamp: Date.now(),
+		};
+		space.history = [...space.history, historyRecord];
+		const updatedSpace = await space.save();
+
+		// Notify clients that the space has been updated
+		io.sockets.in(code).emit("FROM_SERVER", {
+			type: "HISTORY_UPDATED",
+			code,
+		});
+
+		io.sockets.in(code).emit("FROM_SERVER", {
+			type: constants.SOCKET_ACTIONS.FILES_UPDATED,
+			payload: code,
+			code,
+		});
+
+		io.sockets.in(code).emit("FROM_SERVER", {
+			type: "SPACE_UPDATED",
+			code,
+		});
+
+		return res.status(200).send({ space: updatedSpace });
+	} catch (error) {}
+});
+
 // remove files
 router.delete("/:code/files", async (req, res) => {
 	const code = req.params.code;
@@ -223,6 +276,69 @@ router.delete("/:code/files", async (req, res) => {
 		return res.status(200).send();
 	} catch (err) {
 		return res.status(500).send(err);
+	}
+});
+
+router.patch("/:code/file", async (req, res) => {
+	const { code } = req.params;
+	const io = req.app.get("socketio");
+	const { key, size, name, type, ext } = req.body;
+	const { username } = req.headers;
+
+	if (!code) {
+		return res.status(422).send({ message: "No code supplied." });
+	}
+	try {
+		const space = await Space.findOne({ code }).exec();
+		if (!space) {
+			return res.status(404).send({ message: "Space not found." });
+		}
+
+		// Check if the space has reached its max capacity
+		if (space.size >= space.capacity) {
+			// Space has reached max capacity
+			return res.status(403).send({ message: "Max capacity reached." });
+		}
+
+		// Generate signed URL for the file
+		const params = {
+			Key: key,
+			Bucket: keys.S3_BUCKET_NAME,
+		};
+		console.log(params);
+		const signedUrl = s3.getSignedUrl("putObject", params);
+
+		// Attach the file object to the space
+		space.files = [...space.files, { key, size, name, type, ext }];
+		// Increase used space
+		space.size = space.size + size;
+
+		// Record this upload in the history
+		space.history = [...space.history, { action: "UPLOAD", author: username, payload: name, timestamp: Date.now() }];
+
+		// Notify clients of changes
+		io.sockets.in(code).emit("FROM_SERVER", {
+			type: "HISTORY_UPDATED",
+			code,
+		});
+
+		io.sockets.in(code).emit("FROM_SERVER", {
+			type: constants.SOCKET_ACTIONS.FILES_UPDATED,
+			payload: code,
+			code,
+		});
+
+		io.sockets.in(code).emit("FROM_SERVER", {
+			type: "SPACE_UPDATED",
+			code,
+		});
+
+		const updatedSpace = await space.save();
+
+		return res.status(200).send({ message: "File added to space.", signedUrl, space: updatedSpace });
+	} catch (error) {
+		console.log(error);
+		return res.status(500).send(error);
 	}
 });
 
@@ -340,9 +456,23 @@ router.get("/:code/files", async (req, res) => {
 	const { code } = req.params;
 	try {
 		const space = await Space.findOne({ code }).exec();
-		const { files } = space;
+		if (!space) {
+			return res.status(404).send({ message: "Space not found." });
+		}
+
+		const files = space.files.map((file) => {
+			const params = {
+				Key: file.key,
+				Bucket: keys.S3_BUCKET_NAME,
+			};
+			const signedUrl = s3.getSignedUrl("getObject", params);
+			file.signedUrl = signedUrl;
+			return file;
+		});
+
 		return res.status(200).send({ files });
 	} catch (err) {
+		console.error(err);
 		return res.status(500).send();
 	}
 });
@@ -419,56 +549,37 @@ const deleteFolderRecursive = function (path) {
 	}
 };
 
-router.get("/:code/files/:fileId", async (req, res) => {
-	const { fileId } = req.params; // ID for Mongoose Schema
+router.patch("/:code/history", async (req, res) => {
+	const { code } = req.params;
+	const { action, payload } = req.body;
+	const { username } = req.headers;
 	const io = req.app.get("socketio");
-	if (!fileId) {
-		return res.status(400).send({ message: "Invalid request." });
-	}
 
 	try {
-		let file = await File.findById(fileId).exec();
-		if (!file) {
-			return res.status(404).send({ message: "File not found." });
-		}
-		res.set("Content-Type", file.mimetype);
-		res.set("Content-Disposition", 'attachment; filename="' + file.filename + '"');
-		res.set("Content-Length", file.size);
-		let response = await axios({
-			method: "GET",
-			url: file.location,
-			responseType: "stream",
-		});
-
-		let space = await Space.findById(mongoose.Types.ObjectId(file.parentId)).exec();
+		const space = await Space.findOne({ code }).exec();
 		if (!space) {
-			// Space does not exist
-			return res.status(404).send();
+			return res.status(404).send({ message: "Space not found." });
 		}
 
-		space.history.push({
-			action: "DOWNLOAD",
-			author: req.headers["username"],
-			payload: file.filename,
-			timestamp: Date.now(),
-		});
+		if (action === "DOWNLOAD_FILE") {
+			const downloadedFile = space.files.find((file) => file.key === payload);
+			space.history = [
+				...space.history,
+				{ action: "DOWNLOAD", author: username, payload: downloadedFile.name, timestamp: Date.now() },
+			];
+		}
 
-		await space.save();
+		const updatedSpace = await space.save();
 
-		io.sockets.in(space.code).emit("FROM_SERVER", {
+		io.sockets.in(code).emit("FROM_SERVER", {
 			type: "HISTORY_UPDATED",
-			code: space.code,
+			code,
 		});
 
-		io.sockets.in(space.code).emit("FROM_SERVER", {
-			type: "SPACE_UPDATED",
-			code: space.code,
-		});
-
-		return response.data.pipe(res);
-	} catch (err) {
-		console.log(err);
-		return res.status(500).send(err);
+		return res.status(200).send({ message: "History updated.", space: updatedSpace });
+	} catch (error) {
+		console.error(error);
+		return res.status(500).send(error);
 	}
 });
 
