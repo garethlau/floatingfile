@@ -79,8 +79,7 @@ export default function Landing() {
 		}
 
 		try {
-			const res = await axios.get(`${BASE_API_URL}/api/v3/space/` + code);
-			console.log(res);
+			await axios.get(`${BASE_API_URL}/api/v4/spaces/` + code);
 			enqueueSnackbar("Joining space.", {
 				variant: "success",
 				anchorOrigin,
@@ -90,7 +89,7 @@ export default function Landing() {
 				history.push("/s/" + code);
 			}, 1500);
 		} catch (err) {
-			console.log(err.response);
+			console.log(err);
 			if (err.response.status === 404) {
 				enqueueSnackbar("Space does not exist.", {
 					variant: "error",
