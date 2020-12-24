@@ -5,7 +5,6 @@ import { useHistory, useParams } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import io from "socket.io-client";
-import { useTransition, animated } from "react-spring";
 import { isMobile } from "react-device-detect";
 import MoonLoader from "react-spinners/MoonLoader";
 import { useSnackbar } from "notistack";
