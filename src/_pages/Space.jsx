@@ -173,21 +173,6 @@ export default function Space() {
 	const { refetch: refetchHistory } = useSpaceHistory(code);
 	const { mutateAsync: removeFiles } = useRemoveFiles(code);
 
-	async function closeSpace() {
-		ReactGA.event({
-			category: "Space",
-			action: "Closed space",
-		});
-		try {
-			await axios.delete(`${BASE_API_URL}/api/v3/space/${code}`);
-		} catch (err) {
-			enqueueSnackbar("Error destroying space. Try reloading the page.", {
-				variant: "error",
-				action: <GButton text="Reload" onClick={() => window.location.reload(false)} variant="error" inverse />,
-			});
-		}
-	}
-
 	async function downloadSelected() {
 		enqueueSnackbar(
 			"Your files will start downloading shortly. Please ensure floatingfile has access to download multiple files.",
@@ -423,7 +408,7 @@ export default function Space() {
 			<div className={cls.left}>
 				<div className={cls.centerWrapper}>
 					<div className={cls.center} style={{ textAlign: "left" }}>
-						{selected.length === space.files.length ? (
+						{selected.length === files?.length ? (
 							<GButton text="Deselect All" variant="primary" inverse startIcon={<ClearIcon />} onClick={null} />
 						) : (
 							<GButton
@@ -538,7 +523,7 @@ export default function Space() {
 			<div className={cls.panel}>
 				<div style={{ display: activePanel === 1 ? "inherit" : "none", height: "100%" }}>
 					<Suspense fallback={panelFallback}>
-						<ConnectPanel closeSpace={closeSpace} />
+						<ConnectPanel />
 					</Suspense>
 				</div>
 				<div style={{ display: activePanel === 2 ? "inherit" : "none" }}>
@@ -548,7 +533,7 @@ export default function Space() {
 				</div>
 				<div style={{ display: activePanel === 3 ? "inherit" : "none" }}>
 					<Suspense fallback={panelFallback}>
-						<UsersPanel users={space.users} mySocketId={socket.id} />
+						<UsersPanel users={[]} mySocketId={socket.id} />
 					</Suspense>
 				</div>
 				<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>Settings</div>
@@ -563,17 +548,17 @@ export default function Space() {
 					</>
 				) : (
 					<>
-						{windowWidth > Breakpoints.MD && <>{space.files.length > 0 ? appBar : <div></div>}</>}
+						{windowWidth > Breakpoints.MD && <>{files?.length > 0 ? appBar : <div></div>}</>}
 						<div style={{ overflowY: "auto", height: "100%" }}>
 							{!collapsed || (collapsed && activePanel === 0) ? (
 								<>
-									{space.files.length > 0 ? (
+									{files?.length > 0 ? (
 										<>
 											{windowWidth > Breakpoints.SM && windowWidth < Breakpoints.MD && appBar}
 											{windowWidth < Breakpoints.SM && (
 												<div>
 													<Center>
-														<div style={{ padding: "10px", display: space.files.length === 0 ? "none" : "" }}>
+														<div style={{ padding: "10px", display: files?.length === 0 ? "none" : "" }}>
 															{uploadProgress.loaded ? (
 																<Button style={{ backgroundColor: Colors.SUCCESS, height: "42px" }} fullWidth>
 																	<UploadProgress
@@ -611,7 +596,7 @@ export default function Space() {
 								<>
 									<div style={{ display: activePanel === 1 ? "inherit" : "none", height: "100%" }}>
 										<Suspense fallback={panelFallback}>
-											<ConnectPanel closeSpace={closeSpace} />
+											<ConnectPanel />
 										</Suspense>
 									</div>
 									<div style={{ display: activePanel === 2 ? "inherit" : "none" }}>
@@ -621,7 +606,7 @@ export default function Space() {
 									</div>
 									<div style={{ display: activePanel === 3 ? "inherit" : "none" }}>
 										<Suspense fallback={panelFallback}>
-											<UsersPanel users={space.users} collapsed mySocketId={socket.id} />
+											<UsersPanel users={[]} collapsed mySocketId={socket.id} />
 										</Suspense>
 									</div>
 									<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>Settings</div>
