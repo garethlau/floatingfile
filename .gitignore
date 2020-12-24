@@ -1,0 +1,7 @@
+node_modules
+package-lock.json
+/config/dev.js
+ecosystem.config.js
+/files
+/tmp
+*.ecosystem.config.js
