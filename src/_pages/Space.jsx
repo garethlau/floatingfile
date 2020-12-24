@@ -576,7 +576,7 @@ export default function Space() {
 													</Center>
 												</div>
 											)}
-											<div>
+											<div style={{ overflowX: "hidden" }}>
 												<Suspense fallback={null}>
 													<AnimatePresence>
 														{files?.map((file, index) => (
