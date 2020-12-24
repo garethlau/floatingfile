@@ -155,7 +155,7 @@ export default function Space() {
 	const windowWidth = useWindowWidth();
 	const history = useHistory();
 	const { code } = useParams();
-	const { selected } = useContext(SelectedFilesContext);
+	const { selected, isSelected } = useContext(SelectedFilesContext);
 
 	useDocumentTitle(`floatingfile | ${code}`);
 
@@ -229,9 +229,7 @@ export default function Space() {
 		}
 	}
 
-	function downloadSelected() {
-		ReactGA.event({ category: "File", action: "Downloaded selected files" });
-
+	async function downloadSelected() {
 		enqueueSnackbar(
 			"Your files will start downloading shortly. Please ensure floatingfile has access to download multiple files.",
 			{
@@ -239,33 +237,20 @@ export default function Space() {
 				autoHideDuration: 3000,
 			}
 		);
-		Promise.all(
-			selected.map(
-				(fileId) =>
-					new Promise(async (resolve, reject) => {
-						try {
-							const res = await axios({
-								url: `${BASE_API_URL}/api/v3/space/${code}/files/${fileId}`,
-								method: "GET",
-								responseType: "blob",
-							});
-							let file = space.files.filter((file) => file._id === fileId)[0];
-							saveBlob(res.data, file.filename)
-								.then(() => {
-									resolve();
-								})
-								.catch((err) => {
-									reject(err);
-								});
-						} catch (err) {}
-					})
-			)
-		).then(() => {
-			enqueueSnackbar("Successfully downloaded files.", {
-				variant: "success",
-				autoHideDuration: 3000,
+
+		let downloadQueue = files.filter((file) => isSelected(file.key));
+		while (downloadQueue.length > 0) {
+			const file = downloadQueue.shift();
+			console.log("Donwloading file ", file.name);
+			const response = await axios.get(file.signedUrl, { responseType: "blob" });
+			const { data } = response;
+			await saveBlob(data, file.name);
+			await axios.patch(`${BASE_API_URL}/api/v4/spaces/${code}/history`, {
+				action: "DOWNLOAD_FILE",
+				payload: file.key,
 			});
-		});
+		}
+		console.log("All files donwloaded");
 	}
 
 	async function zipSelected() {
@@ -637,7 +622,7 @@ export default function Space() {
 				</div>
 				<div style={{ display: activePanel === 2 ? "inherit" : "none" }}>
 					<Suspense fallback={panelFallback}>
-						<HistoryPanel history={space.history} />
+						<HistoryPanel />
 					</Suspense>
 				</div>
 				<div style={{ display: activePanel === 3 ? "inherit" : "none" }}>
@@ -710,7 +695,7 @@ export default function Space() {
 									</div>
 									<div style={{ display: activePanel === 2 ? "inherit" : "none" }}>
 										<Suspense fallback={panelFallback}>
-											<HistoryPanel history={space.history} collapsed />
+											<HistoryPanel collapsed />
 										</Suspense>
 									</div>
 									<div style={{ display: activePanel === 3 ? "inherit" : "none" }}>
