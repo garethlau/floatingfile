@@ -12,8 +12,6 @@ import { useSnackbar } from "notistack";
 import ReactGA from "react-ga";
 import useWindowWidth from "../_hooks/useWindowWidth";
 import useSpace from "../_queries/useSpace";
-import useRemoveFiles from "../_hooks/useRemoveFiles";
-import useUploadFiles from "../_hooks/useUploadFiles";
 import useDocumentTitle from "../_hooks/useDocumentTitle";
 import { saveBlob, getCodeFromWindow } from "../_utils";
 import { makeStyles } from "@material-ui/core/styles";
@@ -39,6 +37,7 @@ import useFiles from "../_queries/useFiles";
 import useUploadFile from "../_mutations/useUploadFile";
 import { SelectedFilesContext } from "../_contexts/selectedFiles";
 import { default as useSpaceHistory } from "../_queries/useHistory";
+import useRemoveFile from "../_mutations/useRemoveFile";
 
 const ConnectPanel = React.lazy(() => import("../_components/ConnectPanel"));
 const HistoryPanel = React.lazy(() => import("../_components/HistoryPanel"));
@@ -155,7 +154,7 @@ export default function Space() {
 	const windowWidth = useWindowWidth();
 	const history = useHistory();
 	const { code } = useParams();
-	const { selected, isSelected } = useContext(SelectedFilesContext);
+	const { selected, isSelected, clear: clearSelectedFiles } = useContext(SelectedFilesContext);
 
 	useDocumentTitle(`floatingfile | ${code}`);
 
@@ -171,6 +170,7 @@ export default function Space() {
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
 	const { mutateAsync: uploadFile } = useUploadFile(code);
+	const { mutateAsync: removeFile } = useRemoveFile(code);
 
 	const { data: files, refetch: refetchFiles } = useFiles(code);
 	const { refetch: refetchHistory } = useSpaceHistory(code);
@@ -212,6 +212,20 @@ export default function Space() {
 			});
 		}
 		console.log("All files donwloaded");
+	}
+
+	async function removeSelected() {
+		try {
+			let keysToRemove = selected;
+			while (keysToRemove.length > 0) {
+				let key = keysToRemove.shift();
+				await removeFile(key);
+			}
+			clearSelectedFiles();
+			enqueueSnackbar("Selected files have been removed", { variant: "success" });
+		} catch (error) {
+			console.error(error);
+		}
 	}
 
 	async function zipSelected() {
@@ -517,7 +531,7 @@ export default function Space() {
 							disabled={selected.length === 0}
 							inverse
 							startIcon={<DeleteIcon />}
-							onClick={null}
+							onClick={removeSelected}
 							debounce={5}
 						/>
 					</div>
