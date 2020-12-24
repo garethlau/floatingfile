@@ -38,6 +38,7 @@ import { v4 as uuidv4 } from "uuid";
 import useFiles from "../_queries/useFiles";
 import useUploadFile from "../_mutations/useUploadFile";
 import { SelectedFilesContext } from "../_contexts/selectedFiles";
+import { default as useSpaceHistory } from "../_queries/useHistory";
 
 const ConnectPanel = React.lazy(() => import("../_components/ConnectPanel"));
 const HistoryPanel = React.lazy(() => import("../_components/HistoryPanel"));
@@ -171,7 +172,8 @@ export default function Space() {
 
 	const { mutateAsync: uploadFile } = useUploadFile(code);
 
-	const { data: files } = useFiles(code);
+	const { data: files, refetch: refetchFiles } = useFiles(code);
+	const { refetch: refetchHistory } = useSpaceHistory(code);
 
 	const downloadFile = (id, filename) => async () => {
 		if (isMobile) {
@@ -401,8 +403,10 @@ export default function Space() {
 					refetchSpace();
 					break;
 				case "HISTORY_UPDATED":
+					refetchHistory();
 					break;
 				case "FILES_UPDATED":
+					refetchFiles();
 					break;
 				case "CONNECTIONS_UPDATED":
 					break;
