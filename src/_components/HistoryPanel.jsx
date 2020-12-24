@@ -4,6 +4,8 @@ import { Colors, Elevation } from "../constants";
 import Center from "./Center";
 import { mdiUpload, mdiDownload, mdiDelete, mdiTimerSandEmpty, mdiAccountPlus, mdiAccountMinus } from "@mdi/js";
 import Icon from "@mdi/react";
+import useHistory from "../_queries/useHistory";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -106,7 +108,9 @@ function renderTile(action, payload, author) {
 }
 
 export default function HistoryPanel(props) {
-	const { history, collapsed } = props;
+	const { collapsed } = props;
+	const { code } = useParams();
+	const { data: history } = useHistory(code);
 	const cls = useStyles();
 	return (
 		<div className={cls.root}>
