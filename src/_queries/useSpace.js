@@ -7,7 +7,7 @@ export default function useSpace(code) {
 	function query() {
 		return new Promise((resolve, reject) => {
 			axios
-				.get(`${BASE_API_URL}/api/v4/space/${code}`)
+				.get(`${BASE_API_URL}/api/v4/spaces/${code}`)
 				.then((response) => {
 					const { space } = response.data;
 					resolve(space);
