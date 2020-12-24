@@ -37,6 +37,7 @@ import useUploadFile from "../_mutations/useUploadFile";
 import { SelectedFilesContext } from "../_contexts/selectedFiles";
 import { default as useSpaceHistory } from "../_queries/useHistory";
 import useRemoveFiles from "../_mutations/useRemoveFiles";
+import { AnimatePresence, motion } from "framer-motion";
 
 const ConnectPanel = React.lazy(() => import("../_components/ConnectPanel"));
 const HistoryPanel = React.lazy(() => import("../_components/HistoryPanel"));
@@ -576,11 +577,21 @@ export default function Space() {
 												</div>
 											)}
 											<div>
-												{files?.map((file) => (
-													<Suspense fallback={null}>
-														<FileListItem file={file} />
-													</Suspense>
-												))}
+												<Suspense fallback={null}>
+													<AnimatePresence>
+														{files?.map((file, index) => (
+															<motion.div
+																initial={{ opacity: 0, x: 100 }}
+																animate={{ opacity: 1, x: 0 }}
+																exit={{ opacity: 0, x: 100 }}
+																transition={{ delay: index * 0.3 }}
+																key={file.key}
+															>
+																<FileListItem file={file} />
+															</motion.div>
+														))}
+													</AnimatePresence>
+												</Suspense>
 											</div>
 										</>
 									) : uploadProgress.loaded ? (
