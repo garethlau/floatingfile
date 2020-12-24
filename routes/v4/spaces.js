@@ -126,7 +126,6 @@ router.delete("/:code", async (req, res) => {
 		return res.status(500).send();
 	}
 });
-
 router.delete("/:code/files/:key", async (req, res) => {
 	const { code, key } = req.params;
 	const { username } = req.headers;
@@ -180,6 +179,70 @@ router.delete("/:code/files/:key", async (req, res) => {
 		return res.status(200).send({ space: updatedSpace });
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send(error);
+	}
+});
+
+// Remove multiple files
+router.delete("/:code/files", async (req, res) => {
+	const { code } = req.params;
+	const toRemove = JSON.parse(req.query.toRemove);
+	const { username } = req.headers;
+	const io = req.app.get("socketio");
+	try {
+		const space = await Space.findOne({ code }).exec();
+		if (!space) {
+			return res.status(404).send({ message: "Space does not exist." });
+		}
+
+		// Remove objects from s3
+		const params = {
+			Bucket: "examplebucket",
+			Delete: {
+				Objects: toRemove.map((key) => ({ Key: key })),
+				Quiet: false,
+			},
+		};
+
+		await s3.deleteObjects(params);
+
+		// Remove files from the space
+		space.files = space.files.filter((file) => !toRemove.includes(file.key));
+
+		// Update the history
+		const removedFiles = space.files.filter((file) => toRemove.includes(file.key));
+		const historyRecords = removedFiles.map((file) => ({
+			action: "REMOVE",
+			payload: file.name,
+			author: username,
+			timestamp: Date.now(),
+		}));
+
+		space.history = [...space.history, ...historyRecords];
+
+		// Save changes
+		const updatedSpace = await space.save();
+
+		// Notify clients that the space has been updated
+		io.sockets.in(code).emit("FROM_SERVER", {
+			type: "HISTORY_UPDATED",
+			code,
+		});
+
+		io.sockets.in(code).emit("FROM_SERVER", {
+			type: constants.SOCKET_ACTIONS.FILES_UPDATED,
+			payload: code,
+			code,
+		});
+
+		io.sockets.in(code).emit("FROM_SERVER", {
+			type: "SPACE_UPDATED",
+			code,
+		});
+
+		return res.status(200).send({ message: "Files removed.", space: updatedSpace });
+	} catch (error) {
+		console.error(error);
 		return res.status(500).send(error);
 	}
 });
