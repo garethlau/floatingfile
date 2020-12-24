@@ -4,7 +4,7 @@ import { Colors, Elevation } from "../constants";
 import GButton from "./GButton";
 import GIconButton from "./GIconButton";
 import Center from "./Center";
-import useWindowWidth from "../hooks/useWindowWidth";
+import useWindowWidth from "../_hooks/useWindowWidth";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DeleteIcon from "@material-ui/icons/Delete";
 import OpenInBrowserIcon from "@material-ui/icons/OpenInBrowser";

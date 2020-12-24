@@ -80,7 +80,7 @@ export default function ConnectPanel({ secondsRemaining, code, closeSpace }) {
 							includeMargin={false}
 							renderAs={"svg"}
 							imageSettings={{
-								src: require("../assets/images/balloon.png"),
+								src: require("../_assets/images/balloon.png"),
 								x: null,
 								y: null,
 								height: 24,
