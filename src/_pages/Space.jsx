@@ -163,8 +163,6 @@ export default function Space() {
 	const [activePanel, setActivePanel] = useState(1);
 	const [collapsed, setCollapsed] = useState(null);
 
-	const [secondsRemaining, setSecondsRemaining] = useState(-1);
-
 	const [uploadProgress, setUploadProgress] = useState({ loaded: null, total: null });
 
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -255,63 +253,13 @@ export default function Space() {
 	}
 
 	useEffect(() => {
-		let timers = {
-			expires: null,
-			oneMinuteWarning: null,
-			fiveMinuteWarning: null,
-		};
 		if (spaceStatus === "success") {
-			let expiryDate = new Date(parseInt(space.expires));
-			let currDate = new Date();
-			let duration = expiryDate.getTime() - currDate.getTime();
-			setSecondsRemaining(duration / 1000);
-			if (duration < 0) {
-				// This space has already expired
-				enqueueSnackbar("This space has expired.", { variant: "error" });
-			}
-			if (duration - 5 * 60 * 1000 > 0) {
-				// Set five minute warning timer
-				timers.fiveMinuteWarning = setTimeout(() => {
-					// Warn
-					enqueueSnackbar("Space will expire in 5 minutes.", { variant: "warning" });
-					setTimeout(() => closeSnackbar(), 3000);
-					ReactGA.event({ category: "Space", action: "Displayed 5 minute warning.", nonInteraction: true });
-				}, duration - 5 * 60 * 1000);
-			}
-
-			if (duration - 1 * 60 * 1000 > 0) {
-				// Set one minute warning timer
-				timers.oneMinuteWarning = setTimeout(() => {
-					// Warn
-					enqueueSnackbar("Space will expire in 1 minute.", { variant: "warning" });
-					setTimeout(() => closeSnackbar(), 3000);
-					ReactGA.event({ category: "Space", action: "Displayed 1 minute warning.", nonInteraction: true });
-				}, duration - 1 * 60 * 1000);
-			}
-
-			if (duration > 0) {
-				timers.expires = setTimeout(() => {
-					// Expired !
-					enqueueSnackbar("Space has expired. Redirecting...", { variant: "warning" });
-					setTimeout(() => {
-						closeSnackbar();
-						history.push("/");
-					}, 3000);
-					ReactGA.event({ category: "Space", action: "Expired.", nonInteraction: true });
-				}, duration);
-			}
 		} else if (spaceStatus === "error") {
 			enqueueSnackbar("There was an error loading the space. Please reload the page.", {
 				variant: "error",
 				action: <GButton text={"Reload"} variant="danger" inverse onClick={() => window.location.reload(false)} />,
 			});
 		}
-
-		return () => {
-			Object.keys(timers).forEach((timerName) => {
-				clearTimeout(timers[timerName]);
-			});
-		};
 	}, [spaceStatus]);
 
 	useEffect(() => {
@@ -590,7 +538,7 @@ export default function Space() {
 			<div className={cls.panel}>
 				<div style={{ display: activePanel === 1 ? "inherit" : "none", height: "100%" }}>
 					<Suspense fallback={panelFallback}>
-						<ConnectPanel secondsRemaining={secondsRemaining} code={code} closeSpace={closeSpace} />
+						<ConnectPanel closeSpace={closeSpace} />
 					</Suspense>
 				</div>
 				<div style={{ display: activePanel === 2 ? "inherit" : "none" }}>
@@ -663,7 +611,7 @@ export default function Space() {
 								<>
 									<div style={{ display: activePanel === 1 ? "inherit" : "none", height: "100%" }}>
 										<Suspense fallback={panelFallback}>
-											<ConnectPanel secondsRemaining={secondsRemaining} code={code} closeSpace={closeSpace} />
+											<ConnectPanel closeSpace={closeSpace} />
 										</Suspense>
 									</div>
 									<div style={{ display: activePanel === 2 ? "inherit" : "none" }}>

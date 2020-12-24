@@ -8,6 +8,11 @@ import { ORIGIN } from "../env";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useSnackbar } from "notistack";
 import Center from "./Center";
+import useSpace from "../_queries/useSpace";
+import { useParams, useHistory } from "react-router-dom";
+
+const THIRTY_MINUTES = 30 * 60 * 1000;
+const FIVE_MINUTES = 5 * 60 * 1000;
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -38,14 +43,63 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function ConnectPanel({ secondsRemaining, code, closeSpace }) {
+export default function ConnectPanel({ closeSpace }) {
 	const cls = useStyles();
+	const { code } = useParams();
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+	const { data: space } = useSpace(code);
+	const history = useHistory();
 
-	const [timeLeft, setTimeLeft] = useState(secondsRemaining);
+	const [timeLeft, setTimeLeft] = useState(); // In seconds
+
 	useEffect(() => {
-		setTimeLeft(secondsRemaining);
-	}, [secondsRemaining]);
+		let timers = {};
+		if (space) {
+			let expiryDate = new Date(parseInt(space.expires));
+			let currDate = new Date();
+			let duration = expiryDate.getTime() - currDate.getTime();
+
+			if (duration < 0) {
+				// This space has already expired
+				enqueueSnackbar("This space has expired.", { variant: "error" });
+			}
+
+			if (duration - FIVE_MINUTES > 0) {
+				// Set five minute timeout warning
+				timers.five = setTimeout(() => {
+					enqueueSnackbar("Space will expire in 5 minutes.", { variant: "warning" });
+					setTimeout(() => closeSnackbar(), 5000);
+				}, duration - FIVE_MINUTES);
+			}
+
+			if (duration - THIRTY_MINUTES > 0) {
+				// Set thirty minute timeout warning
+				timers.thirty = setTimeout(() => {
+					enqueueSnackbar("Space will expire in 30 minutes.", { variant: "warning" });
+					setTimeout(() => closeSnackbar(), 5000);
+				}, duration - THIRTY_MINUTES);
+			}
+
+			if (duration > 0) {
+				timers.zero = setTimeout(() => {
+					enqueueSnackbar("Space has expired. Redirecting...", { variant: "warning" });
+					setTimeout(() => {
+						closeSnackbar();
+						history.push("/");
+					});
+				}, duration);
+			}
+
+			setTimeLeft(duration / 1000);
+		}
+		return () => {
+			// Clear timeouts
+			Object.keys(timers).forEach((timerName) => {
+				clearTimeout(timers[timerName]);
+			});
+		};
+	}, [space]);
+
 	useEffect(() => {
 		if (!timeLeft) return;
 		const intervalId = setInterval(() => setTimeLeft(timeLeft - 1), 1000);
