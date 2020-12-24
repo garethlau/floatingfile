@@ -17,6 +17,14 @@ const SpaceSchema = new Schema(
 		expires: String,
 		history: Array,
 		users: Array,
+		size: {
+			type: Number,
+			default: 0,
+		},
+		capacity: {
+			type: Number,
+			default: 1073741824,
+		},
 	},
 	{
 		timestamps: {
@@ -25,6 +33,5 @@ const SpaceSchema = new Schema(
 		},
 	}
 );
-
 
 module.exports = mongoose.model("Space", SpaceSchema);
