@@ -37,7 +37,7 @@ import useFiles from "../_queries/useFiles";
 import useUploadFile from "../_mutations/useUploadFile";
 import { SelectedFilesContext } from "../_contexts/selectedFiles";
 import { default as useSpaceHistory } from "../_queries/useHistory";
-import useRemoveFile from "../_mutations/useRemoveFile";
+import useRemoveFiles from "../_mutations/useRemoveFiles";
 
 const ConnectPanel = React.lazy(() => import("../_components/ConnectPanel"));
 const HistoryPanel = React.lazy(() => import("../_components/HistoryPanel"));
@@ -170,10 +170,10 @@ export default function Space() {
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
 	const { mutateAsync: uploadFile } = useUploadFile(code);
-	const { mutateAsync: removeFile } = useRemoveFile(code);
 
 	const { data: files, refetch: refetchFiles } = useFiles(code);
 	const { refetch: refetchHistory } = useSpaceHistory(code);
+	const { mutateAsync: removeFiles } = useRemoveFiles(code);
 
 	async function closeSpace() {
 		ReactGA.event({
@@ -217,10 +217,7 @@ export default function Space() {
 	async function removeSelected() {
 		try {
 			let keysToRemove = selected;
-			while (keysToRemove.length > 0) {
-				let key = keysToRemove.shift();
-				await removeFile(key);
-			}
+			await removeFiles(keysToRemove);
 			clearSelectedFiles();
 			enqueueSnackbar("Selected files have been removed", { variant: "success" });
 		} catch (error) {
