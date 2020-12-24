@@ -46,7 +46,7 @@ export default function useUploadFile(code) {
 			type: file.type,
 			ext: file.ext,
 		};
-		queryClient.setQueryData(queryKey, (prev) => [fileMeta, ...prev]);
+		queryClient.setQueryData(queryKey, (prev) => [...prev, fileMeta]);
 
 		return { snapshot };
 	}
