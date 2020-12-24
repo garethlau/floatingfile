@@ -1,0 +1,22 @@
+{
+  "name": "marketing",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build && next export",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@mdi/js": "^5.3.45",
+    "@mdi/react": "^1.4.0",
+    "framer-motion": "^2.9.5",
+    "next": "9.4.4",
+    "next-seo": "^4.7.1",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-intersection-observer": "^8.31.0",
+    "react-soft-slider": "^2.2.2"
+  }
+}
