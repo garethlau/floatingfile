@@ -175,45 +175,6 @@ export default function Space() {
 	const { data: files, refetch: refetchFiles } = useFiles(code);
 	const { refetch: refetchHistory } = useSpaceHistory(code);
 
-	const downloadFile = (id, filename) => async () => {
-		if (isMobile) {
-			ReactGA.event({
-				category: "File",
-				action: "Opened file",
-			});
-			const file = space.files.find((file) => file._id === id);
-			const { location } = file;
-			window.open(location, "_blank");
-		} else {
-			ReactGA.event({
-				category: "File",
-				action: "Downloaded file",
-			});
-			enqueueSnackbar("Your file will start downloading shortly.", {
-				variant: "success",
-				autoHideDuration: 3000,
-			});
-			try {
-				const res = await axios({
-					url: `${BASE_API_URL}/api/v3/space/${code}/files/${id}`,
-					method: "GET",
-					responseType: "blob",
-					onDownloadProgress: (progress) => console.log(progress),
-				});
-				saveBlob(res.data, filename)
-					.then(() => {
-						console.log("Done downloading " + filename);
-						enqueueSnackbar(`Successfully downloaded: ${filename}`, { variant: "success", autoHideDuration: 3000 });
-					})
-					.catch((err) => {
-						console.log(err);
-					});
-			} catch (err) {
-				console.log(err);
-			}
-		}
-	};
-
 	async function closeSpace() {
 		ReactGA.event({
 			category: "Space",
