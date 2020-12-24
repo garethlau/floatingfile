@@ -260,19 +260,20 @@ export default function Space() {
 			autoHideDuration: 3000,
 		});
 		try {
-			let res = await axios({
-				url: `${BASE_API_URL}/api/v3/space/${code}/files/zip?files=${JSON.stringify(selected)}`,
-				method: "GET",
-				responseType: "blob",
-				withCredentials: true,
-			});
-			let folderName = res.headers["content-disposition"].split("=")[1].replace(/"/g, "");
-			await saveBlob(res.data, folderName);
+			const response = await axios.get(
+				`${BASE_API_URL}/api/v4/spaces/${code}/files/zip?keys=${JSON.stringify(selected)}`,
+				{
+					responseType: "blob",
+				}
+			);
+			let folderName = response.headers["content-disposition"].split("=")[1].replace(/"/g, "");
+			const { data } = response;
+			await saveBlob(data, folderName);
 			enqueueSnackbar("Successfully zipped files.", {
 				variant: "success",
 				autoHideDuration: 3000,
 			});
-			await axios.delete(`${BASE_API_URL}/api/v3/space/${code}/files/zip?folder=${folderName}`);
+			await axios.delete(`${BASE_API_URL}/api/v4/spaces/${code}/files/zip?folder=${folderName}`);
 		} catch (err) {
 			enqueueSnackbar(err.message, {
 				variant: "error",
