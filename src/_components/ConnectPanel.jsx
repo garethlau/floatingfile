@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Colors } from "../constants";
-import GButton from "./GButton";
 import QRCode from "qrcode.react";
 import { makeStyles } from "@material-ui/core";
 import MoonLoader from "react-spinners/MoonLoader";
@@ -11,6 +10,7 @@ import Center from "./Center";
 import useSpace from "../_queries/useSpace";
 import { useParams, useHistory } from "react-router-dom";
 import useDeleteSpace from "../_mutations/useDeleteSpace";
+import Button from "./Button";
 
 const THIRTY_MINUTES = 30 * 60 * 1000;
 const FIVE_MINUTES = 5 * 60 * 1000;
@@ -172,7 +172,9 @@ export default function ConnectPanel() {
 					<MoonLoader css="margin: auto; padding: 10px" loading color={Colors.MAIN_BRAND} size={32} />
 				)}
 				<div>
-					<GButton text="Destroy Now" variant="danger" onClick={close} debounce={5} />
+					<Button variant="danger" onClick={close} debounce={5}>
+						Destroy Now
+					</Button>
 				</div>
 			</Center>
 		</div>

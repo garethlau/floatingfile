@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Colors, Elevation } from "../constants";
-import GButton from "./GButton";
+import Button from "./Button";
 import GIconButton from "./GIconButton";
 import Center from "./Center";
 import useWindowWidth from "../_hooks/useWindowWidth";
@@ -310,7 +310,9 @@ export default function FileListItem({ file, ...others }) {
 			<div className={cls.remove}>
 				<Center>
 					{windowWidth > 600 ? (
-						<GButton text="Remove" variant="primary" onClick={remove} debounce={10} />
+						<Button variant="primary" debounce={5} onClick={remove}>
+							Remove
+						</Button>
 					) : (
 						<GIconButton onClick={remove} variant="primary" debounce={10}>
 							<DeleteIcon />
@@ -321,7 +323,9 @@ export default function FileListItem({ file, ...others }) {
 			<div className={cls.download}>
 				<Center>
 					{windowWidth > 600 ? (
-						<GButton text="Download" onClick={download} variant="primary" debounce={2} />
+						<Button onClick={download} variant="primary" debounce={5}>
+							Download
+						</Button>
 					) : (
 						<GIconButton onClick={download} variant="primary" debounce={2}>
 							{isMobile ? <OpenInBrowserIcon /> : <CloudDownloadIcon />}

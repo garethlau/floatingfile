@@ -1,5 +1,5 @@
 import React from "react";
-import GButton from "./GButton";
+import Button from "./Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
 export default function FileUploadBtn({ handleFiles }) {
@@ -13,16 +13,17 @@ export default function FileUploadBtn({ handleFiles }) {
 	}
 
 	return (
-		<>
-			<GButton
-				text="Upload"
+		<React.Fragment>
+			<Button
 				onClick={handleClick}
 				fullWidth
 				variant="success"
 				startIcon={<CloudUploadIcon />}
 				overrideStyles={{ height: "42px" }}
-			/>
+			>
+				Upload
+			</Button>
 			<input onChange={handleChange} multiple type="file" id="hiddenFileInput" style={{ display: "none" }} />
-		</>
+		</React.Fragment>
 	);
 }

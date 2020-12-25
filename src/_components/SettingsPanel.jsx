@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import useSpace from "../_queries/useSpace";
 import { formatFileSize } from "../_utils/";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import GButton from "../_components/GButton";
+import Button from "./Button";
 
 const StyledLinearProgress = withStyles((theme) => ({
 	root: {
@@ -76,7 +76,7 @@ export default function SettingsPanel({ collapsed }) {
 								{formatFileSize(space.size)} of {formatFileSize(space.capacity)} used
 							</p>
 							<p>{((space.size * 100) / space.capacity).toFixed(1)}%</p>
-							<GButton text="Upgrade" variant="primary" />
+							<Button variant="primary">Upgrade</Button>
 						</React.Fragment>
 					)}
 				</div>

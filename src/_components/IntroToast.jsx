@@ -1,9 +1,8 @@
 import React from "react";
-import GButton from "./GButton";
+import Button from "./Button";
 import { USERNAME_STORAGE_KEY } from "../env";
 
 export default function IntroToast({ handleClose }) {
-
 	return (
 		<div style={{ maxWidth: "400px" }}>
 			<p>
@@ -17,7 +16,9 @@ export default function IntroToast({ handleClose }) {
 					USERNAME_STORAGE_KEY
 				)}. Please be aware that anyone can download your files long as they are in the space. Files are automatically deleted after 60 minutes.`}
 			</p>
-			<GButton variant="primary" text="Got it" onClick={handleClose} />
+			<Button variant="primary" onClick={handleClose} debounce={5}>
+				Got It
+			</Button>
 		</div>
 	);
 }

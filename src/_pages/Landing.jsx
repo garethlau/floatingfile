@@ -6,7 +6,7 @@ import { useSnackbar } from "notistack";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import GInput from "../_components/GInput";
-import GButton from "../_components/GButton";
+import Button from "../_components/Button";
 import Seperator from "../_components/Seperator";
 import ReactGA from "react-ga";
 import useDocumentTitle from "../_hooks/useDocumentTitle";
@@ -48,7 +48,7 @@ export default function Landing() {
 	const cls = useStyles();
 	const history = useHistory();
 	const [code, setCode] = useState("");
-	const { mutateAsync: createSpace } = useCreateSpace();
+	const { mutateAsync: createSpace, isLoading: creatingSpace } = useCreateSpace();
 	useDocumentTitle("floatingfile");
 
 	function handleCodeChange(e) {
@@ -135,14 +135,9 @@ export default function Landing() {
 							/>
 						</div>
 						<div className={cls.formInput}>
-							<GButton
-								onClick={join}
-								id="join-space-btn"
-								text="JOIN A SPACE"
-								variant="primary"
-								fullWidth
-								debounce={2}
-							/>
+							<Button onClick={join} id="join-space-btn" variant="primary" fullWidth>
+								Join
+							</Button>
 						</div>
 
 						<div style={{ margin: "20px 0" }}>
@@ -150,14 +145,9 @@ export default function Landing() {
 						</div>
 
 						<div className={cls.formInput}>
-							<GButton
-								onClick={create}
-								id="create-space-btn"
-								text="CREATE A SPACE"
-								variant="primary"
-								fullWidth
-								debounce={2}
-							/>
+							<Button onClick={create} isLoading={creatingSpace} id="create-space-btn" variant="primary" fullWidth>
+								Create a Space
+							</Button>
 						</div>
 					</div>
 				</div>

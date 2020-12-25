@@ -20,7 +20,6 @@ import PeopleIcon from "@material-ui/icons/People";
 import FolderIcon from "@material-ui/icons/Folder";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import SettingsIcon from "@material-ui/icons/Settings";
-import Button from "@material-ui/core/Button";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -28,7 +27,7 @@ import ClearIcon from "@material-ui/icons/Clear";
 import FileUploadBtn from "../_components/FileUploadBtn";
 import UploadProgress from "../_components/UploadProgress";
 import Center from "../_components/Center";
-import GButton from "../_components/GButton";
+import Button from "../_components/Button";
 import NavTile from "../_components/NavTile";
 import GIconButton from "../_components/GIconButton";
 import IntroToast from "../_components/IntroToast";
@@ -247,7 +246,11 @@ export default function Space() {
 		} else if (spaceStatus === "error") {
 			enqueueSnackbar("There was an error loading the space. Please reload the page.", {
 				variant: "error",
-				action: <GButton text={"Reload"} variant="danger" inverse onClick={() => window.location.reload(false)} />,
+				action: (
+					<Button variant="danger" inverse onClick={() => window.location.reload()}>
+						Reload
+					</Button>
+				),
 			});
 		}
 	}, [spaceStatus]);
@@ -405,11 +408,9 @@ export default function Space() {
 									/>
 								</Center>
 							) : windowWidth > 600 ? (
-								<GButton
-									text="Upload"
-									variant="success"
-									startIcon={<CloudUploadIcon style={{ marginLeft: "5px" }} />}
-								/>
+								<Button variant="success" startIcon={<CloudUploadIcon style={{ marginLeft: "5px" }} />}>
+									Upload
+								</Button>
 							) : (
 								<GIconButton variant="success">
 									<CloudUploadIcon />
@@ -423,21 +424,18 @@ export default function Space() {
 				<div className={cls.centerWrapper}>
 					<div className={cls.center} style={{ textAlign: "left" }}>
 						{selected.length === files?.length ? (
-							<GButton
-								text="Deselect All"
-								variant="primary"
-								inverse
-								startIcon={<ClearIcon />}
-								onClick={clearSelectedFiles}
-							/>
+							<Button variant="primary" inverse startIcon={<ClearIcon />} onClick={clearSelectedFiles}>
+								Deselect All
+							</Button>
 						) : (
-							<GButton
+							<Button
 								onClick={() => setSelected(files?.map((file) => file.key))}
-								text="Select All"
 								variant="primary"
 								inverse
 								startIcon={<PlaylistAddCheckIcon />}
-							/>
+							>
+								Select All
+							</Button>
 						)}
 					</div>
 				</div>
@@ -445,45 +443,45 @@ export default function Space() {
 			<div className={cls.right}>
 				<div className={cls.centerWrapper}>
 					<div className={cls.center}>
-						<GButton
-							text="ZIP"
+						<Button
 							variant="primary"
 							disabled={selected.length === 0}
 							inverse
 							onClick={zipSelected}
 							startIcon={<FolderIcon />}
-							debounce={2}
-						/>
+						>
+							ZIP
+						</Button>
 					</div>
 				</div>
 			</div>
 			<div className={cls.right}>
 				<div className={cls.centerWrapper}>
 					<div className={cls.center}>
-						<GButton
-							text="Download"
+						<Button
 							variant="primary"
 							disabled={selected.length === 0}
 							inverse
 							startIcon={<CloudDownloadIcon />}
 							onClick={downloadSelected}
-							debounce={2}
-						/>
+						>
+							Download
+						</Button>
 					</div>
 				</div>
 			</div>
 			<div className={cls.right}>
 				<div className={cls.centerWrapper}>
 					<div className={cls.center}>
-						<GButton
-							text="Remove"
+						<Button
 							variant="primary"
 							disabled={selected.length === 0}
 							inverse
 							startIcon={<DeleteIcon />}
 							onClick={removeSelected}
-							debounce={5}
-						/>
+						>
+							Remove
+						</Button>
 					</div>
 				</div>
 			</div>
@@ -504,7 +502,9 @@ export default function Space() {
 						<p style={{ opacity: 0.7, margin: 5 }}>It's pretty empty here...</p>
 					)}
 					<div>
-						<GButton text="Upload" variant="success" startIcon={<CloudUploadIcon />} />
+						<Button variant="success" startIcon={<CloudUploadIcon />}>
+							Upload
+						</Button>
 					</div>
 				</div>
 			</div>
