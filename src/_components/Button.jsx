@@ -26,7 +26,7 @@ export default function CustomButton({
 	inverse,
 	overrideStyles,
 	onClick,
-	debounce = 3,
+	debounce = 1,
 	isLoading,
 	...others
 }) {
