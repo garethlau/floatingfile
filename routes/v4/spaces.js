@@ -190,11 +190,13 @@ router.delete("/:code/files", async (req, res) => {
 
 		await s3.deleteObjects(params);
 
+		const files = space.files;
+
 		// Remove files from the space
-		space.files = space.files.filter((file) => !toRemove.includes(file.key));
+		space.files = files.filter((file) => !toRemove.includes(file.key));
 
 		// Update the history
-		const removedFiles = space.files.filter((file) => toRemove.includes(file.key));
+		const removedFiles = files.filter((file) => toRemove.includes(file.key));
 		const historyRecords = removedFiles.map((file) => ({
 			action: "REMOVE",
 			payload: file.name,
