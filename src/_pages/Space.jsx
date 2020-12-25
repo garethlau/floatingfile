@@ -161,7 +161,7 @@ export default function Space() {
 
 	useDocumentTitle(`floatingfile | ${code}`);
 
-	const { data: space, status: spaceStatus, refetch: refetchSpace } = useSpace(code);
+	const { status: spaceStatus, refetch: refetchSpace } = useSpace(code);
 
 	const [activePanel, setActivePanel] = useState(1);
 	const [collapsed, setCollapsed] = useState(null);
@@ -189,7 +189,6 @@ export default function Space() {
 		let downloadQueue = files.filter((file) => isSelected(file.key));
 		while (downloadQueue.length > 0) {
 			const file = downloadQueue.shift();
-			console.log("Donwloading file ", file.name);
 			const response = await axios.get(file.signedUrl, { responseType: "blob" });
 			const { data } = response;
 			await saveBlob(data, file.name);
@@ -198,7 +197,6 @@ export default function Space() {
 				payload: file.key,
 			});
 		}
-		console.log("All files donwloaded");
 	}
 
 	async function removeSelected() {
@@ -375,7 +373,6 @@ export default function Space() {
 
 		while (queue.length > 0) {
 			const file = queue.shift();
-			console.log("Start file upload ", file.name);
 			await uploadFile({
 				file,
 				onUploadProgress: (event) => {
@@ -383,7 +380,6 @@ export default function Space() {
 					uploadQueue.updateProgress(file.key, event.loaded, event.total);
 				},
 			});
-			console.log("Done file upload ", file.name);
 			uploadQueue.remove(file.key);
 		}
 	}, []);
