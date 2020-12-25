@@ -12,6 +12,8 @@
     "@mdi/js": "^5.3.45",
     "@mdi/react": "^1.4.0",
     "framer-motion": "^2.9.5",
+    "gray-matter": "^4.0.2",
+    "marked": "^1.2.7",
     "next": "9.4.4",
     "next-seo": "^4.7.1",
     "react": "16.13.1",
