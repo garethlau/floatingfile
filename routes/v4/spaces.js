@@ -246,22 +246,9 @@ router.patch("/:code/file", async (req, res) => {
 			return res.status(404).send({ message: "Space not found." });
 		}
 
-		// Check if the space has reached its max capacity
-		if (space.size >= space.capacity) {
-			// Space has reached max capacity
-			return res.status(403).send({ message: "Max capacity reached." });
-		}
-
-		// Generate signed URL for the file
-		const params = {
-			Key: key,
-			Bucket: keys.S3_BUCKET_NAME,
-		};
-		console.log(params);
-		const signedUrl = s3.getSignedUrl("putObject", params);
-
 		// Attach the file object to the space
 		space.files = [...space.files, { key, size, name, type, ext }];
+
 		// Increase used space
 		space.size = space.size + size;
 
@@ -287,7 +274,7 @@ router.patch("/:code/file", async (req, res) => {
 
 		const updatedSpace = await space.save();
 
-		return res.status(200).send({ message: "File added to space.", signedUrl, space: updatedSpace });
+		return res.status(200).send({ message: "File added to space.", space: updatedSpace });
 	} catch (error) {
 		console.log(error);
 		return res.status(500).send(error);
