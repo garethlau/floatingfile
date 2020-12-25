@@ -4,14 +4,13 @@ import { NextSeo } from "next-seo";
 import styles from "../styles/slug.module.css";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
-
+import * as matter from "gray-matter";
+import marked from "marked";
 import Icon from "@mdi/react";
 import { mdiLock, mdiFileDocument } from "@mdi/js";
 import { motion } from "framer-motion";
 
-export default function Post({ data }) {
-	const { content, title, iconType, lastUpdated, seo } = data;
-
+export default function Post({ data, htmlString }) {
 	function renderIcon(iconType) {
 		switch (iconType) {
 			case "mdiLock":
@@ -26,13 +25,13 @@ export default function Post({ data }) {
 	return (
 		<>
 			<NextSeo
-				title={seo.title}
-				description={seo.description}
-				canonical={seo.url}
+				title={data.seo_title}
+				description={data.seo_description}
+				canonical={data.seo_url}
 				openGraph={{
-					url: seo.url,
-					title: seo.title,
-					description: seo.description,
+					url: data.seo_url,
+					title: data.seo_title,
+					description: data.seo_description,
 					images: [
 						{
 							url: "https://floatingfile.space/images/landing-banner.png",
@@ -65,25 +64,11 @@ export default function Post({ data }) {
 				>
 					<div className={styles.content}>
 						<div className={styles.page}>
-							<div className={styles.iconContainer}>{renderIcon(iconType)}</div>
-							<h1 className={styles.title}>{title}</h1>
-							<p className={styles.datetime}>Last Updated: {lastUpdated}</p>
+							<div className={styles.iconContainer}>{renderIcon(data.iconType)}</div>
+							<h1 className={styles.title}>{data.title}</h1>
+							<p className={styles.datetime}>Last Updated: {data.lastUpdated}</p>
 
-							{content.map((x, index) => {
-								if (x.variant === "header") {
-									return <h2 key={index}>{x.text}</h2>;
-								} else if (x.href && x.variant === "li") {
-									return (
-										<li key={index}>
-											<a href={x.href}>{x.text}</a>
-										</li>
-									);
-								} else if (x.variant === "body") {
-									return <p key={index}>{x.text}</p>;
-								} else if (x.variant === "li") {
-									return <li key={index}>{x.text}</li>;
-								} else return <p key={index}>{x.text}</p>;
-							})}
+							<div className={styles.main} dangerouslySetInnerHTML={{ __html: htmlString }} />
 						</div>
 					</div>
 				</motion.div>
@@ -106,11 +91,14 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params: { slug } }) {
-	const rawData = fs.readFileSync(path.join("posts", `${slug}.json`));
-	const data = JSON.parse(rawData);
+	const rawMd = fs.readFileSync(path.join("posts", slug + ".md"));
+	const parsedMd = matter(rawMd);
+	const htmlString = marked(parsedMd.content);
+
 	return {
 		props: {
-			data,
+			data: parsedMd.data,
+			htmlString,
 		},
 	};
 }

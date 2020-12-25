@@ -33,3 +33,6 @@
 	margin-bottom: 30px;
 	margin-top: 0px;
 }
+.main > p {
+	text-align: justify;
+}
