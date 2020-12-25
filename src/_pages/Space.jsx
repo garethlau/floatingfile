@@ -424,7 +424,7 @@ export default function Space() {
 				<div className={cls.centerWrapper}>
 					<div className={cls.center} style={{ textAlign: "left" }}>
 						{selected.length === files?.length ? (
-							<Button variant="primary" inverse startIcon={<ClearIcon />} onClick={clearSelectedFiles}>
+							<Button variant="primary" inverse debounce={0} startIcon={<ClearIcon />} onClick={clearSelectedFiles}>
 								Deselect All
 							</Button>
 						) : (
@@ -432,6 +432,7 @@ export default function Space() {
 								onClick={() => setSelected(files?.map((file) => file.key))}
 								variant="primary"
 								inverse
+								debounce={0}
 								startIcon={<PlaylistAddCheckIcon />}
 							>
 								Select All
