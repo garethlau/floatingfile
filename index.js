@@ -60,7 +60,6 @@ mongoose
 		useFindAndModify: true,
 		useCreateIndex: true,
 		keepAlive: 1,
-		reconnectTries: 30,
 		useUnifiedTopology: true,
 	})
 	.then(() => {
