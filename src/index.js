@@ -3,6 +3,14 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import Honeybadger from "honeybadger-js";
+import ErrorBoundary from "@honeybadger-io/react";
+
+Honeybadger.configure({
+	apiKey: process.env.REACT_APP_HONEYBADGER_API_KEY,
+	environment: "production",
+	disabled: process.env.REACT_APP_ENVIRONMENT !== "production",
+});
 
 function noop() {}
 
@@ -15,7 +23,12 @@ if (process.env.NODE_ENV === "production") {
 	console.error = noop;
 }
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(
+	<ErrorBoundary honeybadger={Honeybadger}>
+		<App />
+	</ErrorBoundary>,
+	document.getElementById("root")
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
