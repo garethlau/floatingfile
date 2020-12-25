@@ -63,7 +63,6 @@ export default function UploadQueue() {
 	useEffect(() => {
 		if (uploadQueue.size() > 0) {
 			setOpen(true);
-			setMinimized(false);
 		} else {
 			setOpen(false);
 		}
