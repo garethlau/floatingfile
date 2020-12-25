@@ -10,6 +10,7 @@ import { StateProvider } from "./store";
 import ReactGA from "react-ga";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SelectedFilesProvider } from "./_contexts/selectedFiles";
+import { UploadQueueProvider } from "./_contexts/uploadQueue";
 
 const Space = React.lazy(() => import("./_pages/Space"));
 const Landing = React.lazy(() => import("./_pages/Landing"));
@@ -84,25 +85,27 @@ const App = () => {
 							horizontal: windowWidth > Breakpoints.MD ? "right" : "center",
 						}}
 					>
-						<SelectedFilesProvider>
-							<header className="App-header">
-								<Router>
-									<Suspense fallback={null}>
-										<Switch>
-											<Route exact path="/" component={Landing} />
-											<Route path="/s/:code">
-												<StateProvider>
-													<SpaceValidator>
-														<Space />
-													</SpaceValidator>
-												</StateProvider>
-											</Route>
-											<Route component={NotFound} />
-										</Switch>
-									</Suspense>
-								</Router>
-							</header>
-						</SelectedFilesProvider>
+						<UploadQueueProvider>
+							<SelectedFilesProvider>
+								<header className="App-header">
+									<Router>
+										<Suspense fallback={null}>
+											<Switch>
+												<Route exact path="/" component={Landing} />
+												<Route path="/s/:code">
+													<StateProvider>
+														<SpaceValidator>
+															<Space />
+														</SpaceValidator>
+													</StateProvider>
+												</Route>
+												<Route component={NotFound} />
+											</Switch>
+										</Suspense>
+									</Router>
+								</header>
+							</SelectedFilesProvider>
+						</UploadQueueProvider>
 					</SnackbarProvider>
 				</QueryClientProvider>
 			</div>
