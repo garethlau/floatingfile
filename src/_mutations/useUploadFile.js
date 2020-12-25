@@ -6,8 +6,8 @@ export default function useUploadFile(code) {
 	const queryClient = useQueryClient();
 	const queryKey = ["space", code, "files"];
 
-	function mutate(file) {
-		return new Promise((resolvle, reject) => {
+	function mutate({ file, onUploadProgress }) {
+		return new Promise((resolve, reject) => {
 			const data = {
 				key: file.key,
 				size: file.size,
@@ -16,13 +16,20 @@ export default function useUploadFile(code) {
 				ext: file.ext,
 			};
 			axios
-				.patch(`${BASE_API_URL}/api/v4/spaces/${code}/file`, data)
+				.post(`${BASE_API_URL}/api/v4/signed-urls`, { file, code })
 				.then((response) => {
 					const { signedUrl } = response.data;
 					axios
-						.put(signedUrl, file)
+						.put(signedUrl, file, { onUploadProgress })
 						.then((response) => {
-							resolvle(response);
+							axios
+								.patch(`${BASE_API_URL}/api/v4/spaces/${code}/file`, data)
+								.then((response) => {
+									resolve();
+								})
+								.catch((error) => {
+									reject(error);
+								});
 						})
 						.catch((error) => {
 							reject(error);
@@ -34,34 +41,11 @@ export default function useUploadFile(code) {
 		});
 	}
 
-	async function onMutate(file) {
-		await queryClient.cancelQueries(queryKey);
-
-		const snapshot = queryClient.getQueryData(queryKey);
-
-		const fileMeta = {
-			key: file.key,
-			size: file.size,
-			name: file.name,
-			type: file.type,
-			ext: file.ext,
-		};
-		queryClient.setQueryData(queryKey, (prev) => [...prev, fileMeta]);
-
-		return { snapshot };
-	}
-
-	function onError(_0, _1, context) {
-		queryClient.setQueryData(queryKey, context.snapshot);
-	}
-
 	function onSettled() {
 		queryClient.invalidateQueries(queryKey);
 	}
 
 	const config = {
-		onMutate,
-		onError,
 		onSettled,
 	};
 
