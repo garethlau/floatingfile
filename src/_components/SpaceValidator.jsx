@@ -18,8 +18,6 @@ export default function SpaceValidator(props) {
 	const cls = useStyles();
 	const [loading, setLoading] = useState(true);
 	const [exists, setExists] = useState(false);
-	const [reachedUserLimit, setReachedUserLimit] = useState(false);
-
 	const [code, setCode] = useState("");
 
 	useEffect(() => {
@@ -32,12 +30,8 @@ export default function SpaceValidator(props) {
 		if (code) {
 			axios
 				.get(`${BASE_API_URL}/api/v4/spaces/${code}`)
-				.then((response) => {
-					const { space } = response.data;
+				.then(() => {
 					setExists(true);
-					if (space.users.length >= space.maxUsers) {
-						setReachedUserLimit(true);
-					}
 				})
 				.catch((err) => {
 					if (!err.response) {
@@ -56,20 +50,6 @@ export default function SpaceValidator(props) {
 
 	if (loading) {
 		return <FullPageLoader />;
-	} else if (reachedUserLimit) {
-		return (
-			<div className={cls.page}>
-				<Center>
-					<p style={{ opacity: 0.5 }}>
-						<span role="img" aria-label="Frowny face emoji" aria-labelledby="Frowny face emoji">
-							🙁{" "}
-						</span>
-						Oops!
-					</p>
-					<p style={{ opacity: 0.5 }}>The space you are trying to join has already reached its max user limit.</p>
-				</Center>
-			</div>
-		);
 	} else if (exists) {
 		return props.children;
 	} else {
