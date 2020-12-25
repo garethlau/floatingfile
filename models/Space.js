@@ -9,6 +9,9 @@ const Schema = mongoose.Schema;
 // 	author: String,
 // 	payload: String,
 // },
+
+// plan: [Basic,  Premium, Pro]
+
 const SpaceSchema = new Schema(
 	{
 		code: String,
@@ -17,6 +20,11 @@ const SpaceSchema = new Schema(
 		expires: String,
 		history: Array,
 		users: Array,
+		plan: {
+			type: String,
+			default: "Basic",
+			options: ["Basic", "Premium"],
+		},
 		size: {
 			type: Number,
 			default: 0,
@@ -24,6 +32,10 @@ const SpaceSchema = new Schema(
 		capacity: {
 			type: Number,
 			default: 1073741824,
+		},
+		maxUsers: {
+			type: Number,
+			default: 3,
 		},
 	},
 	{
