@@ -13,7 +13,7 @@ const environment = process.env.NODE_ENV || "dev";
 const PORT = process.env.PORT || 5000;
 
 const Honeybadger = require("honeybadger").configure({
-	apiKey: "c0e13445",
+	apiKey: process.env.HONEYBADGER_API_KEY,
 	environment: environment,
 	developmentEnvironments: ["dev", "development", "staging"],
 });
