@@ -40,6 +40,7 @@ export function SelectedFilesProvider({ children }) {
 		<SelectedFilesContext.Provider
 			value={{
 				selected: values,
+				setSelected: setValues,
 				toggleSelect,
 				select,
 				unselect,
