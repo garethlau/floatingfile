@@ -2,29 +2,13 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const crypto = require("crypto");
-
-const multer = require("multer");
-const axios = require("axios");
-
 const keys = require("../../config/keys");
 const constants = require("../../constants");
-const Logger = require("../../services/logger");
 const fs = require("fs");
 const path = require("path");
-
 const Space = mongoose.model("Space");
 const File = mongoose.model("File");
-const logger = new Logger(require("path").basename(__filename));
 const s3 = require("../../s3");
-
-// create storage object
-const storage = multer.memoryStorage({
-	destination: (req, file, cb) => {
-		cb(null, "");
-	},
-});
-
-const upload = multer({ storage }).array("files");
 
 // Get a space
 router.get("/:code", async (req, res) => {
@@ -247,105 +231,6 @@ router.delete("/:code/files", async (req, res) => {
 	}
 });
 
-// remove files
-router.delete("/:code/files", async (req, res) => {
-	const code = req.params.code;
-
-	const toRemove = JSON.parse(req.query.files); // Array of ids for file objects
-	let removedFiles = [];
-	if (!code) {
-		return res.status(422).send();
-	}
-	const io = req.app.get("socketio");
-
-	try {
-		let s3Keys = await Promise.all(
-			toRemove.map(
-				(metaId) =>
-					new Promise(async (resolve, reject) => {
-						try {
-							// Delete the mongoose object
-							let meta = await File.findByIdAndDelete(metaId).exec();
-
-							// Emit socket event to log action
-							io.sockets.in(code).emit("FROM_SERVER", {
-								type: constants.SOCKET_ACTIONS.FILE_REMOVED,
-								payload: meta.filename,
-							});
-
-							removedFiles.push(meta.filename);
-
-							let { s3Key } = meta;
-							resolve(s3Key);
-						} catch (err) {
-							console.log(err);
-							reject(s3Key);
-						}
-					})
-			)
-		);
-
-		let params = {
-			Bucket: keys.s3BucketName,
-			Delete: {
-				Objects: s3Keys.map((s3Key) => {
-					return {
-						Key: s3Key,
-					};
-				}),
-				Quiet: false,
-			},
-		};
-
-		await new Promise((resolve, reject) => {
-			s3.deleteObjects(params, (err, data) => {
-				if (err) {
-					console.log(err);
-					reject(err);
-				}
-				resolve(data);
-			});
-		});
-
-		let space = await Space.findOne({ code: code });
-
-		space.history.push(
-			...removedFiles.map((x) => ({
-				action: "REMOVE",
-				payload: x,
-				author: req.headers["username"],
-				timestamp: Date.now(),
-			}))
-		);
-
-		let remainingFiles = space.files.filter((file) => {
-			return !toRemove.includes(String(file._id));
-		});
-		space.files = remainingFiles;
-		await space.save();
-
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: "HISTORY_UPDATED",
-			code,
-		});
-
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: constants.SOCKET_ACTIONS.FILES_UPDATED,
-			payload: code,
-			code,
-		});
-
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: "SPACE_UPDATED",
-			code,
-		});
-
-		return res.status(200).send();
-	} catch (err) {
-		return res.status(500).send(err);
-	}
-});
-
 router.patch("/:code/file", async (req, res) => {
 	const { code } = req.params;
 	const io = req.app.get("socketio");
@@ -406,116 +291,6 @@ router.patch("/:code/file", async (req, res) => {
 	} catch (error) {
 		console.log(error);
 		return res.status(500).send(error);
-	}
-});
-
-router.post("/:code/files", upload, async (req, res) => {
-	const code = req.params.code;
-	const io = req.app.get("socketio");
-
-	if (!code) {
-		return res.status(422).send();
-	}
-	try {
-		let space = await Space.findOne({ code: code }).exec();
-		if (!space) {
-			return res.status(404).send({ message: "Space does not exist. Files have not been uploaded." });
-		}
-
-		// Space exists, create file meta data object and add to space
-		// const expiresIn = (space.options ? space.options.fileExpirationTime : 60) * 60 * 1000;
-		const expiresIn = 60 * 60 * 1000;
-		const deleteAfterDownload = space.options ? space.options.deleteAfterDownload : false;
-
-		// Upload to AWS S3
-		const files = req.files;
-
-		let savedFiles = await Promise.all(
-			files.map(
-				(file) =>
-					new Promise((resolve, reject) => {
-						const currentDate = new Date().valueOf().toString();
-						const random = Math.random().toString();
-						const hash = crypto
-							.createHash("sha1")
-							.update(currentDate + random)
-							.digest("hex");
-						const ext = file.originalname.split(".")[file.originalname.split(".").length - 1];
-						const s3Key = `${hash}.${ext}`;
-
-						let params = {
-							ACL: "public-read",
-							Bucket: "floatingfile-prod",
-							Body: file.buffer,
-							Key: s3Key,
-						};
-
-						s3.upload(params, async (err, data) => {
-							if (err) {
-								reject(err);
-							} else {
-								// Successfully uploaded to AWS
-								let fileObj = new File({
-									filename: file.originalname,
-									size: file.size,
-									mimetype: file.mimetype,
-									parentId: space._id,
-									expires: Date.now() + expiresIn,
-									deleteAfterDownload: deleteAfterDownload,
-									location: data.Location,
-									s3Key: s3Key,
-									timestamp: Date.now(),
-								});
-								try {
-									await fileObj.save();
-									// Log the upload to the history
-									io.sockets.in(code).emit("FROM_SERVER", {
-										type: constants.SOCKET_ACTIONS.FILE_UPLOADED,
-										payload: fileObj.filename,
-									});
-									resolve(fileObj);
-								} catch (err) {
-									reject(err);
-								}
-							}
-						}).on("httpUploadProgress", (event) => {});
-					})
-			)
-		);
-
-		space.history.push(
-			...savedFiles.map((file) => ({
-				action: "UPLOAD",
-				author: req.headers["username"],
-				payload: file.filename,
-				timestamp: Date.now(),
-			}))
-		);
-
-		space.files = space.files.concat(savedFiles);
-
-		await space.save();
-
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: "HISTORY_UPDATED",
-			code,
-		});
-
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: constants.SOCKET_ACTIONS.FILES_UPDATED,
-			payload: code,
-			code,
-		});
-
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: "SPACE_UPDATED",
-			code,
-		});
-
-		return res.status(200).send();
-	} catch (err) {
-		console.log(err.message);
-		return res.status(500).send();
 	}
 });
 
