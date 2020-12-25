@@ -9,7 +9,7 @@ export default function FileUploadBtn({ handleFiles }) {
 
 	function handleChange(event) {
 		const uploadedFiles = event.target.files;
-		handleFiles(uploadedFiles);
+		handleFiles(Array.from(uploadedFiles));
 	}
 
 	return (
