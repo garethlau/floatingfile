@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 	header: {
 		position: "relative",
 		top: 0,
-		backgroundColor: theme.palette.primary.main,
+		backgroundColor: Colors.PRIMARY,
 		padding: "10px",
 		color: theme.palette.common.white,
 		borderRadius: "5px 5px 0 0",
