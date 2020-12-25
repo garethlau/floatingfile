@@ -19,6 +19,7 @@ import HistoryIcon from "@material-ui/icons/History";
 import PeopleIcon from "@material-ui/icons/People";
 import FolderIcon from "@material-ui/icons/Folder";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import SettingsIcon from "@material-ui/icons/Settings";
 import Button from "@material-ui/core/Button";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
@@ -39,6 +40,7 @@ import { default as useSpaceHistory } from "../_queries/useHistory";
 import useRemoveFiles from "../_mutations/useRemoveFiles";
 import { AnimatePresence, motion } from "framer-motion";
 
+const SettingsPanel = React.lazy(() => import("../_components/SettingsPanel"));
 const ConnectPanel = React.lazy(() => import("../_components/ConnectPanel"));
 const HistoryPanel = React.lazy(() => import("../_components/HistoryPanel"));
 const UsersPanel = React.lazy(() => import("../_components/UsersPanel"));
@@ -514,11 +516,11 @@ export default function Space() {
 						<PeopleIcon />
 					</NavTile>
 				</div>
-				{/* <div>
+				<div>
 					<NavTile onClick={changeActivePanel(4)} active={activePanel === 4} collapsed={collapsed}>
 						<SettingsIcon />
 					</NavTile>
-				</div> */}
+				</div>
 			</div>
 			<div className={cls.panel}>
 				<div style={{ display: activePanel === 1 ? "inherit" : "none", height: "100%" }}>
@@ -536,7 +538,11 @@ export default function Space() {
 						<UsersPanel mySocketId={socket.id} />
 					</Suspense>
 				</div>
-				<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>Settings</div>
+				<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>
+					<Suspense fallback={panelFallback}>
+						<SettingsPanel />
+					</Suspense>
+				</div>
 			</div>
 			<div className={cls.main}>
 				{spaceStatus === "loading" ? (
@@ -619,7 +625,11 @@ export default function Space() {
 											<UsersPanel collapsed mySocketId={socket.id} />
 										</Suspense>
 									</div>
-									<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>Settings</div>
+									<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>
+										<Suspense fallback={panelFallback}>
+											<SettingsPanel collapsed />
+										</Suspense>
+									</div>
 								</>
 							)}
 						</div>
