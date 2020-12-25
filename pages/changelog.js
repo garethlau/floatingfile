@@ -2,8 +2,11 @@ import { NextSeo } from "next-seo";
 import NavBar from "../components/NavBar";
 import styles from "../styles/Changelog.module.css";
 import Footer from "../components/Footer";
-import { changelog } from "../scaffold";
 import EnterInView from "../wrappers/EnterInView";
+import fs from "fs";
+import path from "path";
+import * as matter from "gray-matter";
+import marked from "marked";
 
 const Variants = {
 	BODY: "BODY",
@@ -15,7 +18,7 @@ const Variants = {
 
 const WIP = [];
 
-export default function ChangelogPage() {
+export default function ChangelogPage({ changelog }) {
 	return (
 		<>
 			<NextSeo
@@ -50,40 +53,9 @@ export default function ChangelogPage() {
 									<div className={styles.versionContainer}>
 										<h2>{x.version}</h2>
 									</div>
-									<div className={styles.dateContainer}>{x.date}</div>
+									<div className={styles.dateContainer}>{x.data.date}</div>
 									<div className={styles.changesContainer}>
-										{x.content.map((y, idx) => {
-											if (y.variant === Variants.BULLET) {
-												return (
-													<li key={idx} className={styles.li}>
-														{y.text}
-													</li>
-												);
-											} else if (y.variant === Variants.IMG) {
-												return (
-													<picture key={idx}>
-														<source type="image/webp" srcSet={y.src + ".webp"} />
-														<img className={styles.img} src={y.src + ".png"} />
-													</picture>
-												);
-											} else if (y.variant === Variants.LINE_BREAK) {
-												return <hr key={idx}></hr>;
-											} else if (y.variant === Variants.HEADER) {
-												return (
-													<p key={idx} className={styles.header}>
-														{y.text}
-													</p>
-												);
-											} else if (y.variant === Variants.BODY) {
-												return (
-													<p key={idx} className={styles.body}>
-														{y.text}
-													</p>
-												);
-											} else {
-												return <div key={idx}>{y.text}</div>;
-											}
-										})}
+										<div dangerouslySetInnerHTML={{ __html: x.htmlString }} />
 									</div>
 								</div>
 							</EnterInView>
@@ -94,4 +66,33 @@ export default function ChangelogPage() {
 			<Footer />
 		</>
 	);
+}
+
+export async function getStaticProps() {
+	const filenames = fs.readdirSync("content/changelog");
+	const changelog = filenames.map((filename) => {
+		const rawMd = fs.readFileSync(path.join("content", "changelog", filename));
+		const parsedMd = matter(rawMd);
+		const htmlString = marked(parsedMd.content);
+
+		return {
+			version: filename.replace(".md", ""),
+			data: parsedMd.data,
+			htmlString,
+			filename,
+		};
+	});
+
+	changelog
+		.sort((a, b) =>
+			a.version.replace(/\d+/g, (n) => +n + 100000).localeCompare(b.version.replace(/\d+/g, (n) => +n + 100000))
+		)
+		.reverse();
+	changelog.forEach((changelog) => console.log(changelog.version));
+
+	return {
+		props: {
+			changelog,
+		},
+	};
 }

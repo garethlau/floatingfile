@@ -39,6 +39,11 @@
 .changesContainer {
 	grid-area: changes;
 }
+.changesContainer img {
+	width: 100%;
+	border-radius: 5px;
+	box-shadow: var(--elevation-two);
+}
 
 @media only screen and (min-width: 700px) {
 	.change {
@@ -49,12 +54,6 @@
 	.dateContainer {
 		text-align: right;
 	}
-}
-
-.img {
-	width: 100%;
-	border-radius: 5px;
-	box-shadow: var(--elevation-two);
 }
 
 .header {
