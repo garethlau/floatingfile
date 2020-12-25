@@ -7,6 +7,7 @@ import MinimizeIcon from "@material-ui/icons/Minimize";
 import IconButton from "@material-ui/core/IconButton";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { isMobile } from "react-device-detect";
+import { motion, AnimatePresence } from "framer-motion";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -72,26 +73,32 @@ export default function UploadQueue() {
 		setMinimized(!minimized);
 	}
 
-	if (!open || isMobile) {
-		return null;
-	}
 	return (
-		<div className={`${cls.root} ${minimized ? cls.minimized : ""}`}>
-			<div className={cls.header}>
-				<h2 style={{ margin: 0, float: "left" }}>Upload Queue</h2>
-				<IconButton onClick={toggleMinimized} style={{ color: "white", float: "right", padding: 0 }} size="large">
-					<MinimizeIcon />
-				</IconButton>
-			</div>
-			<div className={cls.container}>
-				{uploadQueue.values?.map((file) => (
-					<div key={file.key} className={cls.fileCard}>
-						<p> {file.name}</p>
-						<p>{formatFileSize(file.size)}</p>
-						<LinearProgress variant="determinate" value={(uploadQueue.progress[file.key] || 0) * 100} />
+		<AnimatePresence>
+			{open && !isMobile && (
+				<motion.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0 }}
+					className={`${cls.root} ${minimized ? cls.minimized : ""}`}
+				>
+					<div className={cls.header}>
+						<h2 style={{ margin: 0, float: "left" }}>Upload Queue</h2>
+						<IconButton onClick={toggleMinimized} style={{ color: "white", float: "right", padding: 0 }} size="large">
+							<MinimizeIcon />
+						</IconButton>
 					</div>
-				))}
-			</div>
-		</div>
+					<div className={cls.container}>
+						{uploadQueue.values?.map((file) => (
+							<div key={file.key} className={cls.fileCard}>
+								<p> {file.name}</p>
+								<p>{formatFileSize(file.size)}</p>
+								<LinearProgress variant="determinate" value={(uploadQueue.progress[file.key] || 0) * 100} />
+							</div>
+						))}
+					</div>
+				</motion.div>
+			)}
+		</AnimatePresence>
 	);
 }
