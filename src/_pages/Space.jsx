@@ -156,7 +156,7 @@ export default function Space() {
 	const windowWidth = useWindowWidth();
 	const history = useHistory();
 	const { code } = useParams();
-	const { selected, isSelected, clear: clearSelectedFiles } = useContext(SelectedFilesContext);
+	const { selected, isSelected, clear: clearSelectedFiles, setSelected } = useContext(SelectedFilesContext);
 
 	useDocumentTitle(`floatingfile | ${code}`);
 
@@ -411,10 +411,16 @@ export default function Space() {
 				<div className={cls.centerWrapper}>
 					<div className={cls.center} style={{ textAlign: "left" }}>
 						{selected.length === files?.length ? (
-							<GButton text="Deselect All" variant="primary" inverse startIcon={<ClearIcon />} onClick={null} />
+							<GButton
+								text="Deselect All"
+								variant="primary"
+								inverse
+								startIcon={<ClearIcon />}
+								onClick={clearSelectedFiles}
+							/>
 						) : (
 							<GButton
-								onClick={null}
+								onClick={() => setSelected(files?.map((file) => file.key))}
 								text="Select All"
 								variant="primary"
 								inverse
