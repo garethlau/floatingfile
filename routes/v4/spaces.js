@@ -9,6 +9,7 @@ const path = require("path");
 const Space = mongoose.model("Space");
 const File = mongoose.model("File");
 const s3 = require("../../s3");
+const Honeybadger = require("honeybadger");
 
 // Get a space
 router.get("/:code", async (req, res) => {
@@ -24,6 +25,7 @@ router.get("/:code", async (req, res) => {
 			return res.status(200).send({ space });
 		}
 	} catch (err) {
+		Honeybadger.notify(err);
 		return res.status(500).send(err);
 	}
 });
@@ -51,6 +53,7 @@ router.post("/", async (req, res) => {
 		const savedSpace = await space.save();
 		return res.status(200).send({ space: savedSpace });
 	} catch (err) {
+		Honeybadger.notify(err);
 		return res.status(500).send(err);
 	}
 });
@@ -107,6 +110,7 @@ router.delete("/:code", async (req, res) => {
 		return res.status(200).send();
 	} catch (err) {
 		console.log(err);
+		Honeybadger.notify(err);
 		return res.status(500).send();
 	}
 });
@@ -163,6 +167,7 @@ router.delete("/:code/files/:key", async (req, res) => {
 		return res.status(200).send({ space: updatedSpace });
 	} catch (error) {
 		console.log(error);
+		Honeybadger.notify(error);
 		return res.status(500).send(error);
 	}
 });
@@ -229,6 +234,7 @@ router.delete("/:code/files", async (req, res) => {
 		return res.status(200).send({ message: "Files removed.", space: updatedSpace });
 	} catch (error) {
 		console.error(error);
+		Honeybadger.notify(error);
 		return res.status(500).send(error);
 	}
 });
@@ -279,6 +285,7 @@ router.patch("/:code/file", async (req, res) => {
 		return res.status(200).send({ message: "File added to space.", space: updatedSpace });
 	} catch (error) {
 		console.log(error);
+		Honeybadger.notify(error);
 		return res.status(500).send(error);
 	}
 });
@@ -304,6 +311,7 @@ router.get("/:code/files", async (req, res) => {
 		return res.status(200).send({ files });
 	} catch (err) {
 		console.error(err);
+		Honeybadger.notify(error);
 		return res.status(500).send();
 	}
 });
@@ -359,6 +367,7 @@ router.get("/:code/files/zip", async (req, res) => {
 		return res.zip({ files: values, filename: `${folderName}.zip` });
 	} catch (error) {
 		console.error(error);
+		Honeybadger.notify(error);
 		return res.status(500).send(error);
 	}
 });
@@ -418,6 +427,7 @@ router.patch("/:code/history", async (req, res) => {
 		return res.status(200).send({ message: "History updated.", space: updatedSpace });
 	} catch (error) {
 		console.error(error);
+		Honeybadger.notify(error);
 		return res.status(500).send(error);
 	}
 });
@@ -440,6 +450,7 @@ router.get("/:code/users", async (req, res) => {
 		const { users } = space;
 		return res.status(200).send({ users });
 	} catch (err) {
+		Honeybadger.notify(err);
 		return res.status(500).send();
 	}
 });

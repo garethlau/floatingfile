@@ -9,8 +9,14 @@ const keys = require("./config/keys");
 const Logger = require("./services/logger");
 const morgan = require("morgan");
 
-const PORT = process.env.PORT || 5000;
 const environment = process.env.NODE_ENV || "dev";
+const PORT = process.env.PORT || 5000;
+
+const Honeybadger = require("honeybadger").configure({
+	apiKey: "c0e13445",
+	environment: environment,
+	developmentEnvironments: ["dev", "development", "staging"],
+});
 
 const logger = new Logger(require("path").basename(__filename));
 
@@ -34,6 +40,7 @@ const corsOptions = {
 	credentials: true,
 	exposedHeaders: ["Content-Disposition"],
 };
+app.use(Honeybadger.requestHandler);
 app.use(cors(corsOptions));
 
 app.use(favicon(path.join(__dirname, "..", "client", "public", "favicon.ico")));

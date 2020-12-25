@@ -4,6 +4,7 @@ const s3 = require("../../s3");
 const mongoose = require("mongoose");
 const Space = mongoose.model("Space");
 const keys = require("../../config/keys");
+const Honeybadger = require("honeybadger");
 
 router.post("/", async (req, res) => {
 	const { file, code } = req.body;
@@ -31,6 +32,7 @@ router.post("/", async (req, res) => {
 		return res.status(200).send({ signedUrl });
 	} catch (error) {
 		console.error(error);
+		Honeybadger.notify(error);
 		return res.status(500).send(error);
 	}
 });
