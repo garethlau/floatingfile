@@ -23,7 +23,7 @@ export default function useRemoveFile(code) {
 
 		const snapshot = queryClient.getQueryData(queryKey);
 
-		queryClient.setQueryData(queryKey, (prev) => {
+		queryClient.setQueryData(queryKey, (prev = []) => {
 			let newFiles = prev.filter((file) => file.key !== key);
 			return newFiles;
 		});
