@@ -50,3 +50,14 @@ export function saveBlob(data, filename) {
 		}
 	});
 }
+
+export function formatFileSize(size) {
+	if (isNaN(size)) return "";
+	if (size >= Math.pow(1024, 3)) {
+		return `${(size / Math.pow(1024, 3)).toFixed(1)} GB`;
+	} else if (size >= Math.pow(1024, 2)) {
+		return `${(size / Math.pow(1024, 2)).toFixed(1)} MB`;
+	} else {
+		return `${(size / Math.pow(1024, 1)).toFixed(1)} KB`;
+	}
+}
