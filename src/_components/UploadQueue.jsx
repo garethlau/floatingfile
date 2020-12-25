@@ -77,9 +77,9 @@ export default function UploadQueue() {
 		<AnimatePresence>
 			{open && !isMobile && (
 				<motion.div
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					exit={{ opacity: 0 }}
+					initial={{ y: 50 }}
+					animate={{ y: 0 }}
+					exit={{ y: 50 }}
 					className={`${cls.root} ${minimized ? cls.minimized : ""}`}
 				>
 					<div className={cls.header}>
