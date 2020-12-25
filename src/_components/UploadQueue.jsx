@@ -6,6 +6,7 @@ import { Colors } from "../constants";
 import MinimizeIcon from "@material-ui/icons/Minimize";
 import IconButton from "@material-ui/core/IconButton";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import { isMobile } from "react-device-detect";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -72,7 +73,7 @@ export default function UploadQueue() {
 		setMinimized(!minimized);
 	}
 
-	if (!open) {
+	if (!open || isMobile) {
 		return null;
 	}
 	return (
