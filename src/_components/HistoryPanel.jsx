@@ -6,6 +6,7 @@ import { mdiUpload, mdiDownload, mdiDelete, mdiTimerSandEmpty, mdiAccountPlus, m
 import Icon from "@mdi/react";
 import useHistory from "../_queries/useHistory";
 import { useParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -26,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	tileContainer: {
+		overflowX: "hidden",
 		[theme.breakpoints.up("md")]: {
 			overflowY: "auto",
 		},
@@ -116,24 +118,29 @@ export default function HistoryPanel(props) {
 		<div className={cls.root}>
 			<h2 className={cls.title}>History</h2>
 			<div className={cls.tileContainer}>
-				{history
-					.sort((a, b) => {
-						return new Date(b.timestamp) - new Date(a.timestamp);
-					})
-					.map(({ payload, author, action }, index) => {
-						return (
-							<div
-								className={cls.tile}
-								style={{ backgroundColor: !collapsed ? Colors.LIGHT_SHADE : Colors.WHITE }}
-								key={index}
-							>
-								<div>
-									<Center>{renderIcon(action)}</Center>
-								</div>
-								<div>{renderTile(action, payload, author)}</div>
-							</div>
-						);
-					})}
+				<AnimatePresence>
+					{history
+						.sort((a, b) => {
+							return new Date(b.timestamp) - new Date(a.timestamp);
+						})
+						.map(({ payload, author, action }, index) => {
+							return (
+								<motion.div
+									initial={{ opacity: 0, y: -50 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ delay: index * 0.1 }}
+									className={cls.tile}
+									style={{ backgroundColor: !collapsed ? Colors.LIGHT_SHADE : Colors.WHITE }}
+									key={index}
+								>
+									<div>
+										<Center>{renderIcon(action)}</Center>
+									</div>
+									<div>{renderTile(action, payload, author)}</div>
+								</motion.div>
+							);
+						})}
+				</AnimatePresence>
 			</div>
 		</div>
 	);
