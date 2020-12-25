@@ -24,9 +24,9 @@ router.get("/:code", async (req, res) => {
 		} else {
 			return res.status(200).send({ space });
 		}
-	} catch (err) {
-		Honeybadger.notify(err);
-		return res.status(500).send(err);
+	} catch (error) {
+		Honeybadger.notify(error);
+		return res.status(500).send(error);
 	}
 });
 
@@ -52,9 +52,9 @@ router.post("/", async (req, res) => {
 		});
 		const savedSpace = await space.save();
 		return res.status(200).send({ space: savedSpace });
-	} catch (err) {
-		Honeybadger.notify(err);
-		return res.status(500).send(err);
+	} catch (error) {
+		Honeybadger.notify(error);
+		return res.status(500).send(error);
 	}
 });
 
@@ -99,18 +99,18 @@ router.delete("/:code", async (req, res) => {
 		};
 
 		await new Promise((resolve, reject) => {
-			s3.deleteObjects(params, (err, data) => {
-				if (err) {
-					reject(err);
+			s3.deleteObjects(params, (error, data) => {
+				if (error) {
+					reject(error);
 				}
 				resolve(data);
 			});
 		});
 
 		return res.status(200).send();
-	} catch (err) {
-		console.log(err);
-		Honeybadger.notify(err);
+	} catch (error) {
+		console.log(error);
+		Honeybadger.notify(error);
 		return res.status(500).send();
 	}
 });
@@ -309,8 +309,8 @@ router.get("/:code/files", async (req, res) => {
 		});
 
 		return res.status(200).send({ files });
-	} catch (err) {
-		console.error(err);
+	} catch (error) {
+		console.error(error);
 		Honeybadger.notify(error);
 		return res.status(500).send();
 	}
@@ -438,7 +438,7 @@ router.get("/:code/history", async (req, res) => {
 		const space = await Space.findOne({ code }).exec();
 		const { history } = space;
 		return res.status(200).send({ history });
-	} catch (err) {
+	} catch (error) {
 		return res.status(500).send();
 	}
 });
@@ -449,8 +449,8 @@ router.get("/:code/users", async (req, res) => {
 		const space = await Space.findOne({ code }).exec();
 		const { users } = space;
 		return res.status(200).send({ users });
-	} catch (err) {
-		Honeybadger.notify(err);
+	} catch (error) {
+		Honeybadger.notify(error);
 		return res.status(500).send();
 	}
 });
