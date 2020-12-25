@@ -39,6 +39,8 @@ import { SelectedFilesContext } from "../_contexts/selectedFiles";
 import { default as useSpaceHistory } from "../_queries/useHistory";
 import useRemoveFiles from "../_mutations/useRemoveFiles";
 import { AnimatePresence, motion } from "framer-motion";
+import { UploadQueueContext } from "../_contexts/uploadQueue";
+import UploadQueue from "../_components/UploadQueue";
 
 const SettingsPanel = React.lazy(() => import("../_components/SettingsPanel"));
 const ConnectPanel = React.lazy(() => import("../_components/ConnectPanel"));
@@ -174,6 +176,7 @@ export default function Space() {
 	const { data: files, refetch: refetchFiles } = useFiles(code);
 	const { refetch: refetchHistory } = useSpaceHistory(code);
 	const { mutateAsync: removeFiles } = useRemoveFiles(code);
+	const uploadQueue = useContext(UploadQueueContext);
 
 	async function downloadSelected() {
 		enqueueSnackbar(
@@ -365,11 +368,20 @@ export default function Space() {
 			}),
 		];
 
+		uploadQueue.enqueueMany(queue);
+
 		while (queue.length > 0) {
 			const file = queue.shift();
 			console.log("Start file upload ", file.name);
-			await uploadFile(file);
+			await uploadFile({
+				file,
+				onUploadProgress: (event) => {
+					console.log(event);
+					uploadQueue.updateProgress(file.key, event.loaded, event.total);
+				},
+			});
 			console.log("Done file upload ", file.name);
+			uploadQueue.remove(file.key);
 		}
 	}, []);
 
@@ -500,148 +512,151 @@ export default function Space() {
 	);
 
 	return (
-		<div className={cls.root}>
-			<div className={cls.nav}>
-				<div className={cls.filesTab}>
-					<NavTile onClick={changeActivePanel(0)} active={activePanel === 0} collapsed={collapsed}>
-						<FolderIcon />
-					</NavTile>
+		<React.Fragment>
+			<UploadQueue />
+			<div className={cls.root}>
+				<div className={cls.nav}>
+					<div className={cls.filesTab}>
+						<NavTile onClick={changeActivePanel(0)} active={activePanel === 0} collapsed={collapsed}>
+							<FolderIcon />
+						</NavTile>
+					</div>
+					<div>
+						<NavTile onClick={changeActivePanel(1)} active={activePanel === 1} collapsed={collapsed}>
+							<PublicIcon />
+						</NavTile>
+					</div>
+					<div>
+						<NavTile onClick={changeActivePanel(2)} active={activePanel === 2} collapsed={collapsed}>
+							<HistoryIcon />
+						</NavTile>
+					</div>
+					<div>
+						<NavTile onClick={changeActivePanel(3)} active={activePanel === 3} collapsed={collapsed}>
+							<PeopleIcon />
+						</NavTile>
+					</div>
+					<div>
+						<NavTile onClick={changeActivePanel(4)} active={activePanel === 4} collapsed={collapsed}>
+							<SettingsIcon />
+						</NavTile>
+					</div>
 				</div>
-				<div>
-					<NavTile onClick={changeActivePanel(1)} active={activePanel === 1} collapsed={collapsed}>
-						<PublicIcon />
-					</NavTile>
+				<div className={cls.panel}>
+					<div style={{ display: activePanel === 1 ? "inherit" : "none", height: "100%" }}>
+						<Suspense fallback={panelFallback}>
+							<ConnectPanel />
+						</Suspense>
+					</div>
+					<div style={{ display: activePanel === 2 ? "inherit" : "none" }}>
+						<Suspense fallback={panelFallback}>
+							<HistoryPanel />
+						</Suspense>
+					</div>
+					<div style={{ display: activePanel === 3 ? "inherit" : "none" }}>
+						<Suspense fallback={panelFallback}>
+							<UsersPanel mySocketId={socket.id} />
+						</Suspense>
+					</div>
+					<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>
+						<Suspense fallback={panelFallback}>
+							<SettingsPanel />
+						</Suspense>
+					</div>
 				</div>
-				<div>
-					<NavTile onClick={changeActivePanel(2)} active={activePanel === 2} collapsed={collapsed}>
-						<HistoryIcon />
-					</NavTile>
-				</div>
-				<div>
-					<NavTile onClick={changeActivePanel(3)} active={activePanel === 3} collapsed={collapsed}>
-						<PeopleIcon />
-					</NavTile>
-				</div>
-				<div>
-					<NavTile onClick={changeActivePanel(4)} active={activePanel === 4} collapsed={collapsed}>
-						<SettingsIcon />
-					</NavTile>
-				</div>
-			</div>
-			<div className={cls.panel}>
-				<div style={{ display: activePanel === 1 ? "inherit" : "none", height: "100%" }}>
-					<Suspense fallback={panelFallback}>
-						<ConnectPanel />
-					</Suspense>
-				</div>
-				<div style={{ display: activePanel === 2 ? "inherit" : "none" }}>
-					<Suspense fallback={panelFallback}>
-						<HistoryPanel />
-					</Suspense>
-				</div>
-				<div style={{ display: activePanel === 3 ? "inherit" : "none" }}>
-					<Suspense fallback={panelFallback}>
-						<UsersPanel mySocketId={socket.id} />
-					</Suspense>
-				</div>
-				<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>
-					<Suspense fallback={panelFallback}>
-						<SettingsPanel />
-					</Suspense>
-				</div>
-			</div>
-			<div className={cls.main}>
-				{spaceStatus === "loading" ? (
-					<>
-						{!collapsed && <div></div>}
-						<Center>
-							<MoonLoader css="margin: auto;" color={Colors.MAIN_BRAND} size={32} />
-						</Center>
-					</>
-				) : (
-					<>
-						{windowWidth > Breakpoints.MD && <>{files?.length > 0 ? appBar : <div></div>}</>}
-						<div style={{ overflowY: "auto", height: "100%" }}>
-							{!collapsed || (collapsed && activePanel === 0) ? (
-								<>
-									{files?.length > 0 ? (
-										<>
-											{windowWidth > Breakpoints.SM && windowWidth < Breakpoints.MD && appBar}
-											{windowWidth < Breakpoints.SM && (
-												<div>
-													<Center>
-														<div style={{ padding: "10px", display: files?.length === 0 ? "none" : "" }}>
-															{uploadProgress.loaded ? (
-																<Button style={{ backgroundColor: Colors.SUCCESS, height: "42px" }} fullWidth>
-																	<UploadProgress
-																		loaded={uploadProgress.loaded}
-																		total={uploadProgress.total}
-																		textColor={Colors.WHITE}
-																		ringColor={Colors.WHITE}
-																		noText={isMobile}
-																	/>
-																</Button>
-															) : (
-																<FileUploadBtn handleFiles={onDrop} />
-															)}
-														</div>
-													</Center>
+				<div className={cls.main}>
+					{spaceStatus === "loading" ? (
+						<>
+							{!collapsed && <div></div>}
+							<Center>
+								<MoonLoader css="margin: auto;" color={Colors.MAIN_BRAND} size={32} />
+							</Center>
+						</>
+					) : (
+						<>
+							{windowWidth > Breakpoints.MD && <>{files?.length > 0 ? appBar : <div></div>}</>}
+							<div style={{ overflowY: "auto", height: "100%" }}>
+								{!collapsed || (collapsed && activePanel === 0) ? (
+									<>
+										{files?.length > 0 ? (
+											<>
+												{windowWidth > Breakpoints.SM && windowWidth < Breakpoints.MD && appBar}
+												{windowWidth < Breakpoints.SM && (
+													<div>
+														<Center>
+															<div style={{ padding: "10px", display: files?.length === 0 ? "none" : "" }}>
+																{uploadProgress.loaded ? (
+																	<Button style={{ backgroundColor: Colors.SUCCESS, height: "42px" }} fullWidth>
+																		<UploadProgress
+																			loaded={uploadProgress.loaded}
+																			total={uploadProgress.total}
+																			textColor={Colors.WHITE}
+																			ringColor={Colors.WHITE}
+																			noText={isMobile}
+																		/>
+																	</Button>
+																) : (
+																	<FileUploadBtn handleFiles={onDrop} />
+																)}
+															</div>
+														</Center>
+													</div>
+												)}
+												<div style={{ overflowX: "hidden" }}>
+													<Suspense fallback={null}>
+														<AnimatePresence>
+															{files?.map((file, index) => (
+																<motion.div
+																	initial={{ opacity: 0, x: 100 }}
+																	animate={{ opacity: 1, x: 0 }}
+																	exit={{ opacity: 0, x: 100 }}
+																	transition={{ delay: index * 0.3 }}
+																	key={file.key}
+																>
+																	<FileListItem file={file} />
+																</motion.div>
+															))}
+														</AnimatePresence>
+													</Suspense>
 												</div>
-											)}
-											<div style={{ overflowX: "hidden" }}>
-												<Suspense fallback={null}>
-													<AnimatePresence>
-														{files?.map((file, index) => (
-															<motion.div
-																initial={{ opacity: 0, x: 100 }}
-																animate={{ opacity: 1, x: 0 }}
-																exit={{ opacity: 0, x: 100 }}
-																transition={{ delay: index * 0.3 }}
-																key={file.key}
-															>
-																<FileListItem file={file} />
-															</motion.div>
-														))}
-													</AnimatePresence>
-												</Suspense>
-											</div>
-										</>
-									) : uploadProgress.loaded ? (
-										<Center>
-											<UploadProgress loaded={uploadProgress.loaded} total={uploadProgress.total} />
-										</Center>
-									) : (
-										dropZone
-									)}
-								</>
-							) : (
-								<>
-									<div style={{ display: activePanel === 1 ? "inherit" : "none", height: "100%" }}>
-										<Suspense fallback={panelFallback}>
-											<ConnectPanel />
-										</Suspense>
-									</div>
-									<div style={{ display: activePanel === 2 ? "inherit" : "none" }}>
-										<Suspense fallback={panelFallback}>
-											<HistoryPanel collapsed />
-										</Suspense>
-									</div>
-									<div style={{ display: activePanel === 3 ? "inherit" : "none" }}>
-										<Suspense fallback={panelFallback}>
-											<UsersPanel collapsed mySocketId={socket.id} />
-										</Suspense>
-									</div>
-									<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>
-										<Suspense fallback={panelFallback}>
-											<SettingsPanel collapsed />
-										</Suspense>
-									</div>
-								</>
-							)}
-						</div>
-					</>
-				)}
+											</>
+										) : uploadProgress.loaded ? (
+											<Center>
+												<UploadProgress loaded={uploadProgress.loaded} total={uploadProgress.total} />
+											</Center>
+										) : (
+											dropZone
+										)}
+									</>
+								) : (
+									<>
+										<div style={{ display: activePanel === 1 ? "inherit" : "none", height: "100%" }}>
+											<Suspense fallback={panelFallback}>
+												<ConnectPanel />
+											</Suspense>
+										</div>
+										<div style={{ display: activePanel === 2 ? "inherit" : "none" }}>
+											<Suspense fallback={panelFallback}>
+												<HistoryPanel collapsed />
+											</Suspense>
+										</div>
+										<div style={{ display: activePanel === 3 ? "inherit" : "none" }}>
+											<Suspense fallback={panelFallback}>
+												<UsersPanel collapsed mySocketId={socket.id} />
+											</Suspense>
+										</div>
+										<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>
+											<Suspense fallback={panelFallback}>
+												<SettingsPanel collapsed />
+											</Suspense>
+										</div>
+									</>
+								)}
+							</div>
+						</>
+					)}
+				</div>
 			</div>
-		</div>
+		</React.Fragment>
 	);
 }
