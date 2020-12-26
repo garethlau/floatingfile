@@ -14,38 +14,38 @@ export default function MyApp({ Component, pageProps }) {
 					description: "Simplify your file transfer workflow.",
 					images: [
 						{
-							url: "https://floatingfile.space/images/banners/banner1-white-600x600.jpg",
+							url: "https://floatingfile.space/banners/banner1-white-600x600.jpg",
 							width: 600,
 							height: 600,
 							alt: "Welcome to floatingfile",
 						},
 						{
-							url: "https://floatingfile.space/images/banners/banner1-blue-600x600.jpg",
+							url: "https://floatingfile.space/banners/banner1-blue-600x600.jpg",
 							width: 600,
 							height: 600,
 							alt: "Welcome to floatingfile",
 						},
 
 						{
-							url: "https://floatingfile.space/images/banners/banner2-white-1200x600.jpg",
+							url: "https://floatingfile.space/banners/banner2-white-1200x600.jpg",
 							width: 1200,
 							height: 600,
 							alt: "Welcome to floatingfile",
 						},
 						{
-							url: "https://floatingfile.space/images/banners/banner2-blue-1200x600.jpg",
+							url: "https://floatingfile.space/banners/banner2-blue-1200x600.jpg",
 							width: 1200,
 							height: 600,
 							alt: "Welcome to floatingfile",
 						},
 						{
-							url: "https://floatingfile.space/images/banners/banner3-white-1200x600.jpg",
+							url: "https://floatingfile.space/banners/banner3-white-1200x600.jpg",
 							width: 1200,
 							height: 600,
 							alt: "Welcome to floatingfile",
 						},
 						{
-							url: "https://floatingfile.space/images/banners/banner3-blue-1200x600.jpg",
+							url: "https://floatingfile.space/banners/banner3-blue-1200x600.jpg",
 							width: 1200,
 							height: 600,
 							alt: "Welcome to floatingfile",
