@@ -74,7 +74,7 @@ export default function Post({ data, htmlString }) {
 
 export async function getStaticPaths() {
 	const filenames = fs.readdirSync("posts");
-	const paths = filenames.map((filename) => ({ params: { slug: filename.replace(".json", "") } }));
+	const paths = filenames.map((filename) => ({ params: { slug: filename.replace(".md", "") } }));
 	return {
 		paths,
 		fallback: false,
