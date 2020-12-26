@@ -54,20 +54,10 @@ export default function DownloadPage() {
 			<NextSeo
 				title={"floatingfile | Download"}
 				description={"Download floatingfile on your device!"}
-				canonical={"https://www.floatingfile.space"}
 				openGraph={{
 					url: "https://www.floatingfile.space/download",
 					title: "floatingfile | Download",
 					description: "Download floatingfile on your device!",
-					images: [
-						{
-							url: "https://floatingfile.space/images/landing-banner.png",
-							width: 1200,
-							height: 630,
-							alt: "Use floatingfile today!",
-						},
-					],
-					site_name: "floatingfile",
 				}}
 			/>
 			<NavBar />

@@ -16,25 +16,7 @@ import EnterInView from "../wrappers/EnterInView";
 export default function Home() {
 	return (
 		<div>
-			<NextSeo
-				title={"floatingfile"}
-				description={"Simplify your file transfer workflow."}
-				canonical={"https://www.floatingfile.space"}
-				openGraph={{
-					url: "https://www.floatingfile.space",
-					title: "floatingfile",
-					description: "Simplify your file transfer workflow.",
-					images: [
-						{
-							url: "https://floatingfile.space/images/landing-banner.png",
-							width: 1200,
-							height: 630,
-							alt: "Use floatingfile today!",
-						},
-					],
-					site_name: "floatingfile",
-				}}
-			/>
+			<NextSeo title={"floatingfile"} />
 			<Head></Head>
 			<NavBar />
 			<div

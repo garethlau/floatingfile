@@ -24,20 +24,10 @@ export default function ChangelogPage({ changelog }) {
 			<NextSeo
 				title={"floatingfile | Changelog"}
 				description={"Stay up-to-date on changes to floatingfile."}
-				canonical={"https://www.floatingfile.space"}
 				openGraph={{
 					url: "https://www.floatingfile.space/changelog",
 					title: "floatingfile | Changelog",
 					description: "Stay up-to-date on changes to floatingfile.",
-					images: [
-						{
-							url: "https://floatingfile.space/images/landing-banner.png",
-							width: 1200,
-							height: 630,
-							alt: "Use floatingfile today!",
-						},
-					],
-					site_name: "floatingfile",
 				}}
 			/>
 			<NavBar />

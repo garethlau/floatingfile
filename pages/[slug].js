@@ -32,15 +32,6 @@ export default function Post({ data, htmlString }) {
 					url: data.seo_url,
 					title: data.seo_title,
 					description: data.seo_description,
-					images: [
-						{
-							url: "https://floatingfile.space/images/landing-banner.png",
-							width: 1200,
-							height: 630,
-							alt: "Use floatingfile today!",
-						},
-					],
-					site_name: "floatingfile",
 				}}
 			/>
 			<div className={styles.root}>

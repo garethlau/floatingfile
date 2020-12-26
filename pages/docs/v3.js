@@ -275,20 +275,10 @@ export default function DevelopersPage() {
 			<NextSeo
 				title={"floatingfile | Developers"}
 				description={"Learn about floatingfile's APIs."}
-				canonical={"https://www.floatingfile.space"}
 				openGraph={{
 					url: "https://www.floatingfile.space",
 					title: "floatingfile | Developers",
 					description: "Learn about floatingfile's APIs.",
-					images: [
-						{
-							url: "https://floatingfile.space/images/landing-banner.png",
-							width: 1200,
-							height: 630,
-							alt: "Use floatingfile today!",
-						},
-					],
-					site_name: "floatingfile",
 				}}
 			/>
 			<NavBar />
