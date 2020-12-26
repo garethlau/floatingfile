@@ -1,11 +1,10 @@
 import "../styles.css";
 import { DefaultSeo } from "next-seo";
-import { Container } from "next/app";
 
 // This default export is required in a new `pages/_app.js` file.
 export default function MyApp({ Component, pageProps }) {
 	return (
-		<Container>
+		<>
 			<DefaultSeo
 				description={"Simplify your file transfer workflow."}
 				canonical={"https://www.floatingfile.space"}
@@ -56,6 +55,6 @@ export default function MyApp({ Component, pageProps }) {
 				}}
 			/>
 			<Component {...pageProps} />
-		</Container>
+		</>
 	);
 }
