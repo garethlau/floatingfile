@@ -60,18 +60,20 @@ export default function ChangelogPage({ changelog }) {
 
 export async function getStaticProps() {
 	const filenames = fs.readdirSync("content/changelog");
-	const changelog = filenames.map((filename) => {
-		const rawMd = fs.readFileSync(path.join("content", "changelog", filename));
-		const parsedMd = matter(rawMd);
-		const htmlString = marked(parsedMd.content);
+	const changelog = filenames
+		.map((filename) => {
+			const rawMd = fs.readFileSync(path.join("content", "changelog", filename));
+			const parsedMd = matter(rawMd);
+			const htmlString = marked(parsedMd.content);
 
-		return {
-			version: filename.replace(".md", ""),
-			data: parsedMd.data,
-			htmlString,
-			filename,
-		};
-	});
+			return {
+				version: filename.replace(".md", ""),
+				data: parsedMd.data,
+				htmlString,
+				filename,
+			};
+		})
+		.filter((change) => !change.data.WIP);
 
 	changelog
 		.sort((a, b) =>
