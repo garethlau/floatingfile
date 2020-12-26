@@ -1,30 +1,24 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# floatingfile
 
-## Getting Started
+![](https://floatingfile.space/banners/banner-white-1200x600.jpg)
 
-First, run the development server:
+[floatingfile](https://floatingfile.space) is a file sharing platform that marries the flexibility of file storage applications with the convenience of file transfer applications.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+If you'd like to try out the latest features, try out [beta.floatingfile.space](https://beta.floatingfile.space). Spaces created using the beta application are compatible with the production application.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Motivation
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+floatingfile was built to improve the process of moving files from university workstations to personal computers. A login-free and flexible solution was needed. For more info, see [here](https://floatingfile.space/faq?active=5).
 
-## Learn More
+## Repositories
 
-To learn more about Next.js, take a look at the following resources:
+Excluding the repository behind the floatingfile iOS application, there are three active repositories that support floatingfile.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [floatingfile-landing](https://github.com/garethlau/floatingfile-landing) - The landing page of floatingfile
+- [floatingfile-client](https://github.com/garethlau/floatingfile-client) - The client application
+- [floatingfile-api](https://github.com/garethlau/floatingfile-api) - The server that fulfills web and iOS request
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Maintainers
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [Gareth Lau](http://garethlau.me/) maintains floatingfile's servers, APIs, and web applications
+- [Alan Yan](https://alanyan.ca) maintains the floatingfile iOS application
