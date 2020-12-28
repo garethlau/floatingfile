@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { UploadQueueContext } from "../_contexts/uploadQueue";
+import { UploadServiceContext } from "../_contexts/uploadService";
 import { makeStyles } from "@material-ui/core/styles";
 import { formatFileSize } from "../_utils";
 import { Colors } from "../constants";
@@ -8,6 +8,7 @@ import IconButton from "@material-ui/core/IconButton";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { isMobile } from "react-device-detect";
 import { motion, AnimatePresence } from "framer-motion";
+import Button from "../_components/Button";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -52,22 +53,33 @@ const useStyles = makeStyles((theme) => ({
 			overflow: "hidden",
 			whiteSpace: "nowrap",
 		},
+		position: "relative",
+	},
+	cancel: {
+		"& > p": {
+			maxWidth: "180px",
+		},
+	},
+	cancelBtn: {
+		position: "absolute",
+		top: "5px",
+		right: "5px",
 	},
 }));
 
 export default function UploadQueue() {
 	const cls = useStyles();
-	const uploadQueue = useContext(UploadQueueContext);
+	const uploadService = useContext(UploadServiceContext);
 	const [open, setOpen] = useState(false);
 	const [minimized, setMinimized] = useState(false);
 
 	useEffect(() => {
-		if (uploadQueue.size() > 0) {
+		if (uploadService.size() > 0) {
 			setOpen(true);
 		} else {
 			setOpen(false);
 		}
-	}, [uploadQueue]);
+	}, [uploadService]);
 
 	function toggleMinimized() {
 		setMinimized(!minimized);
@@ -89,11 +101,20 @@ export default function UploadQueue() {
 						</IconButton>
 					</div>
 					<div className={cls.container}>
-						{uploadQueue.values?.map((file) => (
-							<div key={file.key} className={cls.fileCard}>
-								<p> {file.name}</p>
+						{uploadService.pending?.map((file) => (
+							<div
+								key={file.key}
+								className={`${cls.fileCard} ${uploadService.currentUpload === file.key ? cls.cancel : ""}`}
+							>
+								<p>{file.name}</p>
 								<p>{formatFileSize(file.size)}</p>
-								<LinearProgress variant="determinate" value={(uploadQueue.progress[file.key] || 0) * 100} />
+								{uploadService.currentUpload === file.key && (
+									<Button className={cls.cancelBtn} variant="danger" onClick={() => uploadService.cancel(file.key)}>
+										Cancel
+									</Button>
+								)}
+
+								<LinearProgress variant="determinate" value={(uploadService.getProgress(file.key) || 0) * 100} />
 							</div>
 						))}
 					</div>
