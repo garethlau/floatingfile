@@ -10,7 +10,7 @@ import { StateProvider } from "./store";
 import ReactGA from "react-ga";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SelectedFilesProvider } from "./_contexts/selectedFiles";
-import { UploadQueueProvider } from "./_contexts/uploadQueue";
+import { UploadServiceProvider } from "./_contexts/uploadService";
 
 const Space = React.lazy(() => import("./_pages/Space"));
 const Landing = React.lazy(() => import("./_pages/Landing"));
@@ -85,7 +85,7 @@ const App = () => {
 							horizontal: windowWidth > Breakpoints.MD ? "right" : "center",
 						}}
 					>
-						<UploadQueueProvider>
+						<UploadServiceProvider>
 							<SelectedFilesProvider>
 								<header className="App-header">
 									<Router>
@@ -105,7 +105,7 @@ const App = () => {
 									</Router>
 								</header>
 							</SelectedFilesProvider>
-						</UploadQueueProvider>
+						</UploadServiceProvider>
 					</SnackbarProvider>
 				</QueryClientProvider>
 			</div>
