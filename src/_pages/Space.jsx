@@ -31,14 +31,13 @@ import Button from "../_components/Button";
 import NavTile from "../_components/NavTile";
 import GIconButton from "../_components/GIconButton";
 import IntroToast from "../_components/IntroToast";
-import { v4 as uuidv4 } from "uuid";
 import useFiles from "../_queries/useFiles";
 import useUploadFile from "../_mutations/useUploadFile";
 import { SelectedFilesContext } from "../_contexts/selectedFiles";
 import { default as useSpaceHistory } from "../_queries/useHistory";
 import useRemoveFiles from "../_mutations/useRemoveFiles";
 import { AnimatePresence, motion } from "framer-motion";
-import { UploadQueueContext } from "../_contexts/uploadQueue";
+import { UploadServiceContext } from "../_contexts/uploadService";
 import UploadQueue from "../_components/UploadQueue";
 
 const SettingsPanel = React.lazy(() => import("../_components/SettingsPanel"));
@@ -170,12 +169,10 @@ export default function Space() {
 
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-	const { mutateAsync: uploadFile } = useUploadFile(code);
-
 	const { data: files, refetch: refetchFiles } = useFiles(code);
 	const { refetch: refetchHistory } = useSpaceHistory(code);
 	const { mutateAsync: removeFiles } = useRemoveFiles(code);
-	const uploadQueue = useContext(UploadQueueContext);
+	const uploadService = useContext(UploadServiceContext);
 
 	async function downloadSelected() {
 		enqueueSnackbar(
@@ -357,31 +354,9 @@ export default function Space() {
 		setActivePanel(index);
 	};
 
-	const onDrop = useCallback(async (acceptedFiles) => {
-		let queue = [
-			...acceptedFiles.map((file) => {
-				const key = uuidv4();
-				const ext = file.name.split(".")[file.name.split(".").length - 1];
-
-				file.key = key;
-				file.ext = ext;
-				return file;
-			}),
-		];
-
-		uploadQueue.enqueueMany(queue);
-
-		while (queue.length > 0) {
-			const file = queue.shift();
-			await uploadFile({
-				file,
-				onUploadProgress: (event) => {
-					console.log(event);
-					uploadQueue.updateProgress(file.key, event.loaded, event.total);
-				},
-			});
-			uploadQueue.remove(file.key);
-		}
+	const onDrop = useCallback(async (droppedFiles) => {
+		uploadService.setCode(code);
+		uploadService.enqueueMany(droppedFiles);
 	}, []);
 
 	const { getRootProps, getInputProps } = useDropzone({
@@ -395,15 +370,7 @@ export default function Space() {
 					<div className={cls.center}>
 						<div {...getRootProps()}>
 							<input {...getInputProps()} />
-							{uploadProgress.loaded ? (
-								<Center>
-									<UploadProgress
-										textColor={Colors.WHITE}
-										loaded={uploadProgress.loaded}
-										total={uploadProgress.total}
-									/>
-								</Center>
-							) : windowWidth > 600 ? (
+							{windowWidth > 600 ? (
 								<Button variant="success" startIcon={<CloudUploadIcon style={{ marginLeft: "5px" }} />}>
 									Upload
 								</Button>
