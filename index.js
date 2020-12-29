@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 const Honeybadger = require("honeybadger").configure({
 	apiKey: process.env.HONEYBADGER_API_KEY,
 	environment: environment,
-	developmentEnvironments: ["dev", "development", "staging"],
+	developmentEnvironments: ["dev", "development"],
 });
 
 const logger = new Logger(require("path").basename(__filename));
