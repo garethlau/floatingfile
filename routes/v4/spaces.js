@@ -3,11 +3,9 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const keys = require("../../config/keys");
-const constants = require("../../constants");
 const fs = require("fs");
 const path = require("path");
 const Space = mongoose.model("Space");
-const File = mongoose.model("File");
 const s3 = require("../../s3");
 const Honeybadger = require("honeybadger");
 const { broadcast, EventTypes } = require("../../services/subscriptionManager");
@@ -76,10 +74,6 @@ router.delete("/:code", async (req, res) => {
 		if (deletedSpace.files.length === 0) {
 			return res.status(200).send();
 		}
-
-		// Remove file objects
-		let spaceId = deletedSpace._id;
-		await File.deleteMany({ parentId: spaceId }).exec();
 
 		// Remove files from S3
 		let s3Keys = deletedSpace.files.map((file) => file.s3Key);
