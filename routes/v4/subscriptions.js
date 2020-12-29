@@ -3,7 +3,7 @@ const router = express.Router();
 const crypto = require("crypto");
 const { addClient, removeClient, EventTypes, sendToClient } = require("../../services/subscriptionManager");
 
-router.get("/:code", (req, res) => {
+router.get("/:code", async (req, res) => {
 	try {
 		const { code } = req.params;
 		const { username } = req.query;
@@ -23,7 +23,7 @@ router.get("/:code", (req, res) => {
 			res,
 		};
 
-		addClient(code, client);
+		await addClient(code, client);
 		sendToClient(client, { type: EventTypes.CONNECTION_ESTABLISHED, clientId });
 
 		req.on("close", () => {
