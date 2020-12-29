@@ -39,6 +39,7 @@ import useRemoveFiles from "../_mutations/useRemoveFiles";
 import { AnimatePresence, motion } from "framer-motion";
 import { UploadServiceContext } from "../_contexts/uploadService";
 import UploadQueue from "../_components/UploadQueue";
+import useUsers from "../_queries/useUsers";
 
 const SettingsPanel = React.lazy(() => import("../_components/SettingsPanel"));
 const ConnectPanel = React.lazy(() => import("../_components/ConnectPanel"));
@@ -178,6 +179,8 @@ export default function Space() {
 
 	const { data: files, refetch: refetchFiles } = useFiles(code);
 	const { refetch: refetchHistory } = useSpaceHistory(code);
+	const { refetch: refetchUsers } = useUsers(code);
+
 	const { mutateAsync: removeFiles } = useRemoveFiles(code);
 	const uploadService = useContext(UploadServiceContext);
 
@@ -292,6 +295,9 @@ export default function Space() {
 				case EventTypes.CONNECTION_ESTABLISHED:
 					console.log("MY ID IS: ", clientId);
 					refetchSpace();
+					refetchFiles();
+					refetchHistory();
+					refetchUsers();
 					break;
 				case EventTypes.FILES_UPDATED:
 					refetchFiles();
