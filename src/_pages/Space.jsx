@@ -276,44 +276,43 @@ export default function Space() {
 		localStorage.setItem(LAST_VISIT_STORAGE_KEY, new Date());
 	}, []);
 
-	const [isListening, setIsListening] = useState(false);
 	useEffect(() => {
-		if (!isListening && code) {
-			console.log("Subscribing to events");
-			const username = localStorage.getItem(USERNAME_STORAGE_KEY);
-			const eventSource = new EventSource(`http://localhost:5000/api/v4/subscriptions/${code}?username=${username}`);
+		console.log("Subscribing to events");
+		const username = localStorage.getItem(USERNAME_STORAGE_KEY);
+		let eventSource = new EventSource(`http://localhost:5000/api/v4/subscriptions/${code}?username=${username}`);
 
-			eventSource.onmessage = (event) => {
-				const data = JSON.parse(event.data);
-				console.log(data);
-				const { type, clientId } = data;
-				switch (type) {
-					case EventTypes.CONNECTION_ESTABLISHED:
-						console.log("MY ID IS: ", clientId);
-						refetchSpace();
-						break;
-					case EventTypes.FILES_UPDATED:
-						refetchFiles();
-						refetchHistory();
-						break;
-					case EventTypes.HISTORY_UPDATED:
-						refetchHistory();
-						break;
-					case EventTypes.SPACE_DELETED:
-						enqueueSnackbar("This space has been destroyed. Redirecting you to the home page.", { variant: "error" });
+		eventSource.onmessage = (event) => {
+			const data = JSON.parse(event.data);
+			console.log(data);
+			const { type, clientId } = data;
+			switch (type) {
+				case EventTypes.CONNECTION_ESTABLISHED:
+					console.log("MY ID IS: ", clientId);
+					refetchSpace();
+					break;
+				case EventTypes.FILES_UPDATED:
+					refetchFiles();
+					refetchHistory();
+					break;
+				case EventTypes.HISTORY_UPDATED:
+					refetchHistory();
+					break;
+				case EventTypes.SPACE_DELETED:
+					enqueueSnackbar("This space has been destroyed. Redirecting you to the home page.", { variant: "error" });
 
-						setTimeout(() => {
-							closeSnackbar();
-							history.push("/");
-						}, 3000);
-						break;
-					default:
-						console.log(event + " is not handled");
-				}
-			};
-			setIsListening(true);
-		}
-	}, [isListening, code]);
+					setTimeout(() => {
+						closeSnackbar();
+						history.push("/");
+					}, 3000);
+					break;
+				default:
+					console.log(event + " is not handled");
+			}
+		};
+		return () => {
+			eventSource.close();
+		};
+	}, [code]);
 
 	useEffect(() => {
 		if (collapsed === null) {
