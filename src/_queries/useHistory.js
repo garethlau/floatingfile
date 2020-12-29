@@ -19,6 +19,6 @@ export default function useHistory(code) {
 		});
 	}
 
-	const config = { initialData: [] };
+	const config = { initialData: [], enabled: !!code };
 	return useQuery(queryKey, query, config);
 }
