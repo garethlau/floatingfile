@@ -46,6 +46,9 @@ async function removeClient(code, client) {
 
 	try {
 		const space = await Space.findOne({ code }).exec();
+		if (!space) {
+			return;
+		}
 		space.users = space.users.filter((user) => user.id !== client.id);
 		space.history.push({ action: "LEAVE", author: client.username, timestamp: Date.now() });
 		await space.save();
