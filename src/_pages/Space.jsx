@@ -281,7 +281,7 @@ export default function Space() {
 
 	useEffect(() => {
 		const username = localStorage.getItem(USERNAME_STORAGE_KEY);
-		let eventSource = new EventSource(`http://localhost:5000/api/v4/subscriptions/${code}?username=${username}`);
+		let eventSource = new EventSource(`${BASE_API_URL}/api/v4/subscriptions/${code}?username=${username}`);
 
 		eventSource.onerror = (error) => {
 			console.log(error);
