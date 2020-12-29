@@ -46,6 +46,13 @@ const HistoryPanel = React.lazy(() => import("../_components/HistoryPanel"));
 const UsersPanel = React.lazy(() => import("../_components/UsersPanel"));
 const FileListItem = React.lazy(() => import("../_components/FileListItem"));
 
+const EventTypes = {
+	CONNECTION_ESTABLISHED: "CONNECTION_ESTABLISHED",
+	FILES_UPDATED: "FILES_UPDATED",
+	HISTORY_UPDATED: "HISTORY_UPDATED",
+	SPACE_DELETED: "SPACE_DELETED",
+};
+
 ReactGA.pageview(window.location.pathname + window.location.search);
 
 const useStyles = makeStyles((theme) => ({
@@ -251,77 +258,62 @@ export default function Space() {
 	}, [spaceStatus]);
 
 	useEffect(() => {
-		if (code) {
-			socket.emit("FROM_CLIENT", {
-				type: "JOIN_SPACE",
-				payload: localStorage.getItem(USERNAME_STORAGE_KEY),
-				code,
+		// Show intro modal
+		let weekAgo = new Date();
+		weekAgo.setDate(weekAgo.getDate() - 7);
+		let lastVisit = localStorage.getItem(LAST_VISIT_STORAGE_KEY);
+		if (!lastVisit || new Date(lastVisit) < new Date(weekAgo)) {
+			const key = enqueueSnackbar(<IntroToast handleClose={() => closeSnackbar(key)} />, {
+				persist: true,
+				anchorOrigin: {
+					vertical: "top",
+					horizontal: "right",
+				},
 			});
-
-			// Show intro modal
-			let weekAgo = new Date();
-			weekAgo.setDate(weekAgo.getDate() - 7);
-			let lastVisit = localStorage.getItem(LAST_VISIT_STORAGE_KEY);
-			if (!lastVisit || new Date(lastVisit) < new Date(weekAgo)) {
-				const key = enqueueSnackbar(<IntroToast handleClose={() => closeSnackbar(key)} />, {
-					persist: true,
-					anchorOrigin: {
-						vertical: "top",
-						horizontal: "right",
-					},
-				});
-			}
-
-			// Set last visit date
-			localStorage.setItem(LAST_VISIT_STORAGE_KEY, new Date());
 		}
-	}, [code]);
 
-	useEffect(
-		() => () => {
-			socket.emit("FROM_CLIENT", { type: "LEAVE_SPACE" });
-		},
-		[]
-	);
+		// Set last visit date
+		localStorage.setItem(LAST_VISIT_STORAGE_KEY, new Date());
+	}, []);
 
+	const [isListening, setIsListening] = useState(false);
 	useEffect(() => {
-		socket.open();
-		socket.on("FROM_SERVER", (action) => {
-			const { type, payload, code } = action;
-			console.log("Socket Event Type: " + type);
-			if (payload) {
-				console.log("Payload: ", payload);
-			}
-			switch (type) {
-				case "SPACE_UPDATED":
-					refetchSpace();
-					break;
-				case "HISTORY_UPDATED":
-					refetchHistory();
-					break;
-				case "FILES_UPDATED":
-					refetchFiles();
-					break;
-				case "CONNECTIONS_UPDATED":
-					break;
-				case "CLOSE":
-				case "SPACE_DESTROYED":
-					enqueueSnackbar("Space has been destroyed.", { variant: "error" });
-					setTimeout(() => {
-						closeSnackbar();
-						history.push("/");
-						socket.close();
-					}, 3000);
-					break;
-				default:
-					console.log("Not Handled: " + type);
-			}
-		});
-		return () => {
-			console.log("Off");
-			socket.off("FROM_SERVER");
-		};
-	}, [enqueueSnackbar, closeSnackbar, history]);
+		if (!isListening && code) {
+			console.log("Subscribing to events");
+			const username = localStorage.getItem(USERNAME_STORAGE_KEY);
+			const eventSource = new EventSource(`http://localhost:5000/api/v4/subscriptions/${code}?username=${username}`);
+
+			eventSource.onmessage = (event) => {
+				const data = JSON.parse(event.data);
+				console.log(data);
+				const { type, clientId } = data;
+				switch (type) {
+					case EventTypes.CONNECTION_ESTABLISHED:
+						console.log("MY ID IS: ", clientId);
+						refetchSpace();
+						break;
+					case EventTypes.FILES_UPDATED:
+						refetchFiles();
+						refetchHistory();
+						break;
+					case EventTypes.HISTORY_UPDATED:
+						refetchHistory();
+						break;
+					case EventTypes.SPACE_DELETED:
+						enqueueSnackbar("This space has been destroyed. Redirecting you to the home page.", { variant: "error" });
+
+						setTimeout(() => {
+							closeSnackbar();
+							history.push("/");
+						}, 3000);
+						break;
+					default:
+						console.log(event + " is not handled");
+				}
+			};
+			setIsListening(true);
+		}
+	}, [isListening, code]);
 
 	useEffect(() => {
 		if (collapsed === null) {
