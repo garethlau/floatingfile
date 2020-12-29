@@ -79,7 +79,7 @@ router.delete("/:code", async (req, res) => {
 		let s3Keys = deletedSpace.files.map((file) => file.key);
 
 		let params = {
-			Bucket: keys.s3BucketName,
+			Bucket: keys.S3_BUCKET_NAME,
 			Delete: {
 				Objects: s3Keys.map((s3Key) => {
 					return { Key: s3Key };
