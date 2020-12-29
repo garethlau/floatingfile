@@ -34,7 +34,7 @@ export default function useDeleteSpace(code) {
 	}
 
 	function onSettled() {
-		queryClient.invalidateQueries(queryKey);
+		queryClient.cancelQueries(["space"]);
 	}
 
 	const config = {
