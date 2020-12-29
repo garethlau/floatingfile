@@ -10,6 +10,7 @@ const Space = mongoose.model("Space");
 const File = mongoose.model("File");
 const s3 = require("../../s3");
 const Honeybadger = require("honeybadger");
+const { broadcast, EventTypes } = require("../../services/subscriptionManager");
 
 // Get a space
 router.get("/:code", async (req, res) => {
@@ -60,7 +61,6 @@ router.post("/", async (req, res) => {
 
 // Delete a space
 router.delete("/:code", async (req, res) => {
-	const io = req.app.get("socketio");
 	let code = req.params.code;
 
 	if (!code) {
@@ -72,10 +72,6 @@ router.delete("/:code", async (req, res) => {
 		if (!deletedSpace) {
 			return res.status(404).send({ message: "Space does not exist." });
 		}
-
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: constants.SOCKET_ACTIONS.CLOSE,
-		});
 
 		if (deletedSpace.files.length === 0) {
 			return res.status(200).send();
@@ -107,6 +103,8 @@ router.delete("/:code", async (req, res) => {
 			});
 		});
 
+		broadcast(code, EventTypes.SPACE_DELETED);
+
 		return res.status(200).send();
 	} catch (error) {
 		console.log(error);
@@ -117,7 +115,6 @@ router.delete("/:code", async (req, res) => {
 router.delete("/:code/files/:key", async (req, res) => {
 	const { code, key } = req.params;
 	const { username } = req.headers;
-	const io = req.app.get("socketio");
 
 	try {
 		// Find the space
@@ -147,22 +144,7 @@ router.delete("/:code/files/:key", async (req, res) => {
 		space.history = [...space.history, historyRecord];
 		const updatedSpace = await space.save();
 
-		// Notify clients that the space has been updated
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: "HISTORY_UPDATED",
-			code,
-		});
-
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: constants.SOCKET_ACTIONS.FILES_UPDATED,
-			payload: code,
-			code,
-		});
-
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: "SPACE_UPDATED",
-			code,
-		});
+		broadcast(code, EventTypes.HISTORY_UPDATED);
 
 		return res.status(200).send({ space: updatedSpace });
 	} catch (error) {
@@ -177,7 +159,6 @@ router.delete("/:code/files", async (req, res) => {
 	const { code } = req.params;
 	const toRemove = JSON.parse(req.query.toRemove);
 	const { username } = req.headers;
-	const io = req.app.get("socketio");
 	try {
 		const space = await Space.findOne({ code }).exec();
 		if (!space) {
@@ -214,22 +195,7 @@ router.delete("/:code/files", async (req, res) => {
 		// Save changes
 		const updatedSpace = await space.save();
 
-		// Notify clients that the space has been updated
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: "HISTORY_UPDATED",
-			code,
-		});
-
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: constants.SOCKET_ACTIONS.FILES_UPDATED,
-			payload: code,
-			code,
-		});
-
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: "SPACE_UPDATED",
-			code,
-		});
+		broadcast(code, EventTypes.FILES_UPDATED);
 
 		return res.status(200).send({ message: "Files removed.", space: updatedSpace });
 	} catch (error) {
@@ -241,7 +207,6 @@ router.delete("/:code/files", async (req, res) => {
 
 router.patch("/:code/file", async (req, res) => {
 	const { code } = req.params;
-	const io = req.app.get("socketio");
 	const { key, size, name, type, ext } = req.body;
 	const { username } = req.headers;
 
@@ -263,24 +228,9 @@ router.patch("/:code/file", async (req, res) => {
 		// Record this upload in the history
 		space.history = [...space.history, { action: "UPLOAD", author: username, payload: name, timestamp: Date.now() }];
 
-		// Notify clients of changes
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: "HISTORY_UPDATED",
-			code,
-		});
-
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: constants.SOCKET_ACTIONS.FILES_UPDATED,
-			payload: code,
-			code,
-		});
-
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: "SPACE_UPDATED",
-			code,
-		});
-
 		const updatedSpace = await space.save();
+
+		broadcast(code, EventTypes.FILES_UPDATED);
 
 		return res.status(200).send({ message: "File added to space.", space: updatedSpace });
 	} catch (error) {
@@ -401,7 +351,6 @@ router.patch("/:code/history", async (req, res) => {
 	const { code } = req.params;
 	const { action, payload } = req.body;
 	const { username } = req.headers;
-	const io = req.app.get("socketio");
 
 	try {
 		const space = await Space.findOne({ code }).exec();
@@ -419,10 +368,7 @@ router.patch("/:code/history", async (req, res) => {
 
 		const updatedSpace = await space.save();
 
-		io.sockets.in(code).emit("FROM_SERVER", {
-			type: "HISTORY_UPDATED",
-			code,
-		});
+		broadcast(code, EventTypes.HISTORY_UPDATED);
 
 		return res.status(200).send({ message: "History updated.", space: updatedSpace });
 	} catch (error) {
