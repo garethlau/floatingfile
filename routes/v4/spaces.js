@@ -86,7 +86,7 @@ router.delete("/:code", async (req, res) => {
 		await File.deleteMany({ parentId: spaceId }).exec();
 
 		// Remove files from S3
-		let s3Keys = deletedSpace.files.map((file) => file.s3Key);
+		let s3Keys = deletedSpace.files.map((file) => file.key);
 
 		let params = {
 			Bucket: keys.s3BucketName,
