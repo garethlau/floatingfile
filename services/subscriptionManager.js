@@ -59,6 +59,8 @@ async function removeClient(code, client) {
 
 function sendDataToClients(code, data) {
 	const clients = spaces[code];
+	console.log(code, spaces[code]);
+	if (!clients) return;
 	clients.forEach((client) => {
 		client.res.write(`data: ${JSON.stringify(data)}\n\n`);
 	});
