@@ -9,7 +9,7 @@ import ErrorBoundary from "@honeybadger-io/react";
 Honeybadger.configure({
 	apiKey: process.env.REACT_APP_HONEYBADGER_API_KEY,
 	environment: process.env.REACT_APP_ENVIRONMENT,
-	disabled: process.env.REACT_APP_ENVIRONMENT !== "production" && process.env.REACT_APP_ENVIRONMENT !== "beta",
+	disabled: process.env.REACT_APP_ENVIRONMENT === "development",
 	breadcrumbsEnabled: {
 		dom: true,
 		network: true,
