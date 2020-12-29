@@ -376,9 +376,13 @@ router.get("/:code/history", async (req, res) => {
 	const { code } = req.params;
 	try {
 		const space = await Space.findOne({ code }).exec();
+		if (!space) {
+			return res.status(404).send();
+		}
 		const { history } = space;
 		return res.status(200).send({ history });
 	} catch (error) {
+		console.error(error);
 		return res.status(500).send();
 	}
 });
@@ -387,10 +391,14 @@ router.get("/:code/users", async (req, res) => {
 	const { code } = req.params;
 	try {
 		const space = await Space.findOne({ code }).exec();
+		if (!space) {
+			return res.status(404).send();
+		}
 		const { users } = space;
 		return res.status(200).send({ users });
 	} catch (error) {
 		Honeybadger.notify(error);
+		console.error(error);
 		return res.status(500).send();
 	}
 });
