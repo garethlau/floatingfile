@@ -8,7 +8,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import GInput from "../_components/GInput";
 import Button from "../_components/Button";
 import Seperator from "../_components/Seperator";
-import ReactGA from "react-ga";
 import useDocumentTitle from "../_hooks/useDocumentTitle";
 import useCreateSpace from "../_mutations/useCreateSpace";
 
@@ -133,7 +132,13 @@ export default function Landing() {
 							/>
 						</div>
 						<div className={cls.formInput}>
-							<Button onClick={join} id="join-space-btn" variant="primary" fullWidth>
+							<Button
+								onClick={join}
+								id="join-space-btn"
+								variant="primary"
+								fullWidth
+								event={{ category: "Space", action: "Joined a space" }}
+							>
 								Join
 							</Button>
 						</div>
@@ -143,7 +148,14 @@ export default function Landing() {
 						</div>
 
 						<div className={cls.formInput}>
-							<Button onClick={create} isLoading={creatingSpace} id="create-space-btn" variant="primary" fullWidth>
+							<Button
+								onClick={create}
+								isLoading={creatingSpace}
+								id="create-space-btn"
+								variant="primary"
+								fullWidth
+								event={{ category: "Space", action: "Created a space" }}
+							>
 								Create a Space
 							</Button>
 						</div>

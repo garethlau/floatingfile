@@ -310,11 +310,21 @@ export default function FileListItem({ file, ...others }) {
 			<div className={cls.remove}>
 				<Center>
 					{windowWidth > 600 ? (
-						<Button variant="primary" debounce={5} onClick={remove}>
+						<Button
+							event={{ category: "File", action: "Removed a File" }}
+							variant="primary"
+							debounce={5}
+							onClick={remove}
+						>
 							Remove
 						</Button>
 					) : (
-						<GIconButton onClick={remove} variant="primary" debounce={10}>
+						<GIconButton
+							event={{ category: "File", action: "Removed a File" }}
+							onClick={remove}
+							variant="primary"
+							debounce={10}
+						>
 							<DeleteIcon />
 						</GIconButton>
 					)}
@@ -323,11 +333,21 @@ export default function FileListItem({ file, ...others }) {
 			<div className={cls.download}>
 				<Center>
 					{windowWidth > 600 ? (
-						<Button onClick={download} variant="primary" debounce={5}>
+						<Button
+							event={{ category: "File", action: "Downloaded a File" }}
+							onClick={download}
+							variant="primary"
+							debounce={5}
+						>
 							Download
 						</Button>
 					) : (
-						<GIconButton onClick={download} variant="primary" debounce={2}>
+						<GIconButton
+							event={{ category: "File", action: "Downloaded a File" }}
+							onClick={download}
+							variant="primary"
+							debounce={2}
+						>
 							{isMobile ? <OpenInBrowserIcon /> : <CloudDownloadIcon />}
 						</GIconButton>
 					)}

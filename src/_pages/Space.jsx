@@ -378,12 +378,20 @@ export default function Space() {
 				<div className={cls.centerWrapper}>
 					<div className={cls.center} style={{ textAlign: "left" }}>
 						{selected.length === files?.length ? (
-							<Button variant="primary" inverse debounce={0} startIcon={<ClearIcon />} onClick={clearSelectedFiles}>
+							<Button
+								event={{ category: "File", action: "Deselected All Files" }}
+								variant="primary"
+								inverse
+								debounce={0}
+								startIcon={<ClearIcon />}
+								onClick={clearSelectedFiles}
+							>
 								Deselect All
 							</Button>
 						) : (
 							<Button
 								onClick={() => setSelected(files?.map((file) => file.key))}
+								event={{ category: "File", action: "Selected All Files" }}
 								variant="primary"
 								inverse
 								debounce={0}
@@ -400,6 +408,7 @@ export default function Space() {
 					<div className={cls.center}>
 						<Button
 							variant="primary"
+							event={{ category: "File", action: "Zip Selected Files" }}
 							disabled={selected.length === 0}
 							inverse
 							onClick={zipSelected}
@@ -415,6 +424,7 @@ export default function Space() {
 					<div className={cls.center}>
 						<Button
 							variant="primary"
+							event={{ category: "File", action: "Downloaded Selected Files" }}
 							disabled={selected.length === 0}
 							inverse
 							startIcon={<CloudDownloadIcon />}
@@ -430,6 +440,7 @@ export default function Space() {
 					<div className={cls.center}>
 						<Button
 							variant="primary"
+							event={{ category: "File", action: "Removed Selected Files" }}
 							disabled={selected.length === 0}
 							inverse
 							startIcon={<DeleteIcon />}
