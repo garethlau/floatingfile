@@ -171,8 +171,6 @@ export default function Space() {
 	const [activePanel, setActivePanel] = useState(1);
 	const [collapsed, setCollapsed] = useState(null);
 
-	const [uploadProgress, setUploadProgress] = useState({ loaded: null, total: null });
-
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
 	const { data: files, refetch: refetchFiles } = useFiles(code);
@@ -548,20 +546,8 @@ export default function Space() {
 												{windowWidth < Breakpoints.SM && (
 													<div>
 														<Center>
-															<div style={{ padding: "10px", display: files?.length === 0 ? "none" : "" }}>
-																{uploadProgress.loaded ? (
-																	<Button style={{ backgroundColor: Colors.SUCCESS, height: "42px" }} fullWidth>
-																		<UploadProgress
-																			loaded={uploadProgress.loaded}
-																			total={uploadProgress.total}
-																			textColor={Colors.WHITE}
-																			ringColor={Colors.WHITE}
-																			noText={isMobile}
-																		/>
-																	</Button>
-																) : (
-																	<FileUploadBtn handleFiles={onDrop} />
-																)}
+															<div style={{ padding: "10px" }}>
+																<FileUploadBtn handleFiles={onDrop} />
 															</div>
 														</Center>
 													</div>
@@ -584,10 +570,6 @@ export default function Space() {
 													</Suspense>
 												</div>
 											</>
-										) : uploadProgress.loaded ? (
-											<Center>
-												<UploadProgress loaded={uploadProgress.loaded} total={uploadProgress.total} />
-											</Center>
 										) : (
 											dropZone
 										)}
