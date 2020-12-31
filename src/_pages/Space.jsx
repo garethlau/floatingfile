@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback, Suspense, useContext } from "react";
-import { SOCKET_URL, BASE_API_URL, USERNAME_STORAGE_KEY, LAST_VISIT_STORAGE_KEY } from "../env";
+import { BASE_API_URL, USERNAME_STORAGE_KEY, LAST_VISIT_STORAGE_KEY } from "../env";
 import { Colors, Breakpoints } from "../constants";
 import { useHistory, useParams } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
-import io from "socket.io-client";
 import { isMobile } from "react-device-detect";
 import MoonLoader from "react-spinners/MoonLoader";
 import { useSnackbar } from "notistack";
