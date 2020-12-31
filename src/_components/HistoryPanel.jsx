@@ -123,7 +123,7 @@ export default function HistoryPanel(props) {
 						.sort((a, b) => {
 							return new Date(b.timestamp) - new Date(a.timestamp);
 						})
-						.map(({ payload, author, action }, index) => {
+						.map(({ payload, author, action, timestamp }, index) => {
 							return (
 								<motion.div
 									initial={{ opacity: 0, y: -50 }}
@@ -131,7 +131,7 @@ export default function HistoryPanel(props) {
 									transition={{ delay: index * 0.1 }}
 									className={cls.tile}
 									style={{ backgroundColor: !collapsed ? Colors.LIGHT_SHADE : Colors.WHITE }}
-									key={index}
+									key={timestamp}
 								>
 									<div>
 										<Center>{renderIcon(action)}</Center>
