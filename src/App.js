@@ -6,7 +6,6 @@ import { Colors, Breakpoints } from "./constants";
 import { USERNAME_STORAGE_KEY, BASE_API_URL, ENVIRONMENT, LAST_VISIT_STORAGE_KEY } from "./env";
 import useWindowWidth from "./_hooks/useWindowWidth";
 import axios from "axios";
-import { StateProvider } from "./store";
 import ReactGA from "react-ga";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SelectedFilesProvider } from "./_contexts/selectedFiles";
@@ -93,11 +92,9 @@ const App = () => {
 											<Switch>
 												<Route exact path="/" component={Landing} />
 												<Route path="/s/:code">
-													<StateProvider>
-														<SpaceValidator>
-															<Space />
-														</SpaceValidator>
-													</StateProvider>
+													<SpaceValidator>
+														<Space />
+													</SpaceValidator>
 												</Route>
 												<Route component={NotFound} />
 											</Switch>
