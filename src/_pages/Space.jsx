@@ -25,7 +25,6 @@ import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ClearIcon from "@material-ui/icons/Clear";
 import FileUploadBtn from "../_components/FileUploadBtn";
-import UploadProgress from "../_components/UploadProgress";
 import Center from "../_components/Center";
 import Button from "../_components/Button";
 import NavTile from "../_components/NavTile";
