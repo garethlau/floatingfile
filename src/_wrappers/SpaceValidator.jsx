@@ -5,6 +5,7 @@ import axios from "axios";
 import { Colors } from "../constants";
 import Center from "../_components/Center";
 import FullPageLoader from "../_components/FullPageLoader";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	page: {
@@ -18,13 +19,7 @@ export default function SpaceValidator({ children }) {
 	const cls = useStyles();
 	const [loading, setLoading] = useState(true);
 	const [exists, setExists] = useState(false);
-	const [code, setCode] = useState("");
-
-	useEffect(() => {
-		let pathArr = window.location.href.split("/");
-		console.log(pathArr[pathArr.length - 1]);
-		setCode(pathArr[pathArr.length - 1]);
-	}, []);
+	const { code } = useParams();
 
 	useEffect(() => {
 		if (code) {
