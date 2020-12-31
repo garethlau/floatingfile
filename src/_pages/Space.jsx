@@ -155,8 +155,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-let socket = io(SOCKET_URL);
-
 const panelFallback = null;
 
 export default function Space() {
@@ -183,6 +181,8 @@ export default function Space() {
 
 	const { mutateAsync: removeFiles } = useRemoveFiles(code);
 	const uploadService = useContext(UploadServiceContext);
+
+	const [myClientId, setMyClientId] = useState("");
 
 	async function downloadSelected() {
 		enqueueSnackbar(
@@ -293,7 +293,7 @@ export default function Space() {
 			const { type, clientId } = data;
 			switch (type) {
 				case EventTypes.CONNECTION_ESTABLISHED:
-					console.log("MY ID IS: ", clientId);
+					setMyClientId(clientId);
 					refetchSpace();
 					refetchFiles();
 					refetchHistory();
@@ -519,7 +519,7 @@ export default function Space() {
 					</div>
 					<div style={{ display: activePanel === 3 ? "inherit" : "none" }}>
 						<Suspense fallback={panelFallback}>
-							<UsersPanel mySocketId={socket.id} />
+							<UsersPanel myClientId={myClientId} />
 						</Suspense>
 					</div>
 					<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>
@@ -606,7 +606,7 @@ export default function Space() {
 										</div>
 										<div style={{ display: activePanel === 3 ? "inherit" : "none" }}>
 											<Suspense fallback={panelFallback}>
-												<UsersPanel collapsed mySocketId={socket.id} />
+												<UsersPanel collapsed myClientId={myClientId} />
 											</Suspense>
 										</div>
 										<div style={{ display: activePanel === 4 ? "inherit" : "none" }}>

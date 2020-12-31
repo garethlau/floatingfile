@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { USERNAME_STORAGE_KEY } from "../env";
 import { makeStyles } from "@material-ui/core/styles";
 import { Colors, Elevation } from "../constants";
 import FaceIcon from "@material-ui/icons/Face";
@@ -44,8 +45,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function UsersPanel(props) {
-	const { mySocketId, collapsed } = props;
+export default function UsersPanel({ collapsed, myClientId }) {
 	const { code } = useParams();
 	const { data: users } = useUsers(code);
 
@@ -55,7 +55,7 @@ export default function UsersPanel(props) {
 		<div className={cls.root}>
 			<h2 className={cls.title}>Users</h2>
 			<div className={cls.tileContainer}>
-				{users.map(({ username, socketId }, index) => {
+				{users.map(({ username, id }, index) => {
 					return (
 						<div
 							className={cls.tile}
@@ -68,7 +68,7 @@ export default function UsersPanel(props) {
 								</Center>
 							</div>
 
-							{mySocketId === socketId ? (
+							{myClientId === id ? (
 								<div>
 									<p
 										style={{
