@@ -12,8 +12,6 @@ import ReactGA from "react-ga";
 import useDocumentTitle from "../_hooks/useDocumentTitle";
 import useCreateSpace from "../_mutations/useCreateSpace";
 
-ReactGA.pageview(window.location.pathname + window.location.search);
-
 const anchorOrigin = {
 	vertical: "top",
 	horizontal: "center",

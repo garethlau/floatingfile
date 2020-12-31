@@ -1,6 +1,7 @@
 import React, { useEffect, useState, Suspense } from "react";
 import { makeStyles } from "@material-ui/core";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Router, Switch, Route } from "react-router-dom";
+import { createBrowserHistory } from "history";
 import { SnackbarProvider } from "notistack";
 import { Colors, Breakpoints } from "./constants";
 import { USERNAME_STORAGE_KEY, BASE_API_URL, ENVIRONMENT, LAST_VISIT_STORAGE_KEY } from "./env";
@@ -39,6 +40,16 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: Colors.DARK_ACCENT,
 	},
 }));
+
+const history = createBrowserHistory();
+
+history.listen((location) => {
+	if (location.pathname && location.pathname.includes("/s")) {
+		ReactGA.pageview("/s/XXXXXX");
+	} else {
+		ReactGA.pageview(location.pathname);
+	}
+});
 
 const App = () => {
 	const classes = useStyles();
@@ -87,7 +98,7 @@ const App = () => {
 						<UploadServiceProvider>
 							<SelectedFilesProvider>
 								<header className="App-header">
-									<Router>
+									<Router history={history}>
 										<Suspense fallback={null}>
 											<Switch>
 												<Route exact path="/" component={Landing} />

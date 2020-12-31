@@ -51,8 +51,6 @@ const EventTypes = {
 	SPACE_DELETED: "SPACE_DELETED",
 };
 
-ReactGA.pageview(window.location.pathname + window.location.search);
-
 const useStyles = makeStyles((theme) => ({
 	root: {
 		width: "100vw",
