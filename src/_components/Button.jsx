@@ -3,6 +3,7 @@ import Button from "@material-ui/core/Button";
 import { Colors, Elevation } from "../constants";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import ReactGA from "react-ga";
 
 const useStyles = makeStyles((theme) => ({
 	loader: {
@@ -28,6 +29,7 @@ export default function CustomButton({
 	onClick,
 	debounce = 1,
 	isLoading,
+	event,
 	...others
 }) {
 	const cls = useStyles();
@@ -62,6 +64,10 @@ export default function CustomButton({
 
 	function debouncedOnClick(e) {
 		if (debouncing) return;
+		if (event) {
+			// Track button click event
+			ReactGA.event(event);
+		}
 		setDebouncing(true);
 		setTimeout(() => setDebouncing(false), debounce * 1000);
 		if (onClick) onClick(e);
