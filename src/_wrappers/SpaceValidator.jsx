@@ -3,8 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { BASE_API_URL } from "../env";
 import axios from "axios";
 import { Colors } from "../constants";
-import Center from "./Center";
-import FullPageLoader from "./FullPageLoader";
+import Center from "../_components/Center";
+import FullPageLoader from "../_components/FullPageLoader";
 
 const useStyles = makeStyles((theme) => ({
 	page: {
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function SpaceValidator(props) {
+export default function SpaceValidator({ children }) {
 	const cls = useStyles();
 	const [loading, setLoading] = useState(true);
 	const [exists, setExists] = useState(false);
@@ -51,7 +51,7 @@ export default function SpaceValidator(props) {
 	if (loading) {
 		return <FullPageLoader />;
 	} else if (exists) {
-		return props.children;
+		return children;
 	} else {
 		return (
 			<div className={cls.page}>

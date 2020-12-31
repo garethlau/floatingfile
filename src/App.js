@@ -11,10 +11,10 @@ import ReactGA from "react-ga";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SelectedFilesProvider } from "./_contexts/selectedFiles";
 import { UploadServiceProvider } from "./_contexts/uploadService";
+import SpaceValidator from "./_wrappers/SpaceValidator";
 
 const Space = React.lazy(() => import("./_pages/Space"));
 const Landing = React.lazy(() => import("./_pages/Landing"));
-const SpaceValidator = React.lazy(() => import("./_components/SpaceValidator"));
 const NotFound = React.lazy(() => import("./_pages/NotFound"));
 
 ReactGA.initialize("UA-159864166-1", { debug: ENVIRONMENT === "development" });
