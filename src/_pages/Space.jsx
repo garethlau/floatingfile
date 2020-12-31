@@ -30,7 +30,6 @@ import NavTile from "../_components/NavTile";
 import GIconButton from "../_components/GIconButton";
 import IntroToast from "../_components/IntroToast";
 import useFiles from "../_queries/useFiles";
-import useUploadFile from "../_mutations/useUploadFile";
 import { SelectedFilesContext } from "../_contexts/selectedFiles";
 import { default as useSpaceHistory } from "../_queries/useHistory";
 import useRemoveFiles from "../_mutations/useRemoveFiles";
