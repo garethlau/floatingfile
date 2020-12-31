@@ -5,7 +5,6 @@ import axios from "axios";
 import { isMobile } from "react-device-detect";
 import MoonLoader from "react-spinners/MoonLoader";
 import { useSnackbar } from "notistack";
-import ReactGA from "react-ga";
 import { AnimatePresence, motion } from "framer-motion";
 import { makeStyles } from "@material-ui/core/styles";
 import PublicIcon from "@material-ui/icons/Public";
@@ -211,7 +210,6 @@ export default function Space() {
 	}
 
 	async function zipSelected() {
-		ReactGA.event({ category: "File", action: "Zipped selected files" });
 		enqueueSnackbar("Your zipped files will start downloading shortly.", {
 			variant: "success",
 			autoHideDuration: 3000,
