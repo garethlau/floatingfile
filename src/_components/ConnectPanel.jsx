@@ -145,7 +145,7 @@ export default function ConnectPanel() {
 							includeMargin={false}
 							renderAs={"svg"}
 							imageSettings={{
-								src: require("../_assets/images/balloon.png"),
+								src: require("../_assets/images/floatingfile.png"),
 								x: null,
 								y: null,
 								height: 24,
