@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Space = mongoose.model("Space");
+const Honeybadger = require("honeybadger");
 
 let spaces = {};
 
@@ -29,11 +30,10 @@ async function addClient(code, client) {
 		});
 
 		await space.save();
+		spaces[code].push(client);
 	} catch (error) {
-		console.log(error);
+		Honeybadger.notify(error);
 	}
-
-	spaces[code].push(client);
 }
 
 async function removeClient(code, client) {
@@ -53,16 +53,20 @@ async function removeClient(code, client) {
 		space.history.push({ action: "LEAVE", author: client.username, timestamp: Date.now() });
 		await space.save();
 	} catch (error) {
-		console.log(error);
+		Honeybadger.notify(error);
 	}
 }
 
 function sendDataToClients(code, data) {
-	const clients = spaces[code];
-	if (!clients) return;
-	clients.forEach((client) => {
-		client.res.write(`data: ${JSON.stringify(data)}\n\n`);
-	});
+	try {
+		const clients = spaces[code];
+		if (!clients) return;
+		clients.forEach((client) => {
+			client.res.write(`data: ${JSON.stringify(data)}\n\n`);
+		});
+	} catch (error) {
+		Honeybadger.notify(error);
+	}
 }
 
 function broadcast(code, type) {
