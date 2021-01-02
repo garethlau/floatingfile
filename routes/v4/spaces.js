@@ -36,7 +36,7 @@ router.post("/", async (req, res) => {
 		const buf = crypto.randomBytes(3);
 		const code = buf.toString("hex").toUpperCase();
 
-		let expiresIn = 12 /* hours */ * 60 /* mins */ * 60 /* seconds */ * 1000; /* milliseconds */
+		let expiresIn = 24 /* hours */ * 60 /* mins */ * 60 /* seconds */ * 1000; /* milliseconds */
 		let space = new Space({
 			code: code,
 			files: [],
