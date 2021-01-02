@@ -70,8 +70,9 @@ mongoose
 	.then(() => {
 		logger.success("Successfully connected to mongo.");
 	})
-	.catch((err) => {
-		logger.error("Error connecting to mongo.", err);
+	.catch((error) => {
+		logger.error("Error connecting to mongo.", error);
+		Honeybadger.notify(error);
 	});
 
 require("./models");
