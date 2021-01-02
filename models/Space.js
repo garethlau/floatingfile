@@ -12,38 +12,30 @@ const Schema = mongoose.Schema;
 
 // plan: [Basic,  Premium, Pro]
 
-const SpaceSchema = new Schema(
-	{
-		code: String,
-		files: Array,
-		options: Object,
-		expires: String,
-		history: Array,
-		users: Array,
-		plan: {
-			type: String,
-			default: "Basic",
-			options: ["Basic", "Premium"],
-		},
-		size: {
-			type: Number,
-			default: 0,
-		},
-		capacity: {
-			type: Number,
-			default: 1073741824,
-		},
-		maxUsers: {
-			type: Number,
-			default: 3,
-		},
+const SpaceSchema = new Schema({
+	code: String,
+	files: Array,
+	expires: String,
+	history: Array,
+	users: Array,
+	plan: {
+		type: String,
+		default: "Basic",
+		options: ["Basic", "Premium"],
 	},
-	{
-		timestamps: {
-			createdAt: "created_at",
-			updatedAt: "updated_at",
-		},
-	}
-);
+	size: {
+		type: Number,
+		default: 0,
+	},
+	capacity: {
+		type: Number,
+		default: 1073741824,
+	},
+	maxUsers: {
+		type: Number,
+		default: 3,
+	},
+	createdAt: { type: Date, expires: 12 * 60 * 60, default: Date.now },
+});
 
 module.exports = mongoose.model("Space", SpaceSchema);
