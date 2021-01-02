@@ -24,7 +24,6 @@
 		"morgan": "^1.10.0",
 		"multer": "^1.4.2",
 		"nodemon": "^1.19.2",
-		"serve-favicon": "^2.5.0",
 		"socket.io": "^2.3.0"
 	}
 }

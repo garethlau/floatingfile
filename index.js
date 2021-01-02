@@ -43,8 +43,6 @@ const corsOptions = {
 app.use(Honeybadger.requestHandler);
 app.use(cors(corsOptions));
 
-app.use(favicon(path.join(__dirname, "..", "client", "public", "favicon.ico")));
-
 app.use(
 	bodyParser.urlencoded({
 		extended: true,
@@ -85,7 +83,6 @@ require("./socket")(app, io);
 require("./services/flush")(io);
 
 app.set("socketio", io);
-app.use("/static", express.static("../client/build/static"));
 
 app.use(require("./routes"));
 
