@@ -4,7 +4,6 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
 const zip = require("express-easy-zip");
-const favicon = require("serve-favicon");
 const keys = require("./config/keys");
 const Logger = require("./services/logger");
 const morgan = require("morgan");
