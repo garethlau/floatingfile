@@ -166,7 +166,7 @@ export default function ConnectPanel() {
 							margin: "16px",
 						}}
 					>
-						{new Date(timeLeft * 1000).toISOString().substr(12, 7)}
+						{new Date(timeLeft * 1000).toISOString().substr(11, 8)}
 					</h2>
 				) : (
 					<MoonLoader css="margin: auto; padding: 10px" loading color={Colors.MAIN_BRAND} size={32} />
