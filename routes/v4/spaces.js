@@ -36,16 +36,11 @@ router.post("/", async (req, res) => {
 		const buf = crypto.randomBytes(3);
 		const code = buf.toString("hex").toUpperCase();
 
-		let expiresIn = (req.body.expiresIn || 180) /* MIN */ * 60 * 1000;
+		let expiresIn = 12 /* hours */ * 60 /* mins */ * 60 /* seconds */ * 1000; /* milliseconds */
 		let space = new Space({
 			code: code,
 			files: [],
 			expires: Date.now() + expiresIn,
-			options: req.body.options || {
-				fileExpirationTime: 30,
-				maxConnections: 5,
-				deleteAfterDownload: false,
-			},
 			history: [],
 			users: [],
 		});
