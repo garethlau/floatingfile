@@ -502,11 +502,11 @@ export default function Space() {
 							<PeopleIcon />
 						</NavTile>
 					</div>
-					<div>
+					{/* <div>
 						<NavTile onClick={changeActivePanel(4)} active={activePanel === 4} collapsed={collapsed}>
 							<SettingsIcon />
 						</NavTile>
-					</div>
+					</div> */}
 				</div>
 				<div className={cls.panel}>
 					<div style={{ display: activePanel === 1 ? "inherit" : "none", height: "100%" }}>
