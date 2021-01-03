@@ -80,7 +80,6 @@ require("./models");
 const server = app.listen(PORT);
 const io = require("socket.io")(server);
 require("./socket")(app, io);
-require("./services/flush")(io);
 
 app.set("socketio", io);
 
