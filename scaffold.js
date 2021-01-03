@@ -10,13 +10,14 @@ module.exports = {
 				"When you upload a file to floatingfile, your file immediately gets uploaded to Amazon's cloud (floatingfile uses AWS S3). While the URL of your file is hashed, it still exists and is accessible on the public web. Furthermore, please remember that anyone with the space's 6-digit code can view and download all files associated with that space! With these in mind, I would strongly recommend against using floatingfile to transfer sensitive documents such as bank statements, personal identification and passport information to name a few. To minimize the risk of files being compromised, ensure that you manually remove the file or destroy the space to reduce the time which your files are on the public web.",
 		},
 		{
-			q: "What is the max file size?",
-			a: "Individual files cannot exceed 300 MB. There is no limit to the number of files within a space.",
+			q: "What are the storage constraints?",
+			a:
+				"The total file sizes within an individual space cannot exceed 1 GB. As such, each individual file cannot exceed 1 GB.",
 		},
 		{
 			q: "How long do spaces and files last?",
 			a:
-				"Spaces are automatically deleted after three hours and files are automatically removed from a space after one hour.",
+				"Spaces and files are automatically deleted after 24 hours. If you do not need the files, I recommend manually closing the space to remove all your data earlier.",
 		},
 		{
 			q: "How was my username generated?",
