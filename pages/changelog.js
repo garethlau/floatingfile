@@ -80,7 +80,6 @@ export async function getStaticProps() {
 			a.version.replace(/\d+/g, (n) => +n + 100000).localeCompare(b.version.replace(/\d+/g, (n) => +n + 100000))
 		)
 		.reverse();
-	changelog.forEach((changelog) => console.log(changelog.version));
 
 	return {
 		props: {
