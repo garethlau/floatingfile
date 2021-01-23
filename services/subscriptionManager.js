@@ -8,6 +8,7 @@ const EventTypes = {
 	CONNECTION_ESTABLISHED: "CONNECTION_ESTABLISHED",
 	FILES_UPDATED: "FILES_UPDATED",
 	HISTORY_UPDATED: "HISTORY_UPDATED",
+	USERS_UPDATED: "USERS_UPDATED",
 	SPACE_DELETED: "SPACE_DELETED",
 };
 
@@ -31,6 +32,7 @@ async function addClient(code, client) {
 
 		await space.save();
 		spaces[code].push(client);
+		broadcast(code, EventTypes.USERS_UPDATED);
 	} catch (error) {
 		Honeybadger.notify(error);
 	}
@@ -51,6 +53,7 @@ async function removeClient(code, client) {
 		}
 		space.users = space.users.filter((user) => user.id !== client.id);
 		space.history.push({ action: "LEAVE", author: client.username, timestamp: Date.now() });
+		broadcast(code, EventTypes.USERS_UPDATED);
 		await space.save();
 	} catch (error) {
 		Honeybadger.notify(error);
