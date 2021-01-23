@@ -47,6 +47,7 @@ const EventTypes = {
 	CONNECTION_ESTABLISHED: "CONNECTION_ESTABLISHED",
 	FILES_UPDATED: "FILES_UPDATED",
 	HISTORY_UPDATED: "HISTORY_UPDATED",
+	USERS_UPDATED: "USERS_UPDATED",
 	SPACE_DELETED: "SPACE_DELETED",
 };
 
@@ -296,6 +297,10 @@ export default function Space() {
 					break;
 				case EventTypes.HISTORY_UPDATED:
 					refetchHistory();
+					break;
+				case EventTypes.USERS_UPDATED:
+					refetchHistory();
+					refetchUsers();
 					break;
 				case EventTypes.SPACE_DELETED:
 					enqueueSnackbar("This space has been destroyed. Redirecting you to the home page.", { variant: "error" });
