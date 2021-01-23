@@ -97,6 +97,7 @@ app.get("/ping", (req, res) => {
 if (environment === "staging" || environment === "beta") {
 	console.log("\x1b[34m", "ENVIRONMENT IS " + environment, "\x1b[0m");
 	console.log("\x1b[34m", "SERVING CLIENT DIRECTORY", "\x1b[0m");
+	app.use(express.static(path.join(__dirname, "..", "client", "build")));
 	app.get("*", (req, res) => {
 		res.sendFile(path.resolve(__dirname, "..", "client", "build", "index.html"));
 	});
