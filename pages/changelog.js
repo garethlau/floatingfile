@@ -67,7 +67,7 @@ export async function getStaticProps() {
 			const htmlString = marked(parsedMd.content);
 
 			return {
-				version: filename.replace(".md", ""),
+				version: "v" + filename.replace(".md", ""),
 				data: parsedMd.data,
 				htmlString,
 				filename,
