@@ -108,6 +108,9 @@ router.delete("/:code/files/:key", async (req, res) => {
 	try {
 		// Find the space
 		const space = await Space.findOne({ code }).exec();
+		if (!space) {
+			return res.status(404).send();
+		}
 
 		// Remove the file from s3
 		const params = {
