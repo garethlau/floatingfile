@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Colors } from "../constants";
 
 const exploreLinks = [
-	{ text: "For Developers", path: "/docs/v3" },
+	{ text: "For Developers", path: "/docs/v4" },
 	{ text: "Change Log", path: "/changelog" },
 	{ text: "Frequently Asked Questions", path: "/faq" },
 	{ text: "Download", path: "/download" },
