@@ -4,16 +4,10 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
 const zip = require("express-easy-zip");
-const logger = require("./utils/logger");
-
 const morgan = require("morgan");
 const { PORT, NODE_ENV, MONGO_URI } = require("./config");
-
-const Honeybadger = require("honeybadger").configure({
-  apiKey: process.env.HONEYBADGER_API_KEY,
-  environment: NODE_ENV,
-  developmentEnvironments: ["dev", "development"],
-});
+const logger = require("./utils/logger");
+const Honeybadger = require("./utils/honeybadger");
 
 const app = express();
 
