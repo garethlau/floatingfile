@@ -77,11 +77,14 @@ app.get("/ping", (req, res) => {
 if (NODE_ENV === "staging" || NODE_ENV === "beta") {
   logger.info("ENVIRONMENT IS " + NODE_ENV);
   logger.info("SERVING CLIEN");
+
+  const APP_OUT_DIRECTORY = path.join(__dirname, "packages/client/out");
+  const APP_INDEX = path.join(APP_OUT_DIRECTORY, "index.html");
+
   app.use(express.static(path.join(__dirname, "..", "client", "build")));
+  app.use(express.static(APP_OUT_DIRECTORY));
   app.get("*", (req, res) => {
-    res.sendFile(
-      path.resolve(__dirname, "..", "client", "build", "index.html")
-    );
+    res.sendFile(APP_INDEX);
   });
 }
 
