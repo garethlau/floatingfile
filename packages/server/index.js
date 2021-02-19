@@ -4,7 +4,8 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
 const zip = require("express-easy-zip");
-const Logger = require("./services/logger");
+const logger = require("./utils/logger");
+
 const morgan = require("morgan");
 const { PORT, NODE_ENV, MONGO_URI } = require("./config");
 
@@ -13,8 +14,6 @@ const Honeybadger = require("honeybadger").configure({
   environment: NODE_ENV,
   developmentEnvironments: ["dev", "development"],
 });
-
-const logger = new Logger(require("path").basename(__filename));
 
 const app = express();
 
@@ -66,7 +65,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    logger.success("Successfully connected to mongo.");
+    logger.info("Successfully connected to mongo.");
   })
   .catch((error) => {
     logger.error("Error connecting to mongo.", error);
@@ -74,13 +73,6 @@ mongoose
   });
 
 require("./models");
-
-// Set socket
-const server = app.listen(PORT);
-const io = require("socket.io")(server);
-require("./socket")(app, io);
-
-app.set("socketio", io);
 
 app.use(require("./routes"));
 
@@ -94,8 +86,8 @@ app.get("/ping", (req, res) => {
 });
 
 if (NODE_ENV === "staging" || NODE_ENV === "beta") {
-  console.log("\x1b[34m", "ENVIRONMENT IS " + NODE_ENV, "\x1b[0m");
-  console.log("\x1b[34m", "SERVING CLIENT DIRECTORY", "\x1b[0m");
+  logger.info("ENVIRONMENT IS " + NODE_ENV);
+  logger.info("SERVING CLIEN");
   app.use(express.static(path.join(__dirname, "..", "client", "build")));
   app.get("*", (req, res) => {
     res.sendFile(
@@ -103,3 +95,7 @@ if (NODE_ENV === "staging" || NODE_ENV === "beta") {
     );
   });
 }
+
+app.listen(PORT, () => {
+  logger.info("Listening on PORT: " + PORT);
+});
