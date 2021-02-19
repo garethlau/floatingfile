@@ -1,0 +1,68 @@
+.root {
+	background-color: var(--light-shade);
+	min-height: 100vh;
+	padding-top: 64px;
+}
+.titleContainer {
+	text-align: center;
+}
+.title {
+	margin-top: 50px;
+}
+
+.contentContainer {
+	padding: 0px 20px 100px;
+}
+.change {
+	max-width: 700px;
+	margin: auto;
+	display: grid;
+	grid-template-rows: 30px 30px auto;
+	grid-template-columns: 1fr;
+	grid-template-areas: "version" "date" "changes";
+	margin-top: 50px;
+	grid-column-gap: 20px;
+	grid-row-gap: 10px;
+}
+.versionContainer {
+	grid-area: version;
+}
+.versionContainer > h2 {
+	margin: 0;
+}
+.dateContainer {
+	grid-area: date;
+	opacity: 0.7;
+	text-align: left;
+	margin-top: 7px;
+}
+.changesContainer {
+	grid-area: changes;
+}
+.changesContainer img {
+	width: 100%;
+	border-radius: 5px;
+	box-shadow: var(--elevation-two);
+}
+
+@media only screen and (min-width: 700px) {
+	.change {
+		grid-template-rows: 30px auto;
+		grid-template-columns: 150px 550px;
+		grid-template-areas: "date version" "none changes";
+	}
+	.dateContainer {
+		text-align: right;
+	}
+}
+
+.header {
+	font-weight: 600;
+}
+.li {
+	margin: 5px 0;
+}
+
+.body {
+	margin: 5px 0;
+}
