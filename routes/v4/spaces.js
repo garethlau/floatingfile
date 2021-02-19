@@ -92,13 +92,13 @@ router.delete("/:code", async (req, res) => {
 			});
 		});
 
-		broadcast(code, EventTypes.SPACE_DELETED);
-
 		return res.status(200).send();
 	} catch (error) {
 		console.log(error);
 		Honeybadger.notify(error);
 		return res.status(500).send();
+	} finally {
+		broadcast(code, EventTypes.SPACE_DELETED);
 	}
 });
 router.delete("/:code/files/:key", async (req, res) => {
