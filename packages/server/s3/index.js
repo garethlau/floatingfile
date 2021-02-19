@@ -1,11 +1,11 @@
 const AWS = require("aws-sdk");
-const keys = require("../config/keys");
+const { AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY_SECRET } = require("../config");
 
 AWS.config.update({
-	accessKeyId: keys.AWS_ACCESS_KEY_ID,
-	secretAccessKey: keys.AWS_ACCESS_KEY_SECRET,
-	signatureVersion: "v4",
-	region: "us-east-2",
+  accessKeyId: AWS_ACCESS_KEY_ID,
+  secretAccessKey: AWS_ACCESS_KEY_SECRET,
+  signatureVersion: "v4",
+  region: "us-east-2",
 });
 
 const s3 = new AWS.S3();
