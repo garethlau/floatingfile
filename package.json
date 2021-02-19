@@ -1,8 +1,58 @@
 {
-  "private": true,
-  "workspaces": [
-    "client",
-    "server",
-    "landing"
-  ]
+	"name": "client",
+	"version": "0.1.0",
+	"private": true,
+	"dependencies": {
+		"@honeybadger-io/react": "0.0.8",
+		"@material-ui/core": "^4.9.0",
+		"@material-ui/icons": "^4.5.1",
+		"@material-ui/lab": "^4.0.0-alpha.40",
+		"@mdi/js": "^5.3.45",
+		"@mdi/react": "^1.4.0",
+		"@stripe/react-stripe-js": "^1.1.0",
+		"@stripe/stripe-js": "^1.2.0",
+		"axios": "^0.21.1",
+		"bluebird": "^3.7.2",
+		"env-cmd": "^10.1.0",
+		"framer-motion": "^3.1.1",
+		"http-proxy-middleware": "^0.20.0",
+		"jest-puppeteer": "^4.4.0",
+		"notistack": "^0.9.17",
+		"puppeteer": "^5.2.1",
+		"qrcode.react": "^1.0.0",
+		"react": "^16.13.1",
+		"react-copy-to-clipboard": "^5.0.2",
+		"react-device-detect": "^1.13.1",
+		"react-dom": "^16.9.0",
+		"react-dropzone": "^10.1.8",
+		"react-ga": "^2.7.0",
+		"react-query": "^3.5.5",
+		"react-router-dom": "^5.0.1",
+		"react-scripts": "3.1.1",
+		"react-spinners": "^0.9.0",
+		"uuid": "^8.3.2"
+	},
+	"scripts": {
+		"start": "react-scripts start",
+		"build": "react-scripts build",
+		"build:staging": "env-cmd -f .env.staging react-scripts build",
+		"build:beta": "env-cmd -f .env.beta react-scripts build",
+		"test": "react-scripts test",
+		"eject": "react-scripts eject"
+	},
+	"eslintConfig": {
+		"extends": "react-app"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
 }
