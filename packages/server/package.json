@@ -1,5 +1,5 @@
 {
-  "name": "file-upload",
+  "name": "@floatingfile/server",
   "version": "1.0.0",
   "description": "Web app for cross platform file sharing",
   "main": "index.js",

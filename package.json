@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "version": "0.0.0",
+  "name": "floatingfile-mono",
+  "devDependencies": {
+    "lerna": "^3.22.1"
+  },
+  "scripts": {
+    "dev": "yarn run dev:app",
+    "dev:app": "lerna run --parallel --stream dev --scope={@floatingfile/client,@floatingfile/server}",
+    "dev:landing": "lerna run --parallel --stream dev --scope=@floatingfile/landing"
+  }
+}
