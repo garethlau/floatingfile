@@ -70,11 +70,6 @@ require("./models");
 
 app.use(require("./routes"));
 
-app.get("/*", (req, res, next) => {
-  res.setHeader("Last-Modified", new Date().toUTCString());
-  next();
-});
-
 app.get("/ping", (req, res) => {
   return res.send("pong");
 });
