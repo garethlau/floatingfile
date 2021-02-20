@@ -1,59 +1,59 @@
 .root {
-	background-color: var(--light-shade);
-	min-height: 100vh;
-	padding-top: 64px;
-	padding: 20px;
+  background-color: var(--light-shade);
+  min-height: 100vh;
+  padding-top: 64px;
+  padding: 20px;
 }
 .title {
-	text-align: center;
+  text-align: center;
 }
 .title > h1 {
-	padding-top: 100px;
+  padding-top: 100px;
 }
 .table {
-	max-width: 700px;
-	margin: auto;
-	display: grid;
-	grid-auto-rows: auto;
-	grid-template-columns: auto;
-	grid-gap: 10px;
+  max-width: 700px;
+  margin: auto;
+  display: grid;
+  grid-auto-rows: auto;
+  grid-template-columns: auto;
+  grid-gap: 10px;
 }
 .table > p {
-	margin: 0;
+  margin: 0;
 }
 .table > p:nth-child(odd) {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 .endpointContainer {
-	max-width: 700px;
-	margin: auto;
+  max-width: 700px;
+  margin: auto;
 }
 .codeblock {
-	background-color: var(--dark-shade);
-	padding: 10px;
-	color: var(--white);
-	border-radius: 5px;
-	overflow-x: auto;
+  background-color: var(--dark-shade);
+  padding: 10px;
+  color: var(--white);
+  border-radius: 5px;
+  overflow-x: auto;
 }
 
 .columnBlock {
-	display: grid;
-	grid-template-columns: auto;
-	grid-auto-rows: auto;
+  display: grid;
+  grid-template-columns: auto;
+  grid-auto-rows: auto;
 }
 .columnBlock > h2 {
-	font-size: 18px;
+  font-size: 18px;
 }
 
 @media only screen and (min-width: 700px) {
-	.table {
-		grid-template-columns: 150px auto;
-	}
-	.columnBlock {
-		grid-template-columns: 150px auto;
-	}
-	.columnBlock > h2 {
-		font-size: 24px;
-	}
+  .table {
+    grid-template-columns: 150px auto;
+  }
+  .columnBlock {
+    grid-template-columns: 150px auto;
+  }
+  .columnBlock > h2 {
+    font-size: 24px;
+  }
 }
