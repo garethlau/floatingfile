@@ -1,38 +1,38 @@
 .root {
-	background-color: var(--light-shade);
-	height: 100%;
+  background-color: var(--light-shade);
+  height: 100%;
 }
 .content {
-	min-height: 100vh;
-	margin-top: 64px;
+  min-height: 100vh;
+  margin-top: 64px;
 }
 .page {
-	border-radius: 10px;
-	box-shadow: var(--elevation-two);
-	background-color: var(--white);
-	padding: 20px;
-	transform: translateY(50px);
-	max-width: 900px;
-	margin: auto;
-	z-index: -1;
+  border-radius: 10px;
+  box-shadow: var(--elevation-two);
+  background-color: var(--white);
+  padding: 20px;
+  transform: translateY(50px);
+  max-width: 900px;
+  margin: auto;
+  z-index: -1;
 }
 .iconContainer {
-	text-align: center;
-	padding-top: 20px;
+  text-align: center;
+  padding-top: 20px;
 }
 .icon {
-	color: var(--dark-shade);
+  color: var(--dark-shade);
 }
 .title {
-	text-align: center;
-	margin-bottom: 0px;
+  text-align: center;
+  margin-bottom: 0px;
 }
 .datetime {
-	opacity: 0.5;
-	text-align: center;
-	margin-bottom: 30px;
-	margin-top: 0px;
+  opacity: 0.5;
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 0px;
 }
 .main > p {
-	text-align: justify;
+  text-align: justify;
 }

@@ -1,41 +1,41 @@
 .root {
-	position: fixed;
-	top: 0;
-	width: 100%;
-	background-color: var(--main-brand);
-	height: 64px;
-	z-index: 10;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: var(--main-brand);
+  height: 64px;
+  z-index: 10;
 }
 .root a {
-	-webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .link {
-	float: right;
-	display: block;
-	padding: 5px 10px;
-	font-weight: 500;
-	color: var(--white);
-	font-size: 16px;
-	text-decoration: none;
-	margin-top: 15px;
+  float: right;
+  display: block;
+  padding: 5px 10px;
+  font-weight: 500;
+  color: var(--white);
+  font-size: 16px;
+  text-decoration: none;
+  margin-top: 15px;
 }
 .active {
-	border-bottom: solid;
+  border-bottom: solid;
 }
 .brand {
-	float: left;
-	display: block;
-	padding: 5px 10px;
-	font-weight: 500;
-	color: var(--white);
-	font-size: 16px;
-	text-decoration: none;
-	margin-top: 15px;
+  float: left;
+  display: block;
+  padding: 5px 10px;
+  font-weight: 500;
+  color: var(--white);
+  font-size: 16px;
+  text-decoration: none;
+  margin-top: 15px;
 }
 
 @media only screen and (min-width) {
-	.root {
-		position: fixed;
-	}
+  .root {
+    position: fixed;
+  }
 }

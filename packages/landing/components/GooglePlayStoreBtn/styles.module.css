@@ -1,18 +1,18 @@
 .a {
-	text-decoration: none;
-	color: var(--black);
+  text-decoration: none;
+  color: var(--black);
 }
 .root {
-	display: grid;
-	grid-template-columns: 32px auto;
-	height: 40px;
-	background-color: var(--white);
-	border-radius: 5px;
-	width: 150px;
-	padding: 5px 10px;
-	grid-column-gap: 10px;
-	margin: auto;
-	opacity: 0.6;
+  display: grid;
+  grid-template-columns: 32px auto;
+  height: 40px;
+  background-color: var(--white);
+  border-radius: 5px;
+  width: 150px;
+  padding: 5px 10px;
+  grid-column-gap: 10px;
+  margin: auto;
+  opacity: 0.6;
 }
 /* .root:hover {
 	cursor: pointer;

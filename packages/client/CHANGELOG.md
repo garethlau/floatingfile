@@ -5,14 +5,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.1.1](https://github.com/garethlau/floatingfile-mono/compare/v1.1.0...v1.1.1) (2021-02-19)
 
-
 ### Performance Improvements
 
-* Silent build ([a8244be](https://github.com/garethlau/floatingfile-mono/commit/a8244bebfdbb4eb10e4053335722496c3f49bad5))
-
-
-
-
+- Silent build ([a8244be](https://github.com/garethlau/floatingfile-mono/commit/a8244bebfdbb4eb10e4053335722496c3f49bad5))
 
 # 1.1.0 (2021-02-19)
 
