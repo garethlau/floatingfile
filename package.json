@@ -14,5 +14,6 @@
     "dev:landing": "lerna run --parallel --stream dev --scope=@floatingfile/landing",
     "new-version": "lerna version --conventional-commits --yes",
     "diff": "lerna diff"
-  }
+  },
+  "dependencies": {}
 }
