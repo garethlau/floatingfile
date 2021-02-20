@@ -9,4 +9,5 @@ module.exports = {
   AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
   AWS_ACCESS_KEY_SECRET: process.env.AWS_ACCESS_KEY_SECRET,
   S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
+  HONEYBADGER_API_KEY: process.env.HONEYBADGER_API_KEY,
 };
