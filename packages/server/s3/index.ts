@@ -1,4 +1,4 @@
-const AWS = require("aws-sdk");
+import AWS from "aws-sdk";
 const { AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY_SECRET } = require("../config");
 
 AWS.config.update({
@@ -9,4 +9,4 @@ AWS.config.update({
 });
 
 const s3 = new AWS.S3();
-module.exports = s3;
+export default s3;

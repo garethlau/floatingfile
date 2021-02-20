@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 import cors, { CorsOptions } from "cors";
 import bodyParser from "body-parser";
 import path from "path";
-
+require("./models");
+import { router } from "./routes";
 const zip = require("express-easy-zip");
 const morgan = require("morgan");
 const { PORT, NODE_ENV, MONGO_URI } = require("./config");
@@ -69,9 +70,7 @@ mongoose
     Honeybadger.notify(error);
   });
 
-require("./models");
-
-app.use(require("./routes"));
+app.use(router);
 
 app.get("/ping", (req, res) => {
   return res.send("pong");

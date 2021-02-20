@@ -1,18 +1,20 @@
-const express = require("express");
+import express from "express";
+import s3 from "../../s3";
+import { S3_BUCKET_NAME } from "../../config";
+import Honeybadger from "honeybadger";
+import { File, SpaceDocument } from "@floatingfile/types";
+
 const router = express.Router();
-const s3 = require("../../s3");
 const mongoose = require("mongoose");
 const Space = mongoose.model("Space");
-const { S3_BUCKET_NAME } = require("../../config");
-const Honeybadger = require("honeybadger");
 
 router.post("/", async (req, res) => {
-  const { file, code } = req.body;
+  const { file, code }: { file: File; code: string } = req.body;
   console.log(code, file);
 
   try {
     // Check if the space has capacity for this file
-    const space = await Space.findOne({ code }).exec();
+    const space: SpaceDocument = await Space.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send({ message: "Space does not exist." });
     }
@@ -37,4 +39,4 @@ router.post("/", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

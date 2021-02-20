@@ -1,6 +1,7 @@
 import { File } from "./File";
 import { HistoryRecord } from "./HistoryRecord";
 import { User } from "./User";
+import { Document } from "mongoose";
 
 export interface Space {
   code: string;
@@ -12,3 +13,5 @@ export interface Space {
   capacity: number;
   maxUsers: number;
 }
+
+export interface SpaceDocument extends Space, Document {}

@@ -267,6 +267,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
       window.open(signedUrl, "_blank");
     } else {
       try {
+        if (!signedUrl) return;
         const response = await axios.get(signedUrl, { responseType: "blob" });
         const { data } = response;
         await saveBlob(data, name);

@@ -53,13 +53,13 @@ const HistoryPanel = React.lazy(() => import("../_components/HistoryPanel"));
 const UsersPanel = React.lazy(() => import("../_components/UsersPanel"));
 const FileListItem = React.lazy(() => import("../_components/FileListItem"));
 
-const EventTypes = {
-  CONNECTION_ESTABLISHED: "CONNECTION_ESTABLISHED",
-  FILES_UPDATED: "FILES_UPDATED",
-  HISTORY_UPDATED: "HISTORY_UPDATED",
-  USERS_UPDATED: "USERS_UPDATED",
-  SPACE_DELETED: "SPACE_DELETED",
-};
+enum Events {
+  CONNECTION_ESTABLISHED = "CONNECTION_ESTABLISHED",
+  FILES_UPDATED = "FILES_UPDATED",
+  HISTORY_UPDATED = "HISTORY_UPDATED",
+  USERS_UPDATED = "USERS_UPDATED",
+  SPACE_DELETED = "SPACE_DELETED",
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -162,7 +162,7 @@ const useStyles = makeStyles((theme) => ({
 
 const panelFallback = null;
 
-const Space: React.FC<void> = () => {
+const Space: React.FC<{}> = () => {
   const cls = useStyles();
   const windowWidth = useWindowWidth();
   const history = useHistory();
@@ -204,7 +204,7 @@ const Space: React.FC<void> = () => {
     let downloadQueue = files?.filter((file) => isSelected(file.key));
     while (!!downloadQueue && downloadQueue.length > 0) {
       const file = downloadQueue.shift();
-      if (!file) return;
+      if (!file || !file.signedUrl) return;
       const response = await axios.get(file.signedUrl, {
         responseType: "blob",
       });
@@ -309,6 +309,7 @@ const Space: React.FC<void> = () => {
 
   useEffect(() => {
     const username = localStorage.getItem(USERNAME_STORAGE_KEY);
+    console.log("Event source username ", username);
     let eventSource = new EventSource(
       `${BASE_API_URL}/api/v4/subscriptions/${code}?username=${username}`
     );
@@ -322,25 +323,25 @@ const Space: React.FC<void> = () => {
       console.log(data);
       const { type, clientId } = data;
       switch (type) {
-        case EventTypes.CONNECTION_ESTABLISHED:
+        case Events.CONNECTION_ESTABLISHED:
           setMyClientId(clientId);
           refetchSpace();
           refetchFiles();
           refetchHistory();
           refetchUsers();
           break;
-        case EventTypes.FILES_UPDATED:
+        case Events.FILES_UPDATED:
           refetchFiles();
           refetchHistory();
           break;
-        case EventTypes.HISTORY_UPDATED:
+        case Events.HISTORY_UPDATED:
           refetchHistory();
           break;
-        case EventTypes.USERS_UPDATED:
+        case Events.USERS_UPDATED:
           refetchHistory();
           refetchUsers();
           break;
-        case EventTypes.SPACE_DELETED:
+        case Events.SPACE_DELETED:
           enqueueSnackbar(
             "This space has been destroyed. Redirecting you to the home page.",
             { variant: "error" }

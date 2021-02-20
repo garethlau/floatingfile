@@ -5,17 +5,27 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import Honeybadger from "honeybadger-js";
 import ErrorBoundary from "@honeybadger-io/react";
+import axios from "axios";
+import { USERNAME_STORAGE_KEY } from "./env";
+
+// axios.interceptors.request.use(
+//   function (config) {
+//     let username = localStorage.getItem(USERNAME_STORAGE_KEY);
+//     config.headers["username"] = username;
+
+//     return config;
+//   },
+//   function (error) {
+//     // Do something with request error
+//     return Promise.reject(error);
+//   }
+// );
 
 Honeybadger.configure({
-  apiKey: process.env.REACT_APP_HONEYBADGER_API_KEY,
+  apiKey: process.env.REACT_APP_HONEYBADGER_API_KEY || "",
   environment: process.env.REACT_APP_ENVIRONMENT,
   disabled: process.env.REACT_APP_ENVIRONMENT === "development",
-  breadcrumbsEnabled: {
-    dom: true,
-    network: true,
-    navigation: true,
-    console: false,
-  },
+  breadcrumbsEnabled: true,
 });
 
 function noop() {}

@@ -1,4 +1,4 @@
-const express = require("express");
+import express, { Response, Request } from "express";
 const router = express.Router();
 
 const animals = [
@@ -377,12 +377,14 @@ const colors = {
 };
 
 router.get("/", (_, res) => {
-  const animal = animals[(animals.length * Math.random()) << 0].toLowerCase();
-  const colorNames = Object.keys(colors);
-  const color = colorNames[(colorNames.length * Math.random()) << 0];
+  const animal: string = animals[
+    (animals.length * Math.random()) << 0
+  ].toLowerCase();
+  const colorNames: string[] = Object.keys(colors);
+  const color: string = colorNames[(colorNames.length * Math.random()) << 0];
 
-  const username = `${color}-${animal}`;
+  const username: string = `${color}-${animal}`;
   return res.status(200).send({ username });
 });
 
-module.exports = router;
+export default router;

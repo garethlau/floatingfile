@@ -1,5 +1,6 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import v4Routes from "./v4";
+export const router = express.Router();
 const middlewares = require("../middleware");
 
 let siteAssociation = {
@@ -31,6 +32,4 @@ router.get("/apple-app-site-association", (req, res) => {
 });
 
 router.use("/api/v3", middlewares.requireKey, require("./v3"));
-router.use("/api/v4", middlewares.requireKey, require("./v4"));
-
-module.exports = router;
+router.use("/api/v4", middlewares.requireKey, v4Routes);

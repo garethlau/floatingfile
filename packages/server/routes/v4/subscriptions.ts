@@ -1,17 +1,22 @@
-const express = require("express");
-const router = express.Router();
-const crypto = require("crypto");
-const {
+import express, { Request, Response } from "express";
+import crypto from "crypto";
+import {
   addClient,
   removeClient,
   EventTypes,
   sendToClient,
-} = require("../../services/subscriptionManager");
+} from "../../services/subscriptionManager";
 
-router.get("/:code", async (req, res) => {
+const router = express.Router();
+
+router.get("/:code", async (req: Request, res: Response) => {
   try {
     const { code } = req.params;
-    const { username } = req.query;
+    let username = "";
+    if (typeof req.query.username === "string") {
+      username = req.query.username;
+    }
+
     // Haders and http status to keep connection open
     const headers = {
       "Content-Type": "text/event-stream",
@@ -24,7 +29,7 @@ router.get("/:code", async (req, res) => {
     const clientId = crypto.randomBytes(256).toString("hex");
     const client = {
       id: clientId,
-      username,
+      username: username,
       res,
     };
 
@@ -39,4 +44,4 @@ router.get("/:code", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

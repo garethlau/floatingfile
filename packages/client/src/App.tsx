@@ -56,10 +56,10 @@ history.listen((location) => {
   }
 });
 
-const App = () => {
+const App: React.FC<{}> = () => {
   const classes = useStyles();
   const windowWidth = useWindowWidth();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const queryClient = new QueryClient();
 
   useEffect(() => {
@@ -73,7 +73,7 @@ const App = () => {
       new Date(lastVisit) < new Date(threeHoursAgo)
     ) {
       // Generate new username
-      axios.get(`${BASE_API_URL}/api/v3/nickname`).then((res) => {
+      axios.get(`${BASE_API_URL}/api/v4/nickname`).then((res) => {
         localStorage.setItem(USERNAME_STORAGE_KEY, res.data.username);
         axios.defaults.headers.common["username"] = res.data.username;
         setLoading(false);

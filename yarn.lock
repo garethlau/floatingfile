@@ -3136,7 +3136,7 @@
     "@types/qs" "*"
     "@types/range-parser" "*"
 
-"@types/express@^4.17.11":
+"@types/express@*", "@types/express@^4.17.11":
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.11.tgz#debe3caa6f8e5fcda96b47bd54e2f40c4ee59545"
   integrity sha512-no+R6rW60JEc59977wIxreQVsIEOAYwgCqldrA/vkpCnbD7MqTefO97lmoBe4WE0F156bC4uLSP1XHDOySnChg==
@@ -3165,6 +3165,13 @@
   version "4.7.8"
   resolved "https://registry.yarnpkg.com/@types/history/-/history-4.7.8.tgz#49348387983075705fe8f4e02fb67f7daaec4934"
   integrity sha512-S78QIYirQcUoo6UJZx9CSP0O2ix9IaeAXwQi26Rhr/+mg7qqPy8TzaxHSUut7eGjL8WmLccT7/MXf304WjqHcA==
+
+"@types/honeybadger@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@types/honeybadger/-/honeybadger-1.4.0.tgz#182909901f1d751599074980f3585b700d71751d"
+  integrity sha512-bR7rHpZOO5CHH7624B+IR/9bjKnDCKiuZQkL0CAdtVrVwUjCVNtJcvdQritdEh4DBhnWEn0j1jpTF8LSBKsC7A==
+  dependencies:
+    "@types/express" "*"
 
 "@types/html-minifier-terser@^5.0.0":
   version "5.1.1"

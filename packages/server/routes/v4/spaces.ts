@@ -1,23 +1,25 @@
-const express = require("express");
+import express, { Request, Response } from "express";
+import { File, HistoryRecord, Space, SpaceDocument } from "@floatingfile/types";
+import s3 from "../../s3";
+import { broadcast, EventTypes } from "../../services/subscriptionManager";
+import Honeybadger from "honeybadger";
+import { S3_BUCKET_NAME } from "../../config";
+import fs from "fs";
+import path from "path";
+import crypto from "crypto";
+
 const router = express.Router();
 const mongoose = require("mongoose");
-const crypto = require("crypto");
-const { S3_BUCKET_NAME } = require("../../config");
-const fs = require("fs");
-const path = require("path");
 const Space = mongoose.model("Space");
-const s3 = require("../../s3");
-const Honeybadger = require("honeybadger");
-const { broadcast, EventTypes } = require("../../services/subscriptionManager");
 
 // Get a space
-router.get("/:code", async (req, res) => {
-  const code = req.params.code;
+router.get("/:code", async (req: Request, res: Response) => {
+  const code: string = req.params.code;
   if (!code) {
     return res.status(400).send({ message: "Invalid request." });
   }
   try {
-    const space = await Space.findOne({ code }).exec();
+    const space: Space = await Space.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send({ message: "Space does not exist." });
     } else {
@@ -30,13 +32,13 @@ router.get("/:code", async (req, res) => {
 });
 
 // Create a new space
-router.post("/", async (req, res) => {
+router.post("/", async (req: Request, res: Response) => {
   // generate code
   try {
     const buf = crypto.randomBytes(3);
-    const code = buf.toString("hex").toUpperCase();
+    const code: string = buf.toString("hex").toUpperCase();
 
-    let expiresIn =
+    let expiresIn: number =
       24 /* hours */ *
       60 /* mins */ *
       60 /* seconds */ *
@@ -48,7 +50,7 @@ router.post("/", async (req, res) => {
       history: [],
       users: [],
     });
-    const savedSpace = await space.save();
+    const savedSpace: Space = await space.save();
     return res.status(200).send({ space: savedSpace });
   } catch (error) {
     Honeybadger.notify(error);
@@ -58,7 +60,7 @@ router.post("/", async (req, res) => {
 
 // Delete a space
 router.delete("/:code", async (req, res) => {
-  let code = req.params.code;
+  let code: string = req.params.code;
 
   if (!code) {
     return res.status(400).send({ message: "Invalid request." });
@@ -75,7 +77,8 @@ router.delete("/:code", async (req, res) => {
     }
 
     // Remove files from S3
-    let s3Keys = deletedSpace.files.map((file) => file.key);
+    const files: File[] = deletedSpace.files;
+    let s3Keys = files.map((file) => file.key);
 
     let params = {
       Bucket: S3_BUCKET_NAME,
@@ -107,7 +110,8 @@ router.delete("/:code", async (req, res) => {
 });
 router.delete("/:code/files/:key", async (req, res) => {
   const { code, key } = req.params;
-  const { username } = req.headers;
+  const username: string =
+    typeof req.headers.username === "string" ? req.headers.username : "";
 
   try {
     // Find the space
@@ -124,18 +128,18 @@ router.delete("/:code/files/:key", async (req, res) => {
     await s3.deleteObject(params);
 
     // Remove the file from the space
-    const removedFile = space.files.find((file) => file.key === key);
-    space.files = space.files.filter((file) => file.key !== key);
+    const removedFile = space.files.find((file: File) => file.key === key);
+    space.files = space.files.filter((file: File) => file.key !== key);
 
     // Adjust the used size of the space
     space.size = space.size - removedFile.size;
 
     // Update the history of the space
-    const historyRecord = {
+    const historyRecord: HistoryRecord = {
       action: "REMOVE",
       payload: removedFile.name,
       author: username,
-      timestamp: Date.now(),
+      timestamp: Date.now().toString(),
     };
     space.history = [...space.history, historyRecord];
     const updatedSpace = await space.save();
@@ -153,10 +157,19 @@ router.delete("/:code/files/:key", async (req, res) => {
 // Remove multiple files
 router.delete("/:code/files", async (req, res) => {
   const { code } = req.params;
-  const toRemove = JSON.parse(req.query.toRemove);
-  const { username } = req.headers;
+  const username: string =
+    typeof req.headers.username === "string" ? req.headers.username : "";
+
+  let toRemove: string[];
+  if (typeof req.query.toRemove === "string") {
+    toRemove = JSON.parse(req.query.toRemove);
+  } else {
+    // Fail to parse keys to remove
+    return res.status(422).send();
+  }
+
   try {
-    const space = await Space.findOne({ code }).exec();
+    const space: SpaceDocument = await Space.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send({ message: "Space does not exist." });
     }
@@ -172,24 +185,24 @@ router.delete("/:code/files", async (req, res) => {
 
     await s3.deleteObjects(params);
 
-    const files = space.files;
+    const files: File[] = space.files;
 
     // Remove files from the space
     space.files = files.filter((file) => !toRemove.includes(file.key));
 
     // Update the history
     const removedFiles = files.filter((file) => toRemove.includes(file.key));
-    const historyRecords = removedFiles.map((file) => ({
+    const historyRecords: HistoryRecord[] = removedFiles.map((file) => ({
       action: "REMOVE",
       payload: file.name,
       author: username,
-      timestamp: Date.now(),
+      timestamp: Date.now().toString(),
     }));
 
     space.history = [...space.history, ...historyRecords];
 
     // Save changes
-    const updatedSpace = await space.save();
+    const updatedSpace: SpaceDocument = await space.save();
 
     broadcast(code, EventTypes.FILES_UPDATED);
 
@@ -206,35 +219,35 @@ router.delete("/:code/files", async (req, res) => {
 router.patch("/:code/file", async (req, res) => {
   const { code } = req.params;
   const { key, size, name, type, ext } = req.body;
-  const { username } = req.headers;
+  const username: string =
+    typeof req.headers.username === "string" ? req.headers.username : "";
 
   if (!code) {
     return res.status(422).send({ message: "No code supplied." });
   }
   try {
-    const space = await Space.findOne({ code }).exec();
+    const space: SpaceDocument = await Space.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send({ message: "Space not found." });
     }
 
     // Attach the file object to the space
-    space.files = [...space.files, { key, size, name, type, ext }];
+    const newFile: File = { key, size, name, type, ext };
+    space.files = [...space.files, newFile];
 
     // Increase used space
     space.size = space.size + size;
 
     // Record this upload in the history
-    space.history = [
-      ...space.history,
-      {
-        action: "UPLOAD",
-        author: username,
-        payload: name,
-        timestamp: Date.now(),
-      },
-    ];
+    const newHistoryRecord: HistoryRecord = {
+      action: "UPLOAD",
+      author: username,
+      payload: name,
+      timestamp: Date.now().toString(),
+    };
+    space.history = [...space.history, newHistoryRecord];
 
-    const updatedSpace = await space.save();
+    const updatedSpace: SpaceDocument = await space.save();
 
     broadcast(code, EventTypes.FILES_UPDATED);
 
@@ -251,7 +264,7 @@ router.patch("/:code/file", async (req, res) => {
 router.get("/:code/files", async (req, res) => {
   const { code } = req.params;
   try {
-    const space = await Space.findOne({ code }).exec();
+    const space: SpaceDocument = await Space.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send({ message: "Space not found." });
     }
@@ -274,13 +287,22 @@ router.get("/:code/files", async (req, res) => {
   }
 });
 
-router.get("/:code/files/zip", async (req, res) => {
+router.get("/:code/files/zip", async (req, res: any) => {
   const { code } = req.params;
-  const s3Keys = JSON.parse(req.query.keys);
+
+  let s3Keys: string[];
+  if (typeof req.query.keys === "string") {
+    s3Keys = JSON.parse(req.query.keys);
+    if (!Array.isArray(s3Keys)) {
+      return res.status(422).send();
+    }
+  } else {
+    return res.status(422).send();
+  }
 
   try {
     // Find the space
-    const space = await Space.findOne({ code }).exec();
+    const space: SpaceDocument = await Space.findOne({ code }).exec();
 
     // Get the file objects to zip
     const files = space.files.filter((file) => s3Keys.includes(file.key));
@@ -319,7 +341,7 @@ router.get("/:code/files/zip", async (req, res) => {
 
           s3Stream
             .pipe(fileStream)
-            .on("error", (error) => {
+            .on("error", (error: Error) => {
               reject(error);
             })
             .on("close", () => {
@@ -338,7 +360,10 @@ router.get("/:code/files/zip", async (req, res) => {
 });
 
 router.delete("/:code/files/zip", (req, res) => {
-  const { folder } = req.query;
+  const folder: string | undefined = req.query.folder?.toString();
+  if (!folder) {
+    return res.status(422).send();
+  }
   const hash = folder.split(".")[0];
   setTimeout(() => {
     deleteFolderRecursive(path.join(__dirname, "..", "..", "tmp", hash));
@@ -346,9 +371,9 @@ router.delete("/:code/files/zip", (req, res) => {
   }, 10000);
 });
 
-const deleteFolderRecursive = function (path) {
+const deleteFolderRecursive = function (path: string) {
   if (fs.existsSync(path)) {
-    fs.readdirSync(path).forEach(function (file, index) {
+    fs.readdirSync(path).forEach((file: string) => {
       let curPath = path + "/" + file;
       if (fs.lstatSync(curPath).isDirectory()) {
         // recurse
@@ -364,26 +389,33 @@ const deleteFolderRecursive = function (path) {
 
 router.patch("/:code/history", async (req, res) => {
   const { code } = req.params;
-  const { action, payload } = req.body;
-  const { username } = req.headers;
+  const { action, payload }: { action: string; payload: string } = req.body;
+  const username: string =
+    typeof req.headers.username === "string" ? req.headers.username : "";
 
   try {
-    const space = await Space.findOne({ code }).exec();
+    const space: SpaceDocument = await Space.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send({ message: "Space not found." });
     }
 
     if (action === "DOWNLOAD_FILE") {
-      const downloadedFile = space.files.find((file) => file.key === payload);
-      space.history = [
-        ...space.history,
-        {
-          action: "DOWNLOAD",
-          author: username,
-          payload: downloadedFile.name,
-          timestamp: Date.now(),
-        },
-      ];
+      const downloadedFile: File | undefined = space.files.find(
+        (file) => file.key === payload
+      );
+
+      if (!downloadedFile) {
+        return res.status(404).send({ message: "File not found." });
+      }
+
+      const historyRecord: HistoryRecord = {
+        action: "DOWNLOAD",
+        author: username,
+        payload: downloadedFile.name,
+        timestamp: Date.now().toString(),
+      };
+
+      space.history = [...space.history, historyRecord];
     }
 
     const updatedSpace = await space.save();
@@ -403,7 +435,7 @@ router.patch("/:code/history", async (req, res) => {
 router.get("/:code/history", async (req, res) => {
   const { code } = req.params;
   try {
-    const space = await Space.findOne({ code }).exec();
+    const space: SpaceDocument = await Space.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send();
     }
@@ -418,7 +450,7 @@ router.get("/:code/history", async (req, res) => {
 router.get("/:code/users", async (req, res) => {
   const { code } = req.params;
   try {
-    const space = await Space.findOne({ code }).exec();
+    const space: SpaceDocument = await Space.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send();
     }
@@ -431,4 +463,4 @@ router.get("/:code/users", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

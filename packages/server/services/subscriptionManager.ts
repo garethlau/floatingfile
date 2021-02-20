@@ -1,24 +1,33 @@
+import { Response } from "express";
+import { SpaceDocument, Events } from "@floatingfile/types";
+
+export enum EventTypes {
+  CONNECTION_ESTABLISHED = "CONNECTION_ESTABLISHED",
+  FILES_UPDATED = "FILES_UPDATED",
+  HISTORY_UPDATED = "HISTORY_UPDATED",
+  USERS_UPDATED = "USERS_UPDATED",
+  SPACE_DELETED = "SPACE_DELETED",
+}
+
 const mongoose = require("mongoose");
 const Space = mongoose.model("Space");
 const Honeybadger = require("honeybadger");
 
-let spaces = {};
+interface Client {
+  id: string;
+  username: string;
+  res: Response;
+}
 
-const EventTypes = {
-  CONNECTION_ESTABLISHED: "CONNECTION_ESTABLISHED",
-  FILES_UPDATED: "FILES_UPDATED",
-  HISTORY_UPDATED: "HISTORY_UPDATED",
-  USERS_UPDATED: "USERS_UPDATED",
-  SPACE_DELETED: "SPACE_DELETED",
-};
+let spaces: Record<string, Array<Client>> = {};
 
-async function addClient(code, client) {
+export async function addClient(code: string, client: Client) {
   if (!spaces[code]) {
     spaces[code] = [];
   }
 
   try {
-    const space = await Space.findOne({ code }).exec();
+    const space: SpaceDocument = await Space.findOne({ code }).exec();
     space.users.push({
       id: client.id,
       username: client.username,
@@ -32,7 +41,7 @@ async function addClient(code, client) {
   }
 }
 
-async function removeClient(code, client) {
+export async function removeClient(code: string, client: Client) {
   spaces[code] = spaces[code].filter((c) => c.id !== client.id);
   if (spaces[code].length === 0) {
     let newSpaces = Object.assign({}, spaces);
@@ -41,7 +50,7 @@ async function removeClient(code, client) {
   }
 
   try {
-    const space = await Space.findOne({ code }).exec();
+    const space: SpaceDocument = await Space.findOne({ code }).exec();
     if (!space) {
       return;
     }
@@ -53,7 +62,7 @@ async function removeClient(code, client) {
   }
 }
 
-function sendDataToClients(code, data) {
+export function sendDataToClients(code: string, data: any) {
   try {
     const clients = spaces[code];
     if (!clients) return;
@@ -65,18 +74,10 @@ function sendDataToClients(code, data) {
   }
 }
 
-function broadcast(code, type) {
+export function broadcast(code: string, type: EventTypes) {
   sendDataToClients(code, { type });
 }
 
-function sendToClient(client, data) {
+export function sendToClient(client: Client, data: any) {
   client.res.write(`data: ${JSON.stringify(data)}\n\n`);
 }
-
-module.exports = {
-  broadcast,
-  sendToClient,
-  removeClient,
-  addClient,
-  EventTypes,
-};

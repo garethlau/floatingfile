@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { model, Schema, Model } from "mongoose";
+import { SpaceDocument } from "@floatingfile/types";
 
 // {
 // 	action: {
@@ -12,7 +12,7 @@ const Schema = mongoose.Schema;
 
 // plan: [Basic,  Premium, Pro]
 
-const SpaceSchema = new Schema({
+const SpaceSchema: Schema = new Schema({
   code: String,
   files: Array,
   expires: String,
@@ -38,4 +38,7 @@ const SpaceSchema = new Schema({
   createdAt: { type: Date, expires: 24 * 60 * 60, default: Date.now },
 });
 
-module.exports = mongoose.model("Space", SpaceSchema);
+export const SpaceModel: Model<SpaceDocument> = model<SpaceDocument>(
+  "Space",
+  SpaceSchema
+);
