@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Colors, Elevation } from "../constants";
+import { Colors, Elevation } from "@floatingfile/common";
 
 interface NavTileProps {
   active: boolean;

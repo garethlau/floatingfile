@@ -28,7 +28,8 @@ import {
   USERNAME_STORAGE_KEY,
   LAST_VISIT_STORAGE_KEY,
 } from "../env";
-import { Colors, Breakpoints } from "../constants";
+import { Colors } from "@floatingfile/common";
+import { Breakpoints } from "../constants";
 import { SelectedFilesContext } from "../_contexts/selectedFiles";
 import { UploadServiceContext } from "../_contexts/uploadService";
 import FileUploadBtn from "../_components/FileUploadBtn";

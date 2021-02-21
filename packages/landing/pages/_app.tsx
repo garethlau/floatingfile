@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Head from "next/head";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import theme from "../src/theme";
+import { theme } from "@floatingfile/common";
 import { DefaultSeo } from "next-seo";
 
 // This default export is required in a new `pages/_app.js` file.

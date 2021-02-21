@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@floatingfile/types": "1.0.0",
+    "@floatingfile/common": "1.0.0",
     "@honeybadger-io/react": "0.0.8",
     "@material-ui/core": "^4.9.0",
     "@material-ui/icons": "^4.5.1",

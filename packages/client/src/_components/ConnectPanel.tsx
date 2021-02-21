@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Colors } from "../constants";
+import { Colors } from "@floatingfile/common";
 import QRCode from "qrcode.react";
 import { makeStyles } from "@material-ui/core";
 import MoonLoader from "react-spinners/MoonLoader";

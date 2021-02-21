@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Button, { ButtonProps } from "@material-ui/core/Button";
-import { Colors, Elevation } from "../constants";
+import { Colors, Elevation } from "@floatingfile/common";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ReactGA, { EventArgs } from "react-ga";

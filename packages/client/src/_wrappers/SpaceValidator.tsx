@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { BASE_API_URL } from "../env";
 import axios from "axios";
-import { Colors } from "../constants";
+import { Colors } from "@floatingfile/common";
 import Center from "../_components/Center";
 import FullPageLoader from "../_components/FullPageLoader";
 import { useParams } from "react-router-dom";

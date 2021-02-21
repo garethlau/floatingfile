@@ -2,7 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core";
 import Center from "./Center";
 import MoonLoader from "react-spinners/MoonLoader";
-import { Colors } from "../constants";
+import { Colors } from "@floatingfile/common";
 
 const useStyles = makeStyles({
   page: {

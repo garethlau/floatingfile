@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { UploadServiceContext } from "../_contexts/uploadService";
 import { makeStyles } from "@material-ui/core/styles";
 import { formatFileSize } from "../_utils";
-import { Colors } from "../constants";
+import { Colors } from "@floatingfile/common";
 import MinimizeIcon from "@material-ui/icons/Minimize";
 import IconButton from "@material-ui/core/IconButton";
 import LinearProgress from "@material-ui/core/LinearProgress";

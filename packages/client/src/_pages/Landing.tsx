@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Colors } from "../constants";
+import { Colors } from "@floatingfile/common";
 import { BASE_API_URL } from "../env";
 import axios from "axios";
 import { useSnackbar, SnackbarOrigin } from "notistack";

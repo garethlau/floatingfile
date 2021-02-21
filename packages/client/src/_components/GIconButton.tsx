@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import IconButton, { IconButtonProps } from "@material-ui/core/IconButton";
-import { Colors, Elevation } from "../constants";
+import { Colors, Elevation } from "@floatingfile/common";
 import ReactGA, { EventArgs } from "react-ga";
 
 type GIconButtonProps = Omit<IconButtonProps, "variant"> & {

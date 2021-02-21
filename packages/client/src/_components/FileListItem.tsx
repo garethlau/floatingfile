@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Colors, Elevation } from "../constants";
+import { Colors, Elevation } from "@floatingfile/common";
 import Button from "./Button";
 import GIconButton from "./GIconButton";
 import Center from "./Center";

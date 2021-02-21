@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { USERNAME_STORAGE_KEY } from "../env";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { Colors, Elevation } from "../constants";
+import { Colors, Elevation } from "@floatingfile/common";
 import FaceIcon from "@material-ui/icons/Face";
 import Center from "./Center";
 import useUsers from "../_queries/useUsers";

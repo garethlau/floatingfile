@@ -3,7 +3,8 @@ import { makeStyles } from "@material-ui/core";
 import { Router, Switch, Route } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { SnackbarProvider } from "notistack";
-import { Colors, Breakpoints } from "./constants";
+import { Breakpoints } from "./constants";
+import { Colors } from "@floatingfile/common";
 import {
   USERNAME_STORAGE_KEY,
   BASE_API_URL,
