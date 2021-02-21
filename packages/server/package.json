@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "nodemon index.ts",
-    "build": "tsc --project ./"
+    "build": "tsc --project ./ && rm -rf out && mv build out"
   },
   "author": "",
   "license": "ISC",
