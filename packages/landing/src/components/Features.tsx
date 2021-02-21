@@ -1,8 +1,6 @@
 import React from "react";
-
 import { makeStyles } from "@material-ui/core/styles";
 import { Colors, BoxShadows } from "../constants";
-
 import Icon from "@mdi/react";
 import {
   mdiSpeedometer,
@@ -35,21 +33,31 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     backgroundColor: Colors.WHITE,
-    height: "200px",
-    width: "90%",
+    height: "220px",
     boxShadow: BoxShadows.TWO,
     borderRadius: "10px",
     gridTemplateRows: "32px auto",
     padding: "10px",
+    width: "90%",
     margin: "auto",
     [theme.breakpoints.up("sm")]: {
-      width: "200px",
+      width: "220px",
       ["&:nth-child(odd)"]: {
         margin: "0 0 0 auto",
       },
       ["&:nth-child(even)"]: {
         margin: "0 auto 0 0",
       },
+    },
+    [theme.breakpoints.up("md")]: {
+      width: "220px",
+      ["&:nth-child(even)"]: {
+        margin: "auto",
+      },
+      ["&:nth-child(odd)"]: {
+        margin: "auto",
+      },
+      margin: "auto",
     },
   },
   icon: {
@@ -90,7 +98,7 @@ const features = [
   },
 ];
 
-export default function HighlightFeatures() {
+const Features: React.FC<{}> = () => {
   const cls = useStyles();
   return (
     <div className={cls.root}>
@@ -109,4 +117,6 @@ export default function HighlightFeatures() {
       })}
     </div>
   );
-}
+};
+
+export default Features;

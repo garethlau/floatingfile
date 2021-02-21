@@ -1,25 +1,47 @@
 import React, { useState, useEffect } from "react";
-import NavBar from "../components/NavBar";
-import Footer from "../components/Footer";
+import Nav from "../src/components/Nav";
+import Footer from "../src/components/Footer";
 import { NextSeo } from "next-seo";
-
 import { useRouter } from "next/router";
-import styles from "../styles/faq.module.css";
-
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
-
 import Icon from "@mdi/react";
 import { mdiMenuDown } from "@mdi/js";
+import { faqs } from "../src/scaffold";
+import { makeStyles } from "@material-ui/core/styles";
 
-import { faqs } from "../scaffold";
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: "#f1f3f9",
+    minHeight: "100vh",
+    paddingTop: "64px",
+  },
+  titleContainer: {
+    textAlign: "center",
+  },
+  title: {
+    marginTop: "50px",
+  },
+  contentContainer: {
+    padding: "0px 20px 100px",
+    maxWidth: "960px",
+    margin: "auto",
+  },
+  question: {
+    opacity: 0.7,
+    margin: "10px 0",
+  },
+  answer: {},
+}));
 
-export default function FaqPage() {
+const FaqPage: React.FC<{}> = () => {
   const router = useRouter();
-  const [active, setActive] = useState(-1);
+  const [active, setActive] = useState<number>(-1);
+  const classes = useStyles();
+
   useEffect(() => {
-    if (router.query.active) {
+    if (router.query.active && typeof router.query.active === "string") {
       setActive(parseInt(router.query.active));
     }
   }, [router.query.active]);
@@ -53,13 +75,13 @@ export default function FaqPage() {
           site_name: "floatingfile",
         }}
       />
-      <NavBar />
-      <div className={styles.root}>
-        <div className={styles.titleContainer}>
-          <h1 className={styles.title}>FAQ</h1>
+      <Nav />
+      <div className={classes.root}>
+        <div className={classes.titleContainer}>
+          <h1 className={classes.title}>FAQ</h1>
           <p>Get your questions answered</p>
         </div>
-        <div className={styles.contentContainer}>
+        <div className={classes.contentContainer}>
           {faqs.map((x, index) => {
             return (
               <Accordion
@@ -77,10 +99,10 @@ export default function FaqPage() {
                     />
                   }
                 >
-                  <h3 className={styles.question}>{x.q}</h3>
+                  <h3 className={classes.question}>{x.q}</h3>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <p className={styles.answer}>{x.a}</p>
+                  <p className={classes.answer}>{x.a}</p>
                 </AccordionDetails>
               </Accordion>
             );
@@ -90,4 +112,5 @@ export default function FaqPage() {
       <Footer />
     </>
   );
-}
+};
+export default FaqPage;

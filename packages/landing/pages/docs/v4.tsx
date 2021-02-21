@@ -1,8 +1,8 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-import styles from "../../styles/Developers.module.css";
-import NavBar from "../../components/NavBar";
-import Footer from "../../components/Footer";
+import Nav from "../../src/components/Nav";
+import Footer from "../../src/components/Footer";
+import { makeStyles } from "@material-ui/core/styles";
 
 const userModel = {
   socketId: "String",
@@ -39,7 +39,7 @@ const apis = [
   {
     method: "GET",
     summary: "Retrieve the space for a given code.",
-    endpoint: "/api/v3/space/{code}",
+    endpoint: "/api/v4/space/{code}",
     request: {
       pathParameters: [
         {
@@ -79,7 +79,7 @@ const apis = [
   {
     method: "POST",
     summary: "Create a new space.",
-    endpoint: "/api/v3/space",
+    endpoint: "/api/v4/space",
     request: {
       pathParameters: [],
       queryParameters: [],
@@ -99,8 +99,8 @@ const apis = [
   {
     method: "DELETE",
     summary:
-      "Deletes a space. This endpoint emits a socket event to notify clients that the space has been destroyed.",
-    endpoint: "/api/v3/space/{code}",
+      "Deletes a space. Subscribed clients will receive a 'SPACE_DELETED' event.",
+    endpoint: "/api/v4/space/{code}",
     request: {
       pathParameters: [
         { name: "code", description: "Code of the space to delete." },
@@ -117,11 +117,41 @@ const apis = [
       response500,
     ],
   },
+
   {
     method: "DELETE",
     summary:
-      "Removes files from a space. This endpoint emits two socket events; one event notifying clients to refresh the history and another notifying clients to refresh the files.",
-    endpoint: "/api/v3/space/{code}/files",
+      "Removes a file from a space. Subscribed clients will receive a 'FILES_UPDATED' event.",
+    endpoint: "/api/v4/space/{code}/files/{key}",
+    request: {
+      pathParameters: [
+        {
+          name: "code",
+          description: "Code of the space to remove files from.",
+        },
+        {
+          name: "key",
+          description:
+            "Key of the file to be deleted and removed from the space.",
+        },
+      ],
+      queryParameters: [],
+      body: null,
+    },
+    responses: [
+      {
+        status: 200,
+        description: "Successfuly deleted and removed files from the space.",
+      },
+      { status: 404, description: "Space does not exist." },
+      response500,
+    ],
+  },
+  {
+    method: "DELETE",
+    summary:
+      "Removes files from a space. Subscribed clients will receive a 'FILES_UPDATED' event.",
+    endpoint: "/api/v4/space/{code}/files",
     request: {
       pathParameters: [
         {
@@ -131,9 +161,9 @@ const apis = [
       ],
       queryParameters: [
         {
-          name: "files",
+          name: "toRemove",
           description:
-            "Array of file IDs to be deleted and removed from the space.",
+            "Array of file keys to be deleted and removed from the space.",
         },
       ],
       body: null,
@@ -143,22 +173,26 @@ const apis = [
         status: 200,
         description: "Successfuly deleted and removed files from the space.",
       },
-      { status: 422, description: "Invalid request. Missing code." },
+      { status: 404, description: "Space does not exist." },
       response500,
     ],
   },
   {
-    method: "POST",
+    method: "PATCH",
     summary:
-      "Upload a file to a space. This endpoint emits socket events notifying clients to refresh the history and files list.",
-    endpoint: "/api/v3/space/{code}/files",
+      "Associates an uploaded file with the space. This endpoint is called after the client has successfully uploaded the file to S3. Subscribed clients will receive a 'FILES_UPDATED' event.",
+    endpoint: "/api/v4/space/{code}/file",
     request: {
       pathParameters: [
         { name: "code", description: "Code of the space to upload files to." },
       ],
       queryParameters: [],
       body: {
-        files: ["File"],
+        key: "String",
+        size: "String",
+        name: "String",
+        type: "String",
+        ext: "String",
       },
     },
     responses: [
@@ -171,7 +205,7 @@ const apis = [
   {
     method: "GET",
     summary: "Retrieve the list of files uploaded to a space.",
-    endpoint: "/api/v3/space/{code}/files",
+    endpoint: "/api/v4/space/{code}/files",
     request: {
       pathParameters: [
         { name: "code", description: "Code of the space to fetch files for." },
@@ -183,7 +217,7 @@ const apis = [
       {
         status: 200,
         description: "Successfully retrieved list of files for the space.",
-        body: { files: [fileModel] },
+        body: { files: [{ ...fileModel, signedUrl: "String" }] },
       },
       response500,
     ],
@@ -191,7 +225,7 @@ const apis = [
   {
     method: "GET",
     summary: "ZIP and download files.",
-    endpoint: "/api/v3/space/{code}/files/zip",
+    endpoint: "/api/v4/space/{code}/files/zip",
     request: {
       pathParameters: [
         {
@@ -201,8 +235,8 @@ const apis = [
       ],
       queryParameters: [
         {
-          name: "files",
-          description: "List of file IDs to be zipped and downloaded.",
+          name: "keys",
+          description: "Array of file keys to be zipped and downloaded.",
         },
       ],
       body: null,
@@ -219,7 +253,7 @@ const apis = [
     method: "DELETE",
     summary:
       "Deletes a zipped foler from the server. This API should be invoked after a successful download of zipped files.",
-    endpoint: "/api/v3/space/{code}/files/zip",
+    endpoint: "/api/v4/space/{code}/files/zip",
     request: {
       pathParameters: [],
       queryParameters: [
@@ -232,36 +266,26 @@ const apis = [
     ],
   },
   {
-    method: "GET",
-    summary:
-      "Download a file. This endpoints emit a socket signaling that the history for the space has been updated and must be refreshed.",
-    endpoint: "/api/v3/space/{code}/files/{fileId}",
+    method: "PATCH",
+    summary: "Update the history for a space.",
+    endpoint: "/api/v4/space/{code}/history",
     request: {
       pathParameters: [
         {
           name: "code",
-          description: "Code of the space to which the files belong.",
+          description: "Code of the space to retrieve the history for.",
         },
-        { name: "fileId", description: "ID of the file to be downloaded." },
       ],
       queryParameters: [],
-      body: null,
+      body: { action: "String", payload: "String" },
     },
     responses: [
       {
         status: 200,
-        description: "Operation successful. File stream started.",
-      },
-      { status: 400, description: "Invalid request. Missing file ID." },
-      {
-        status: 404,
-        description: "File not found.",
-        message: "File not found.",
-      },
-      {
-        status: 404,
-        description: "Space not found.",
-        message: "Space not found.",
+        description: "Successfully updated space history.",
+        body: {
+          history: [historyModel],
+        },
       },
       response500,
     ],
@@ -269,7 +293,7 @@ const apis = [
   {
     method: "GET",
     summary: "Retrieve the history for a space.",
-    endpoint: "/api/v3/space/{code}/history",
+    endpoint: "/api/v4/space/{code}/history",
     request: {
       pathParameters: [
         {
@@ -294,7 +318,7 @@ const apis = [
   {
     method: "GET",
     summary: "Retrieve a list of users connected to a given space.",
-    endpoint: "/api/v3/space/{code}/users",
+    endpoint: "/api/v4/space/{code}/users",
     request: {
       pathParameters: [
         {
@@ -316,28 +340,68 @@ const apis = [
       response500,
     ],
   },
-  {
-    method: "GET",
-    summary: "Generate a random color-animal pair nickname.",
-    endpoint: "/api/v3/nickname",
-    request: {
-      pathParameters: [],
-      queryParameters: [],
-      body: null,
-    },
-    responses: [
-      {
-        status: 200,
-        description: "Successfully generated nickname.",
-        body: {
-          username: "String",
-        },
-      },
-    ],
-  },
 ];
 
-export default function DevelopersPage() {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: "#f1f3f9",
+    minHeight: "100vh",
+    paddingTop: "64px",
+    padding: "20px",
+  },
+  title: {
+    textAlign: "center",
+    "& h1": {
+      paddingTop: "100px",
+    },
+  },
+  table: {
+    maxWidth: "640px",
+    margin: "auto",
+    display: "grid",
+    gridAutoRwos: "auto",
+    gridTemplateColumns: "auto",
+    gridGap: "10px",
+    [theme.breakpoints.up("md")]: {
+      gridTemplateColumns: "150px auto",
+    },
+    "& p": {
+      margin: 0,
+      ["&:nth-child(odd)"]: {
+        fontWeight: "bold",
+      },
+    },
+  },
+  endpointContainer: {
+    maxWidth: "700px",
+    margin: "auto",
+  },
+  codeblock: {
+    backgroundColor: "#34448e",
+    padding: "10px",
+    color: "#FFFFFF",
+    borderRadius: "5px",
+    overflowX: "auto",
+  },
+  columnBlock: {
+    display: "grid",
+    gridTemplateColumns: "auto",
+    gridAutoRows: "auto",
+    [theme.breakpoints.up("md")]: {
+      gridTemplateColumns: "150px auto",
+      "& h2": {
+        fontSize: "24px",
+      },
+    },
+    "& h2": {
+      fontSize: "18px",
+    },
+  },
+}));
+
+const V4Docs: React.FC<{}> = () => {
+  const classes = useStyles();
+
   return (
     <>
       <NextSeo
@@ -349,9 +413,9 @@ export default function DevelopersPage() {
           description: "Learn about floatingfile's APIs.",
         }}
       />
-      <NavBar />
-      <main className={styles.root}>
-        <div className={styles.title}>
+      <Nav />
+      <main className={classes.root}>
+        <div className={classes.title}>
           <h1>floatingfile APIs</h1>
         </div>
         <div style={{ maxWidth: "700px", margin: "auto" }}>
@@ -361,22 +425,22 @@ export default function DevelopersPage() {
             using these APIs, please contact Gareth.
           </p>
         </div>
-        <div className={styles.table}>
+        <div className={classes.table}>
           <p>Version:</p>
-          <p>3</p>
+          <p>4</p>
           <p>Base URL:</p>
           <p>https://developer.floatingfile.space</p>
           <p>Last Updated:</p>
-          <p>July 14, 2020</p>
+          <p>January 31, 2021</p>
           <p>Status:</p>
           <p>Stable</p>
         </div>
         <div>
           {apis.map((api, index) => {
             return (
-              <div className={styles.endpointContainer}>
+              <div className={classes.endpointContainer}>
                 <div style={{ marginTop: "30px" }}>
-                  <div className={styles.columnBlock}>
+                  <div className={classes.columnBlock}>
                     <h2 style={{ fontWeight: "bold", margin: 0 }}>
                       {api.method}
                     </h2>
@@ -395,8 +459,8 @@ export default function DevelopersPage() {
                     Path Parameters
                   </p>
                 )}
-                <div className={styles.columnBlock}>
-                  {api.request.pathParameters.map((x) => {
+                <div className={classes.columnBlock}>
+                  {(api.request.pathParameters || []).map((x) => {
                     return (
                       <>
                         <p style={{ margin: "5px 0" }}>{x.name}</p>
@@ -410,8 +474,8 @@ export default function DevelopersPage() {
                     Query Parameters
                   </p>
                 )}
-                <div className={styles.columnBlock}>
-                  {api.request.queryParameters.map((x) => {
+                <div className={classes.columnBlock}>
+                  {(api.request.queryParameters || []).map((x) => {
                     return (
                       <>
                         <p style={{ margin: "5px 0" }}>{x.name}</p>
@@ -425,7 +489,7 @@ export default function DevelopersPage() {
                     <p style={{ margin: 0, textDecoration: "underline" }}>
                       Body
                     </p>
-                    <pre className={styles.codeblock}>
+                    <pre className={classes.codeblock}>
                       {JSON.stringify(api.request.body, null, 2)}
                     </pre>
                   </>
@@ -433,21 +497,21 @@ export default function DevelopersPage() {
 
                 <h3 style={{ margin: 0 }}>Responses</h3>
                 <div>
-                  {api.responses.map((response) => {
+                  {(api.responses || []).map((response) => {
                     return (
-                      <div className={styles.columnBlock}>
+                      <div className={classes.columnBlock}>
                         <p style={{ margin: "5px 0" }}>{response.status}</p>
                         <p style={{ margin: "5px 0" }}>
                           {response.description}
                         </p>
-                        {response.body && (
+                        {/* {response?.body && (
                           <>
                             <div></div>
-                            <pre className={styles.codeblock}>
+                            <pre className={classes.codeblock}>
                               {JSON.stringify(response.body, null, 4)}
                             </pre>
                           </>
-                        )}
+                        )} */}
                       </div>
                     );
                   })}
@@ -460,4 +524,6 @@ export default function DevelopersPage() {
       <Footer />
     </>
   );
-}
+};
+
+export default V4Docs;

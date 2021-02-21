@@ -1,5 +1,6 @@
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Center from "../components/Center";
+import Center from "../src/components/Center";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Custom404() {
+const Custom404: React.FC<{}> = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -23,4 +24,5 @@ export default function Custom404() {
       </Center>
     </div>
   );
-}
+};
+export default Custom404;

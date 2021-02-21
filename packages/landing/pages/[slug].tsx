@@ -1,23 +1,72 @@
 import fs from "fs";
 import path from "path";
 import { NextSeo } from "next-seo";
-import styles from "../styles/slug.module.css";
-import NavBar from "../components/NavBar";
-import Footer from "../components/Footer";
-import * as matter from "gray-matter";
+import Nav from "../src/components/Nav";
+import Footer from "../src/components/Footer";
+import matter from "gray-matter";
 import marked from "marked";
 import Icon from "@mdi/react";
 import { mdiLock, mdiFileDocument } from "@mdi/js";
 import { motion } from "framer-motion";
+import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
 
-export default function Post({ data, htmlString }) {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: "#f1f3f9",
+    height: "100%",
+  },
+  content: {
+    minHeight: "100vh",
+    marginTop: "64px",
+  },
+  page: {
+    borderRadius: "10px",
+    boxShadow: theme.shadows[2],
+    backgroundColor: "#FFFFFF",
+    padding: "20px",
+    transform: "translateY(50px)",
+    maxWidth: "960px",
+    margin: "auto",
+    zIndex: -1,
+  },
+  iconContainer: {
+    textAlign: "center",
+    paddingTop: "20px",
+  },
+  icon: {
+    color: "#34448e",
+  },
+  title: {
+    textAlign: "center",
+    marginBottom: 0,
+  },
+  datetime: {
+    opacity: 0.5,
+    textAlign: "center",
+    marginBottom: "30px",
+    marginTop: "0",
+  },
+  main: {
+    "& p": {
+      textAlign: "justify",
+    },
+  },
+}));
+
+const Post: React.FC<{
+  data: any;
+  htmlString: string;
+}> = ({ data, htmlString }) => {
+  const classes = useStyles();
+
   function renderIcon(iconType) {
     switch (iconType) {
       case "mdiLock":
-        return <Icon path={mdiLock} size={"42px"} className={styles.icon} />;
+        return <Icon path={mdiLock} size={"42px"} className={classes.icon} />;
       case "mdiFileDocument":
         return (
-          <Icon path={mdiFileDocument} size="42px" className={styles.icon} />
+          <Icon path={mdiFileDocument} size="42px" className={classes.icon} />
         );
       default:
         return null;
@@ -36,8 +85,8 @@ export default function Post({ data, htmlString }) {
           description: data.seo_description,
         }}
       />
-      <div className={styles.root}>
-        <NavBar />
+      <div className={classes.root}>
+        <Nav />
         <motion.div
           initial="hidden"
           animate="visible"
@@ -55,18 +104,18 @@ export default function Post({ data, htmlString }) {
             },
           }}
         >
-          <div className={styles.content}>
-            <div className={styles.page}>
-              <div className={styles.iconContainer}>
+          <div className={classes.content}>
+            <div className={classes.page}>
+              <div className={classes.iconContainer}>
                 {renderIcon(data.iconType)}
               </div>
-              <h1 className={styles.title}>{data.title}</h1>
-              <p className={styles.datetime}>
+              <h1 className={classes.title}>{data.title}</h1>
+              <p className={classes.datetime}>
                 Last Updated: {data.lastUpdated}
               </p>
 
               <div
-                className={styles.main}
+                className={classes.main}
                 dangerouslySetInnerHTML={{ __html: htmlString }}
               />
             </div>
@@ -79,10 +128,10 @@ export default function Post({ data, htmlString }) {
       </div>
     </>
   );
-}
+};
 
 export async function getStaticPaths() {
-  const filenames = fs.readdirSync("posts");
+  const filenames = fs.readdirSync(path.join("src", "content", "posts"));
   const paths = filenames.map((filename) => ({
     params: { slug: filename.replace(".md", "") },
   }));
@@ -93,7 +142,9 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params: { slug } }) {
-  const rawMd = fs.readFileSync(path.join("posts", slug + ".md"));
+  const rawMd = fs.readFileSync(
+    path.join("src", "content", "posts", slug + ".md")
+  );
   const parsedMd = matter(rawMd);
   const htmlString = marked(parsedMd.content);
 
@@ -104,3 +155,5 @@ export async function getStaticProps({ params: { slug } }) {
     },
   };
 }
+
+export default Post;

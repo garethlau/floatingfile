@@ -1,13 +1,11 @@
 import React from "react";
-import Footer from "../components/Footer";
-import NavBar from "../components/NavBar";
-import AppStoreBtn from "../components/AppStoreBtn";
+import Footer from "../src/components/Footer";
+import Nav from "../src/components/Nav";
+import StoreButton from "../src/components/StoreButton";
 import { NextSeo } from "next-seo";
 import { makeStyles } from "@material-ui/core/styles";
-import { Colors, BoxShadows } from "../constants";
-import useWindowWidth from "../hooks/useWindowWidth";
+import { Colors, BoxShadows } from "../src/constants";
 import { motion } from "framer-motion";
-import EnterInView from "../wrappers/EnterInView";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,9 +43,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function DownloadPage() {
+const DownloadPage: React.FC<{}> = () => {
   const cls = useStyles();
-  const windowWidth = useWindowWidth();
 
   return (
     <>
@@ -60,7 +57,7 @@ export default function DownloadPage() {
           description: "Download floatingfile on your device!",
         }}
       />
-      <NavBar />
+      <Nav />
       <div className={cls.root}>
         <motion.div
           initial="hidden"
@@ -147,7 +144,7 @@ export default function DownloadPage() {
             <div
               style={{ margin: "auto", padding: "30px", width: "min-content" }}
             >
-              <AppStoreBtn />
+              <StoreButton store="apple" />
             </div>
           </div>
         </motion.div>
@@ -155,4 +152,6 @@ export default function DownloadPage() {
       <Footer />
     </>
   );
-}
+};
+
+export default DownloadPage;

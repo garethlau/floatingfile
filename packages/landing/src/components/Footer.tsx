@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Footer() {
+const Footer: React.FC<{}> = () => {
   const cls = useStyles();
   return (
     <footer className={cls.root}>
@@ -89,4 +89,6 @@ export default function Footer() {
       </Container>
     </footer>
   );
-}
+};
+
+export default Footer;
