@@ -3,6 +3,7 @@
   "version": "1.3.0",
   "description": "Web app for cross platform file sharing",
   "main": "index.ts",
+  "private": true,
   "scripts": {
     "start": "tsc && node ./build/index.js",
     "dev": "nodemon index.ts",
