@@ -80,7 +80,7 @@ if (NODE_ENV === "staging" || NODE_ENV === "beta") {
   logger.info("ENVIRONMENT IS " + NODE_ENV);
   logger.info("SERVING CLIEN");
 
-  const APP_OUT_DIRECTORY = path.join(__dirname, "..", "client/out");
+  const APP_OUT_DIRECTORY = path.join(__dirname, "..", "..", "client/out");
   const APP_INDEX = path.join(APP_OUT_DIRECTORY, "index.html");
 
   app.use(express.static(path.join(__dirname, "..", "client", "build")));
