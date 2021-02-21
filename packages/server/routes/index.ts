@@ -1,5 +1,6 @@
 import express from "express";
 import v4Routes from "./v4";
+import v3Routes from "./v3";
 export const router = express.Router();
 const middlewares = require("../middleware");
 
@@ -31,5 +32,5 @@ router.get("/apple-app-site-association", (req, res) => {
   res.end(JSON.stringify(siteAssociation));
 });
 
-router.use("/api/v3", middlewares.requireKey, require("./v3"));
+router.use("/api/v3", middlewares.requireKey, v3Routes);
 router.use("/api/v4", middlewares.requireKey, v4Routes);

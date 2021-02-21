@@ -6,5 +6,5 @@ ecosystem.config.js
 /tmp
 *.ecosystem.config.js
 .env
-/build
 /out
+/build
