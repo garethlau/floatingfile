@@ -4,6 +4,7 @@
   "description": "Web app for cross platform file sharing",
   "main": "index.ts",
   "scripts": {
+    "start": "tsc && node ./build/index.js",
     "dev": "nodemon index.ts",
     "build": "tsc --project ./ && rm -rf out && mv build out"
   },
