@@ -5,12 +5,4 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [1.2.0](https://github.com/garethlau/floatingfile-mono/compare/v1.1.2...v1.2.0) (2021-02-21)
 
-**Note:** Version bump only for package @floatingfile/landing
-
-
-
-
-
-# 1.1.0 (2021-02-19)
-
-**Note:** Version bump only for package @floatingfile/landing
+**Note:** Version bump only for package @floatingfile/types
