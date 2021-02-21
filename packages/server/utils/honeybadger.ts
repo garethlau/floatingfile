@@ -1,4 +1,4 @@
-const { NODE_ENV, HONEYBADGER_API_KEY } = require("../config");
+import { NODE_ENV, HONEYBADGER_API_KEY } from "../config";
 
 const Honeybadger = require("honeybadger").configure({
   apiKey: HONEYBADGER_API_KEY,
@@ -6,4 +6,4 @@ const Honeybadger = require("honeybadger").configure({
   developmentEnvironments: ["dev", "development"],
 });
 
-module.exports = Honeybadger;
+export default Honeybadger;

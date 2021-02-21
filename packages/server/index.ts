@@ -5,11 +5,11 @@ import bodyParser from "body-parser";
 import path from "path";
 require("./models");
 import { router } from "./routes";
+import logger from "./utils/logger";
+import Honeybadger from "./utils/honeybadger";
 const zip = require("express-easy-zip");
 const morgan = require("morgan");
-const { PORT, NODE_ENV, MONGO_URI } = require("./config");
-const logger = require("./utils/logger");
-const Honeybadger = require("./utils/honeybadger");
+import { PORT, NODE_ENV, MONGO_URI } from "./config";
 
 const app = express();
 
@@ -80,7 +80,7 @@ if (NODE_ENV === "staging" || NODE_ENV === "beta") {
   logger.info("ENVIRONMENT IS " + NODE_ENV);
   logger.info("SERVING CLIEN");
 
-  const APP_OUT_DIRECTORY = path.join(__dirname, "..", "client/out");
+  const APP_OUT_DIRECTORY = path.join(__dirname, "..", "..", "client/out");
   const APP_INDEX = path.join(APP_OUT_DIRECTORY, "index.html");
 
   app.use(express.static(path.join(__dirname, "..", "client", "build")));
@@ -91,5 +91,6 @@ if (NODE_ENV === "staging" || NODE_ENV === "beta") {
 }
 
 app.listen(PORT, () => {
+  logger.info(`${MONGO_URI} ${NODE_ENV}`);
   logger.info("Listening on PORT: " + PORT);
 });
