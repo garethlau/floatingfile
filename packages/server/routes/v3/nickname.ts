@@ -1,4 +1,4 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
 const animals = [
@@ -385,4 +385,4 @@ router.get("/", (_, res) => {
   return res.status(200).send({ username });
 });
 
-module.exports = router;
+export default router;
