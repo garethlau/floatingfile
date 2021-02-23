@@ -34,13 +34,6 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto",
   },
   footer: { textAlign: "center", margin: "20px" },
-  root: {
-    display: "grid",
-    height: "100%",
-    width: "100%",
-    gridTemplateRows: "70px auto 200px",
-    backgroundColor: Colors.WHITE,
-  },
   title: {
     color: Colors.LIGHT_ACCENT,
     textAlign: "center",
