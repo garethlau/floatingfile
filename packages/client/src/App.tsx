@@ -120,11 +120,7 @@ const App: React.FC<{}> = () => {
                     <Suspense fallback={null}>
                       <Switch>
                         <Route exact path="/" component={Landing} />
-                        <Route path="/s/:code">
-                          <SpaceValidator>
-                            <Space />
-                          </SpaceValidator>
-                        </Route>
+                        <Route path="/s/:code" component={Space} />
                         <Route component={NotFound} />
                       </Switch>
                     </Suspense>
