@@ -1,12 +1,16 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Colors, Elevation } from "@floatingfile/common";
+import { useHistory } from "react-router-dom";
+import clsx from "clsx";
 
 interface NavTileProps {
-  active: boolean;
   children: React.ReactNode;
-  onClick: React.MouseEventHandler<HTMLDivElement>;
   collapsed: boolean;
+  name: string;
+  baseUrl: string;
+  active: boolean;
+  url: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -14,12 +18,19 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     width: "100%",
     color: Colors.WHITE,
+
     transition: "ease 0.3s",
     "&:hover": {
       cursor: "pointer",
       boxShadow: Elevation.TWO,
     },
   },
+  active: {
+    backgroundColor: Colors.WHITE,
+    color: Colors.MAIN_BRAND,
+    boxShadow: Elevation.FOUR,
+  },
+
   centerWrapper: {
     display: "table",
     height: "100%",
@@ -33,30 +44,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const NavTile: React.FC<NavTileProps> = ({
-  active,
   children,
-  onClick,
+  name,
   collapsed,
+  baseUrl,
+  active,
+  url,
   ...others
 }) => {
   const cls = useStyles();
+  const history = useHistory();
 
   return (
     <div
-      onClick={onClick}
-      className={cls.root}
-      style={
-        active
-          ? {
-              color: Colors.MAIN_BRAND,
-              backgroundColor: !collapsed ? Colors.WHITE : Colors.LIGHT_SHADE,
-              boxShadow: Elevation.FOUR,
-            }
-          : {
-              color: Colors.WHITE,
-              opacity: 1,
-            }
-      }
+      onClick={() => history.push(url)}
+      className={clsx(cls.root, active && cls.active)}
       {...others}
     >
       <div className={cls.centerWrapper}>
