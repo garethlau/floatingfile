@@ -17,7 +17,6 @@ import ReactGA from "react-ga";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SelectedFilesProvider } from "./contexts/selectedFiles";
 import { UploadServiceProvider } from "./contexts/uploadService";
-import SpaceValidator from "./wrappers/SpaceValidator";
 
 const Space = React.lazy(() => import("./pages/Space"));
 const Landing = React.lazy(() => import("./pages/Landing"));
