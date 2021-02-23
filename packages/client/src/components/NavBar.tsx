@@ -64,7 +64,7 @@ const NavBar: React.FC<{
         { name: "", icon: <PublicIcon /> },
         { name: `/history`, icon: <HistoryIcon /> },
         { name: `/users`, icon: <PeopleIcon /> },
-        { name: "/settings", icon: <SettingsIcon /> },
+        // { name: "/settings", icon: <SettingsIcon /> },
       ].map(({ name, icon }, index) => (
         <div className={clsx(name === "/files" && classes.filesTab)}>
           <NavTile
