@@ -12,57 +12,35 @@ import {
   Route,
   RouteComponentProps,
 } from "react-router-dom";
-import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { isMobile } from "react-device-detect";
 import MoonLoader from "react-spinners/MoonLoader";
 import { useSnackbar } from "notistack";
-import { AnimatePresence, motion } from "framer-motion";
 import { makeStyles } from "@material-ui/core/styles";
-import PublicIcon from "@material-ui/icons/Public";
-import HistoryIcon from "@material-ui/icons/History";
-import PeopleIcon from "@material-ui/icons/People";
-import FolderIcon from "@material-ui/icons/Folder";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import SettingsIcon from "@material-ui/icons/Settings";
-import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
-import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
-import DeleteIcon from "@material-ui/icons/Delete";
-import ClearIcon from "@material-ui/icons/Clear";
 import {
   BASE_API_URL,
   USERNAME_STORAGE_KEY,
   LAST_VISIT_STORAGE_KEY,
 } from "../env";
 import { Colors } from "@floatingfile/common";
-import { Breakpoints } from "../constants";
-import { SelectedFilesContext } from "../contexts/selectedFiles";
-import { UploadServiceContext } from "../contexts/uploadService";
-import FileUploadBtn from "../components/FileUploadBtn";
-import Center from "../components/Center";
 import Button from "../components/Button";
-import NavTile from "../components/NavTile";
-import GIconButton from "../components/GIconButton";
 import IntroToast from "../components/IntroToast";
 import UploadQueue from "../components/UploadQueue";
 import useSpace from "../queries/useSpace";
 import useFiles from "../queries/useFiles";
 import useUsers from "../queries/useUsers";
 import { default as useSpaceHistory } from "../queries/useHistory";
-import useRemoveFiles from "../mutations/useRemoveFiles";
 import useWindowWidth from "../hooks/useWindowWidth";
 import useDocumentTitle from "../hooks/useDocumentTitle";
-import { saveBlob } from "../utils";
 import FullPageLoader from "../components/FullPageLoader";
 import SpaceNotFound from "../components/SpaceNotFound";
-
 import FilesPanel from "../components/FilesPanel";
 import NavBar from "../components/NavBar";
+
 const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
 const ConnectPanel = React.lazy(() => import("../components/ConnectPanel"));
 const HistoryPanel = React.lazy(() => import("../components/HistoryPanel"));
 const UsersPanel = React.lazy(() => import("../components/UsersPanel"));
-const FileListItem = React.lazy(() => import("../components/FileListItem"));
 
 enum Events {
   CONNECTION_ESTABLISHED = "CONNECTION_ESTABLISHED",
