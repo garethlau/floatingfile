@@ -30,29 +30,29 @@ import {
 } from "../env";
 import { Colors } from "@floatingfile/common";
 import { Breakpoints } from "../constants";
-import { SelectedFilesContext } from "../_contexts/selectedFiles";
-import { UploadServiceContext } from "../_contexts/uploadService";
-import FileUploadBtn from "../_components/FileUploadBtn";
-import Center from "../_components/Center";
-import Button from "../_components/Button";
-import NavTile from "../_components/NavTile";
-import GIconButton from "../_components/GIconButton";
-import IntroToast from "../_components/IntroToast";
-import UploadQueue from "../_components/UploadQueue";
-import useSpace from "../_queries/useSpace";
-import useFiles from "../_queries/useFiles";
-import useUsers from "../_queries/useUsers";
-import { default as useSpaceHistory } from "../_queries/useHistory";
-import useRemoveFiles from "../_mutations/useRemoveFiles";
-import useWindowWidth from "../_hooks/useWindowWidth";
-import useDocumentTitle from "../_hooks/useDocumentTitle";
-import { saveBlob } from "../_utils";
+import { SelectedFilesContext } from "../contexts/selectedFiles";
+import { UploadServiceContext } from "../contexts/uploadService";
+import FileUploadBtn from "../components/FileUploadBtn";
+import Center from "../components/Center";
+import Button from "../components/Button";
+import NavTile from "../components/NavTile";
+import GIconButton from "../components/GIconButton";
+import IntroToast from "../components/IntroToast";
+import UploadQueue from "../components/UploadQueue";
+import useSpace from "../queries/useSpace";
+import useFiles from "../queries/useFiles";
+import useUsers from "../queries/useUsers";
+import { default as useSpaceHistory } from "../queries/useHistory";
+import useRemoveFiles from "../mutations/useRemoveFiles";
+import useWindowWidth from "../hooks/useWindowWidth";
+import useDocumentTitle from "../hooks/useDocumentTitle";
+import { saveBlob } from "../utils";
 
-const SettingsPanel = React.lazy(() => import("../_components/SettingsPanel"));
-const ConnectPanel = React.lazy(() => import("../_components/ConnectPanel"));
-const HistoryPanel = React.lazy(() => import("../_components/HistoryPanel"));
-const UsersPanel = React.lazy(() => import("../_components/UsersPanel"));
-const FileListItem = React.lazy(() => import("../_components/FileListItem"));
+const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
+const ConnectPanel = React.lazy(() => import("../components/ConnectPanel"));
+const HistoryPanel = React.lazy(() => import("../components/HistoryPanel"));
+const UsersPanel = React.lazy(() => import("../components/UsersPanel"));
+const FileListItem = React.lazy(() => import("../components/FileListItem"));
 
 enum Events {
   CONNECTION_ESTABLISHED = "CONNECTION_ESTABLISHED",

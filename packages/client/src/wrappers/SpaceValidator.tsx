@@ -3,8 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { BASE_API_URL } from "../env";
 import axios from "axios";
 import { Colors } from "@floatingfile/common";
-import Center from "../_components/Center";
-import FullPageLoader from "../_components/FullPageLoader";
+import Center from "../components/Center";
+import FullPageLoader from "../components/FullPageLoader";
 import { useParams } from "react-router-dom";
 
 interface SpaceValidatorProps {

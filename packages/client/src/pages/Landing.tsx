@@ -5,11 +5,11 @@ import axios from "axios";
 import { useSnackbar, SnackbarOrigin } from "notistack";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import GInput from "../_components/GInput";
-import Button from "../_components/Button";
-import Seperator from "../_components/Seperator";
-import useDocumentTitle from "../_hooks/useDocumentTitle";
-import useCreateSpace from "../_mutations/useCreateSpace";
+import GInput from "../components/GInput";
+import Button from "../components/Button";
+import Seperator from "../components/Seperator";
+import useDocumentTitle from "../hooks/useDocumentTitle";
+import useCreateSpace from "../mutations/useCreateSpace";
 
 const anchorOrigin: SnackbarOrigin = {
   vertical: "top",

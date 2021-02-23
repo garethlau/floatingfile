@@ -1,6 +1,6 @@
 import React from "react";
-import Center from "../_components/Center";
-import useDocumentTitle from "../_hooks/useDocumentTitle";
+import Center from "../components/Center";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const NotFound: React.FC<void> = () => {
   useDocumentTitle("floatingfile");

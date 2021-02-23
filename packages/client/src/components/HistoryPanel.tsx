@@ -11,7 +11,7 @@ import {
   mdiAccountMinus,
 } from "@mdi/js";
 import Icon from "@mdi/react";
-import useHistory from "../_queries/useHistory";
+import useHistory from "../queries/useHistory";
 import { useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 

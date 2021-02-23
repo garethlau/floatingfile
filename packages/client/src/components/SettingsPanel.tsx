@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { Colors } from "@floatingfile/common";
 import { useParams } from "react-router-dom";
-import useSpace from "../_queries/useSpace";
-import { formatFileSize } from "../_utils/";
+import useSpace from "../queries/useSpace";
+import { formatFileSize } from "../utils";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Button from "./Button";
 

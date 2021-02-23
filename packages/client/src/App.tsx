@@ -11,17 +11,17 @@ import {
   ENVIRONMENT,
   LAST_VISIT_STORAGE_KEY,
 } from "./env";
-import useWindowWidth from "./_hooks/useWindowWidth";
+import useWindowWidth from "./hooks/useWindowWidth";
 import axios from "axios";
 import ReactGA from "react-ga";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { SelectedFilesProvider } from "./_contexts/selectedFiles";
-import { UploadServiceProvider } from "./_contexts/uploadService";
-import SpaceValidator from "./_wrappers/SpaceValidator";
+import { SelectedFilesProvider } from "./contexts/selectedFiles";
+import { UploadServiceProvider } from "./contexts/uploadService";
+import SpaceValidator from "./wrappers/SpaceValidator";
 
-const Space = React.lazy(() => import("./_pages/Space"));
-const Landing = React.lazy(() => import("./_pages/Landing"));
-const NotFound = React.lazy(() => import("./_pages/NotFound"));
+const Space = React.lazy(() => import("./pages/Space"));
+const Landing = React.lazy(() => import("./pages/Landing"));
+const NotFound = React.lazy(() => import("./pages/NotFound"));
 
 ReactGA.initialize("UA-159864166-1", { debug: ENVIRONMENT === "development" });
 

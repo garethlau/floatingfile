@@ -4,7 +4,7 @@ import { Colors, Elevation } from "@floatingfile/common";
 import Button from "./Button";
 import GIconButton from "./GIconButton";
 import Center from "./Center";
-import useWindowWidth from "../_hooks/useWindowWidth";
+import useWindowWidth from "../hooks/useWindowWidth";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DeleteIcon from "@material-ui/icons/Delete";
 import OpenInBrowserIcon from "@material-ui/icons/OpenInBrowser";
@@ -42,11 +42,11 @@ import {
 } from "@mdi/js";
 import Icon from "@mdi/react";
 import { isMobile } from "react-device-detect";
-import useRemoveFile from "../_mutations/useRemoveFile";
+import useRemoveFile from "../mutations/useRemoveFile";
 import { useParams } from "react-router-dom";
-import { SelectedFilesContext } from "../_contexts/selectedFiles";
+import { SelectedFilesContext } from "../contexts/selectedFiles";
 import axios from "axios";
-import { saveBlob } from "../_utils";
+import { saveBlob } from "../utils";
 import { BASE_API_URL } from "../env";
 import { File } from "@floatingfile/types";
 
