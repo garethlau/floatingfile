@@ -11,6 +11,7 @@ import useSpace from "../queries/useSpace";
 import { useParams, useHistory } from "react-router-dom";
 import useDeleteSpace from "../mutations/useDeleteSpace";
 import Button from "./Button";
+import floatingfileImg from "../assets/images/floatingfile.png";
 
 const THIRTY_MINUTES: number = 30 * 60 * 1000;
 const FIVE_MINUTES: number = 5 * 60 * 1000;
@@ -151,7 +152,7 @@ const ConnectPanel: React.FC<{}> = () => {
               includeMargin={false}
               renderAs={"svg"}
               imageSettings={{
-                src: require("../assets/images/floatingfile.png"),
+                src: floatingfileImg,
                 height: 24,
                 width: 24,
                 excavate: true,
