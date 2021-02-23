@@ -53,6 +53,8 @@ import useRemoveFiles from "../mutations/useRemoveFiles";
 import useWindowWidth from "../hooks/useWindowWidth";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { saveBlob } from "../utils";
+import FullPageLoader from "../components/FullPageLoader";
+import SpaceNotFound from "../components/SpaceNotFound";
 
 import FilesPanel from "../components/FilesPanel";
 import NavBar from "../components/NavBar";
@@ -267,6 +269,9 @@ const Space: React.FC<SpaceProps> = (props) => {
 
   const [myClientId, setMyClientId] = useState<string>("");
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [exists, setExists] = useState<boolean>(false);
+
   useEffect(() => {
     if (spaceStatus === "success") {
     } else if (spaceStatus === "error") {
@@ -364,6 +369,33 @@ const Space: React.FC<SpaceProps> = (props) => {
     };
   }, [code]);
 
+  useEffect(() => {
+    if (code) {
+      axios
+        .get(`${BASE_API_URL}/api/v4/spaces/${code}`)
+        .then(() => {
+          setExists(true);
+        })
+        .catch((err) => {
+          if (!err.response) {
+            console.log(err);
+            return;
+          } else if (err.response.status === 404) {
+            // Space not found
+            setExists(false);
+          }
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, []);
+
+  if (isLoading) {
+    return <FullPageLoader />;
+  } else if (!exists) {
+    return <SpaceNotFound />;
+  }
   return (
     <React.Fragment>
       <UploadQueue />
