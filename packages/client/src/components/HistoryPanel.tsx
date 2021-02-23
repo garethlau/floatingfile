@@ -152,15 +152,14 @@ function renderTile(action: string, payload: string, author: string) {
 const HistoryPanel: React.FC<{}> = () => {
   const { code }: { code: string } = useParams();
   const { data: history } = useHistory(code);
-  console.log(history);
   const cls = useStyles();
   return (
     <div className={cls.root}>
       <h2 className={cls.title}>History</h2>
       <div className={cls.tileContainer}>
-        <AnimatePresence>
-          {history && history.length > 0 ? (
-            history
+        {history && history.length > 0 ? (
+          <AnimatePresence>
+            {history
               ?.sort((a, b) => {
                 return (
                   new Date(b.timestamp).getTime() -
@@ -182,13 +181,13 @@ const HistoryPanel: React.FC<{}> = () => {
                     <div>{renderTile(action, payload, author)}</div>
                   </motion.div>
                 );
-              })
-          ) : (
-            <p style={{ opacity: 0.5, textAlign: "center", margin: "0 10px" }}>
-              The history log will show up here.
-            </p>
-          )}
-        </AnimatePresence>
+              })}
+          </AnimatePresence>
+        ) : (
+          <p style={{ opacity: 0.5, textAlign: "center", margin: "0 10px" }}>
+            The history log will show up here.
+          </p>
+        )}
       </div>
     </div>
   );
