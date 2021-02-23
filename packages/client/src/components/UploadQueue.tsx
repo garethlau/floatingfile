@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     position: "fixed",
     boxShadow: theme.shadows[10],
     borderRadius: "5px",
-    zIndex: 5,
+    zIndex: 15,
     transition: "height ease 0.2s",
   },
   minimized: {
