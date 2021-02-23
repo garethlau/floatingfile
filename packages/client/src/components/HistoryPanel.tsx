@@ -150,40 +150,47 @@ function renderTile(action: string, payload: string, author: string) {
 const HistoryPanel: React.FC<{ collapsed?: boolean }> = ({ collapsed }) => {
   const { code }: { code: string } = useParams();
   const { data: history } = useHistory(code);
+  console.log(history);
   const cls = useStyles();
   return (
     <div className={cls.root}>
       <h2 className={cls.title}>History</h2>
       <div className={cls.tileContainer}>
         <AnimatePresence>
-          {history
-            ?.sort((a, b) => {
-              return (
-                new Date(b.timestamp).getTime() -
-                new Date(a.timestamp).getTime()
-              );
-            })
-            .map(({ payload, author, action, timestamp }, index) => {
-              return (
-                <motion.div
-                  initial={{ opacity: 0, y: -50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className={cls.tile}
-                  style={{
-                    backgroundColor: !collapsed
-                      ? Colors.LIGHT_SHADE
-                      : Colors.WHITE,
-                  }}
-                  key={timestamp}
-                >
-                  <div>
-                    <Center>{renderIcon(action)}</Center>
-                  </div>
-                  <div>{renderTile(action, payload, author)}</div>
-                </motion.div>
-              );
-            })}
+          {history && history.length > 0 ? (
+            history
+              ?.sort((a, b) => {
+                return (
+                  new Date(b.timestamp).getTime() -
+                  new Date(a.timestamp).getTime()
+                );
+              })
+              .map(({ payload, author, action, timestamp }, index) => {
+                return (
+                  <motion.div
+                    initial={{ opacity: 0, y: -50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className={cls.tile}
+                    style={{
+                      backgroundColor: !collapsed
+                        ? Colors.LIGHT_SHADE
+                        : Colors.WHITE,
+                    }}
+                    key={timestamp}
+                  >
+                    <div>
+                      <Center>{renderIcon(action)}</Center>
+                    </div>
+                    <div>{renderTile(action, payload, author)}</div>
+                  </motion.div>
+                );
+              })
+          ) : (
+            <p style={{ opacity: 0.5, textAlign: "center", margin: "0 10px" }}>
+              The history log will show up here.
+            </p>
+          )}
         </AnimatePresence>
       </div>
     </div>
