@@ -5,7 +5,13 @@ import React, {
   Suspense,
   useContext,
 } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import {
+  useHistory,
+  useParams,
+  Switch,
+  Route,
+  RouteComponentProps,
+} from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { isMobile } from "react-device-detect";
@@ -48,6 +54,8 @@ import useWindowWidth from "../hooks/useWindowWidth";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { saveBlob } from "../utils";
 
+import FilesPanel from "../components/FilesPanel";
+import NavBar from "../components/NavBar";
 const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
 const ConnectPanel = React.lazy(() => import("../components/ConnectPanel"));
 const HistoryPanel = React.lazy(() => import("../components/HistoryPanel"));
@@ -63,207 +71,201 @@ enum Events {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  rootLarge: {
     width: "100vw",
     height: "100vh",
     display: "grid",
-    [theme.breakpoints.up("xs")]: {
-      // gridTemplateAreas: "'main' 'nav'",
-      // gridTemplateRows: "calc(100vh - 64px) 64px",
-      gridTemplateAreas: "'nav' 'main'",
-      gridTemplateRows: "64px auto",
-      gridTemplateColumns: "1fr",
-    },
-    [theme.breakpoints.up("sm")]: {
-      gridTemplateAreas: "'main' 'nav'",
-      gridTemplateRows: "calc(100vh - 64px) 64px",
-    },
-    [theme.breakpoints.up("md")]: {
-      gridTemplateAreas: "'nav panel main'",
-      gridTemplateRows: "100vh",
-      gridTemplateColumns: "80px 240px auto",
-    },
-    [theme.breakpoints.up("lg")]: {},
-    [theme.breakpoints.up("xl")]: {},
+    gridTemplateAreas: "'nav panel main'",
+    gridTemplateRows: "100vh",
+    gridTemplateColumns: "80px 240px auto",
   },
-  centerWrapper: {
-    display: "table",
-    height: "100%",
-    width: "100%",
-  },
-  center: {
-    display: "table-cell",
-    verticalAlign: "middle",
-    textAlign: "center",
-  },
-  nav: {
-    gridArea: "nav",
-    backgroundColor: Colors.MAIN_BRAND,
+  rootMedium: {
+    width: "100vw",
+    height: "100vh",
     display: "grid",
-    gridTemplateColumns: "repeat(5, 64px)",
-    gridTemplateRows: "1fr",
-    [theme.breakpoints.up("md")]: {
-      gridTemplateColumns: "1fr",
-      gridTemplateRows: "repeat(4, 80px)",
-    },
+    gridTemplateAreas: "'main' 'nav'",
+    gridTemplateRows: "calc(100vh - 64px) 64px",
+    gridTemplateColumns: "auto",
   },
-  filesTab: {
-    [theme.breakpoints.up("md")]: {
-      display: "none",
-    },
+  rootSmall: {
+    width: "100vw",
+    height: "100vh",
+    display: "grid",
+    gridTemplateAreas: "'nav' 'main'",
+    gridTemplateRows: "64px auto",
+    gridTemplateColumns: "1fr",
   },
-  panel: {
-    [theme.breakpoints.down("sm")]: {
-      display: "none",
-    },
+  navContainer: {
+    gridArea: "nav",
+  },
+  panelContainer: {
     gridArea: "panel",
     backgroundColor: Colors.WHITE,
-  },
-  main: {
-    gridArea: "main",
-    backgroundColor: Colors.LIGHT_SHADE,
-    display: "grid",
-    gridTemplateRows: "auto",
-    [theme.breakpoints.up("sm")]: {
-      gridTemplateRows: "calc(100vh - 64px)",
-    },
-    [theme.breakpoints.up("md")]: {
-      gridTemplateRows: "64px calc(100vh - 64px)",
-    },
-    [theme.breakpoints.up("lg")]: {},
-  },
-  appBar: {
-    height: "64px",
-    padding: "0px 10px",
-    backgroundColor: Colors.MAIN_BRAND,
-  },
-  left: {
-    float: "left",
-    height: "64px",
-    width: "min-content",
-    padding: "0 10px 0 0",
-  },
-  right: {
-    float: "right",
-    height: "64px",
-    width: "min-content",
-    margin: "0 0 0 10px",
-  },
-  uploadZone: {
-    width: "100%",
     height: "100%",
-    "&:hover": {
-      cursor: "pointer",
-    },
-    "&:focus": {
-      outline: "none",
-    },
+  },
+  mainContainer: {
+    gridArea: "main",
+    zIndex: 10,
   },
 }));
 
 const panelFallback = null;
 
-const Space: React.FC<{}> = () => {
-  const cls = useStyles();
+const SMLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
+  const classes = useStyles();
+  return (
+    <div className={classes.rootSmall}>
+      <div className={classes.navContainer}>
+        <NavBar size="small" baseUrl={match.url} />
+      </div>
+      <div className={classes.mainContainer}>
+        <Switch>
+          <Route path={`${match.path}/settings`}>
+            <Suspense fallback={panelFallback}>
+              <SettingsPanel />
+            </Suspense>
+          </Route>
+          <Route path={`${match.path}/history`}>
+            <Suspense fallback={panelFallback}>
+              <HistoryPanel />
+            </Suspense>
+          </Route>
+
+          <Route path={`${match.path}/users`}>
+            <Suspense fallback={panelFallback}>
+              <UsersPanel myClientId={clientId} />
+            </Suspense>
+          </Route>
+          <Route path={`${match.path}/files`} component={FilesPanel} />
+          <Route path={`${match.path}`}>
+            <div
+              style={{
+                height: "100%",
+              }}
+            >
+              <Suspense fallback={panelFallback}>
+                <ConnectPanel />
+              </Suspense>
+            </div>
+          </Route>
+        </Switch>
+      </div>
+    </div>
+  );
+};
+
+const MDLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
+  const classes = useStyles();
+  return (
+    <div className={classes.rootMedium}>
+      <div className={classes.mainContainer}>
+        <Switch>
+          <Route path={`${match.path}/settings`}>
+            <Suspense fallback={panelFallback}>
+              <SettingsPanel />
+            </Suspense>
+          </Route>
+          <Route path={`${match.path}/history`}>
+            <Suspense fallback={panelFallback}>
+              <HistoryPanel />
+            </Suspense>
+          </Route>
+
+          <Route path={`${match.path}/users`}>
+            <Suspense fallback={panelFallback}>
+              <UsersPanel myClientId={clientId} />
+            </Suspense>
+          </Route>
+          <Route path={`${match.path}/files`} component={FilesPanel} />
+          <Route path={`${match.path}`}>
+            <div
+              style={{
+                height: "100%",
+              }}
+            >
+              <Suspense fallback={panelFallback}>
+                <ConnectPanel />
+              </Suspense>
+            </div>
+          </Route>
+        </Switch>
+      </div>
+      <div className={classes.navContainer}>
+        <NavBar baseUrl={match.url} size="medium" />
+      </div>
+    </div>
+  );
+};
+
+const LGLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
+  const classes = useStyles();
+  return (
+    <div className={classes.rootLarge}>
+      <div className={classes.navContainer}>
+        <NavBar baseUrl={match.url} size="large" />
+      </div>
+      <div className={classes.panelContainer}>
+        <Switch>
+          <Route path={`${match.path}/settings`}>
+            <Suspense fallback={panelFallback}>
+              <SettingsPanel />
+            </Suspense>
+          </Route>
+          <Route path={`${match.path}/history`}>
+            <Suspense fallback={panelFallback}>
+              <HistoryPanel />
+            </Suspense>
+          </Route>
+
+          <Route path={`${match.path}/users`}>
+            <Suspense fallback={panelFallback}>
+              <UsersPanel myClientId={clientId} />
+            </Suspense>
+          </Route>
+          <Route path={`${match.path}`}>
+            <div
+              style={{
+                height: "100%",
+              }}
+            >
+              <Suspense fallback={panelFallback}>
+                <ConnectPanel />
+              </Suspense>
+            </div>
+          </Route>
+        </Switch>
+      </div>
+      <div className={classes.mainContainer}>
+        <FilesPanel />
+      </div>
+    </div>
+  );
+};
+
+interface MatchParams {
+  code: string;
+}
+
+interface SpaceProps extends RouteComponentProps<MatchParams> {
+  clientId: string;
+}
+
+const Space: React.FC<SpaceProps> = (props) => {
   const windowWidth = useWindowWidth();
   const history = useHistory();
   const { code }: { code: string } = useParams();
-  const {
-    selected,
-    isSelected,
-    clear: clearSelectedFiles,
-    setSelected,
-  } = useContext(SelectedFilesContext);
 
   useDocumentTitle(`floatingfile | ${code}`);
 
   const { status: spaceStatus, refetch: refetchSpace } = useSpace(code);
 
-  const [activePanel, setActivePanel] = useState<number>(1);
-  const [collapsed, setCollapsed] = useState<boolean>(false);
-
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const { data: files, refetch: refetchFiles } = useFiles(code);
+  const { refetch: refetchFiles } = useFiles(code);
   const { refetch: refetchHistory } = useSpaceHistory(code);
   const { refetch: refetchUsers } = useUsers(code);
 
-  const { mutateAsync: removeFiles } = useRemoveFiles(code);
-  const uploadService = useContext(UploadServiceContext);
-
   const [myClientId, setMyClientId] = useState<string>("");
-
-  async function downloadSelected() {
-    enqueueSnackbar(
-      "Your files will start downloading shortly. Please ensure floatingfile has access to download multiple files.",
-      {
-        variant: "success",
-        autoHideDuration: 3000,
-      }
-    );
-
-    let downloadQueue = files?.filter((file) => isSelected(file.key));
-    while (!!downloadQueue && downloadQueue.length > 0) {
-      const file = downloadQueue.shift();
-      if (!file || !file.signedUrl) return;
-      const response = await axios.get(file.signedUrl, {
-        responseType: "blob",
-      });
-      const { data } = response;
-      await saveBlob(data, file.name);
-      await axios.patch(`${BASE_API_URL}/api/v4/spaces/${code}/history`, {
-        action: "DOWNLOAD_FILE",
-        payload: file.key,
-      });
-    }
-  }
-
-  async function removeSelected(): Promise<void> {
-    try {
-      let keysToRemove = selected;
-      await removeFiles(keysToRemove);
-      clearSelectedFiles();
-      enqueueSnackbar("Selected files have been removed", {
-        variant: "success",
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async function zipSelected(): Promise<void> {
-    enqueueSnackbar("Your zipped files will start downloading shortly.", {
-      variant: "success",
-      autoHideDuration: 3000,
-    });
-    try {
-      const response = await axios.get(
-        `${BASE_API_URL}/api/v4/spaces/${code}/files/zip?keys=${JSON.stringify(
-          selected
-        )}`,
-        {
-          responseType: "blob",
-        }
-      );
-      let folderName = response.headers["content-disposition"]
-        .split("=")[1]
-        .replace(/"/g, "");
-      const { data } = response;
-      await saveBlob(data, folderName);
-      enqueueSnackbar("Successfully zipped files.", {
-        variant: "success",
-        autoHideDuration: 3000,
-      });
-      await axios.delete(
-        `${BASE_API_URL}/api/v4/spaces/${code}/files/zip?folder=${folderName}`
-      );
-    } catch (err) {
-      enqueueSnackbar(err.message, {
-        variant: "error",
-        autoHideDuration: 3000,
-      });
-    }
-  }
 
   useEffect(() => {
     if (spaceStatus === "success") {
@@ -362,348 +364,16 @@ const Space: React.FC<{}> = () => {
     };
   }, [code]);
 
-  useEffect(() => {
-    if (collapsed === null) {
-      // First time
-      if (windowWidth < 960) {
-        setCollapsed(true);
-        setActivePanel(0);
-      } else {
-        setCollapsed(false);
-        setActivePanel(1);
-      }
-    } else {
-      if (windowWidth < 960 && !collapsed) {
-        // Collapsing from desktop to mobile
-        setCollapsed(true);
-        setActivePanel(0);
-      }
-      if (windowWidth > 960 && collapsed) {
-        // Expanding from mobile to desktop
-        setCollapsed(false);
-        setActivePanel(1);
-      }
-      if (windowWidth > 960) {
-        setCollapsed(false);
-      }
-    }
-  }, [windowWidth, collapsed]);
-
-  const changeActivePanel = (index: number) => () => {
-    setActivePanel(index);
-  };
-
-  const onDrop = useCallback(async (droppedFiles) => {
-    uploadService.setCode(code);
-    uploadService.enqueueMany(droppedFiles);
-  }, []);
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-  });
-
-  const appBar = (
-    <div className={cls.appBar}>
-      <div className={cls.left}>
-        <div className={cls.centerWrapper}>
-          <div className={cls.center}>
-            <div {...getRootProps()}>
-              <input {...getInputProps()} />
-              {windowWidth > 600 ? (
-                <Button
-                  variant="success"
-                  startIcon={<CloudUploadIcon style={{ marginLeft: "5px" }} />}
-                >
-                  Upload
-                </Button>
-              ) : (
-                <GIconButton variant="success">
-                  <CloudUploadIcon />
-                </GIconButton>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className={cls.left}>
-        <div className={cls.centerWrapper}>
-          <div className={cls.center} style={{ textAlign: "left" }}>
-            {selected.length === files?.length ? (
-              <Button
-                event={{ category: "File", action: "Deselected All Files" }}
-                variant="primary"
-                inverse
-                debounce={0}
-                startIcon={<ClearIcon />}
-                onClick={clearSelectedFiles}
-              >
-                Deselect All
-              </Button>
-            ) : (
-              <Button
-                onClick={() => setSelected(files?.map((file) => file.key))}
-                event={{ category: "File", action: "Selected All Files" }}
-                variant="primary"
-                inverse
-                debounce={0}
-                startIcon={<PlaylistAddCheckIcon />}
-              >
-                Select All
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className={cls.right}>
-        <div className={cls.centerWrapper}>
-          <div className={cls.center}>
-            <Button
-              variant="primary"
-              event={{ category: "File", action: "Zip Selected Files" }}
-              disabled={selected.length === 0}
-              inverse
-              onClick={zipSelected}
-              startIcon={<FolderIcon />}
-            >
-              ZIP
-            </Button>
-          </div>
-        </div>
-      </div>
-      <div className={cls.right}>
-        <div className={cls.centerWrapper}>
-          <div className={cls.center}>
-            <Button
-              variant="primary"
-              event={{ category: "File", action: "Downloaded Selected Files" }}
-              disabled={selected.length === 0}
-              inverse
-              startIcon={<CloudDownloadIcon />}
-              onClick={downloadSelected}
-            >
-              Download
-            </Button>
-          </div>
-        </div>
-      </div>
-      <div className={cls.right}>
-        <div className={cls.centerWrapper}>
-          <div className={cls.center}>
-            <Button
-              variant="primary"
-              event={{ category: "File", action: "Removed Selected Files" }}
-              disabled={selected.length === 0}
-              inverse
-              startIcon={<DeleteIcon />}
-              onClick={removeSelected}
-            >
-              Remove
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const dropZone = (
-    <div {...getRootProps()} className={cls.uploadZone}>
-      <div className={cls.centerWrapper}>
-        <input {...getInputProps()} />
-        <div className={cls.center}>
-          {!collapsed ? (
-            <>
-              <p style={{ opacity: 0.7, margin: 5 }}>Drag and drop files</p>
-              <p style={{ opacity: 0.7, margin: 5 }}>or</p>
-            </>
-          ) : (
-            <p style={{ opacity: 0.7, margin: 5 }}>It's pretty empty here...</p>
-          )}
-          <div>
-            <Button variant="success" startIcon={<CloudUploadIcon />}>
-              Upload
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <React.Fragment>
       <UploadQueue />
-      <div className={cls.root}>
-        <div className={cls.nav}>
-          <div className={cls.filesTab}>
-            <NavTile
-              onClick={changeActivePanel(0)}
-              active={activePanel === 0}
-              collapsed={collapsed}
-            >
-              <FolderIcon />
-            </NavTile>
-          </div>
-          <div>
-            <NavTile
-              onClick={changeActivePanel(1)}
-              active={activePanel === 1}
-              collapsed={collapsed}
-            >
-              <PublicIcon />
-            </NavTile>
-          </div>
-          <div>
-            <NavTile
-              onClick={changeActivePanel(2)}
-              active={activePanel === 2}
-              collapsed={collapsed}
-            >
-              <HistoryIcon />
-            </NavTile>
-          </div>
-          <div>
-            <NavTile
-              onClick={changeActivePanel(3)}
-              active={activePanel === 3}
-              collapsed={collapsed}
-            >
-              <PeopleIcon />
-            </NavTile>
-          </div>
-          {/* <div>
-						<NavTile onClick={changeActivePanel(4)} active={activePanel === 4} collapsed={collapsed}>
-							<SettingsIcon />
-						</NavTile>
-					</div> */}
-        </div>
-        <div className={cls.panel}>
-          <div
-            style={{
-              display: activePanel === 1 ? "inherit" : "none",
-              height: "100%",
-            }}
-          >
-            <Suspense fallback={panelFallback}>
-              <ConnectPanel />
-            </Suspense>
-          </div>
-          <div style={{ display: activePanel === 2 ? "inherit" : "none" }}>
-            <Suspense fallback={panelFallback}>
-              <HistoryPanel />
-            </Suspense>
-          </div>
-          <div style={{ display: activePanel === 3 ? "inherit" : "none" }}>
-            <Suspense fallback={panelFallback}>
-              <UsersPanel myClientId={myClientId} />
-            </Suspense>
-          </div>
-          <div style={{ display: activePanel === 4 ? "inherit" : "none" }}>
-            <Suspense fallback={panelFallback}>
-              <SettingsPanel />
-            </Suspense>
-          </div>
-        </div>
-        <div className={cls.main}>
-          {spaceStatus === "loading" ? (
-            <>
-              {!collapsed && <div></div>}
-              <Center>
-                <MoonLoader
-                  css="margin: auto;"
-                  color={Colors.MAIN_BRAND}
-                  size={32}
-                />
-              </Center>
-            </>
-          ) : (
-            <>
-              {windowWidth > Breakpoints.MD && (
-                <>{files && files?.length > 0 ? appBar : <div></div>}</>
-              )}
-              <div style={{ overflowY: "auto", height: "100%" }}>
-                {!collapsed || (collapsed && activePanel === 0) ? (
-                  <>
-                    {files && files?.length > 0 ? (
-                      <>
-                        {windowWidth > Breakpoints.SM &&
-                          windowWidth < Breakpoints.MD &&
-                          appBar}
-                        {windowWidth < Breakpoints.SM && (
-                          <div>
-                            <Center>
-                              <div style={{ padding: "10px" }}>
-                                <FileUploadBtn handleFiles={onDrop} />
-                              </div>
-                            </Center>
-                          </div>
-                        )}
-                        <div style={{ overflowX: "hidden" }}>
-                          <Suspense fallback={null}>
-                            <AnimatePresence>
-                              {files?.map((file, index) => (
-                                <motion.div
-                                  initial={{ opacity: 0, x: 100 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  exit={{ opacity: 0, x: 100 }}
-                                  transition={{ delay: index * 0.3 }}
-                                  key={file.key}
-                                >
-                                  <FileListItem file={file} />
-                                </motion.div>
-                              ))}
-                            </AnimatePresence>
-                          </Suspense>
-                        </div>
-                      </>
-                    ) : (
-                      dropZone
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <div
-                      style={{
-                        display: activePanel === 1 ? "inherit" : "none",
-                        height: "100%",
-                      }}
-                    >
-                      <Suspense fallback={panelFallback}>
-                        <ConnectPanel />
-                      </Suspense>
-                    </div>
-                    <div
-                      style={{
-                        display: activePanel === 2 ? "inherit" : "none",
-                      }}
-                    >
-                      <Suspense fallback={panelFallback}>
-                        <HistoryPanel collapsed />
-                      </Suspense>
-                    </div>
-                    <div
-                      style={{
-                        display: activePanel === 3 ? "inherit" : "none",
-                      }}
-                    >
-                      <Suspense fallback={panelFallback}>
-                        <UsersPanel collapsed myClientId={myClientId} />
-                      </Suspense>
-                    </div>
-                    <div
-                      style={{
-                        display: activePanel === 4 ? "inherit" : "none",
-                      }}
-                    >
-                      <Suspense fallback={panelFallback}>
-                        <SettingsPanel collapsed />
-                      </Suspense>
-                    </div>
-                  </>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
+      {windowWidth > 960 ? (
+        <LGLayout {...props} clientId={myClientId} />
+      ) : windowWidth > 640 ? (
+        <MDLayout {...props} clientId={myClientId} />
+      ) : (
+        <SMLayout {...props} clientId={myClientId} />
+      )}
     </React.Fragment>
   );
 };
