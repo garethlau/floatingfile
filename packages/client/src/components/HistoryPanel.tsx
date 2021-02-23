@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateRows: "64px calc(100vh - 64px - 64px)",
     height: "100%",
     width: "100%",
+    backgroundColor: Colors.WHITE,
     [theme.breakpoints.up("md")]: {
       gridTemplateRows: "64px calc(100vh - 64px)",
     },
@@ -47,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "5px",
     margin: "10px",
     boxShadow: Elevation.ONE,
+    backgroundColor: Colors.LIGHT_SHADE,
     [theme.breakpoints.up("md")]: {
       gridTemplateColumns: "48px 168px",
       margin: "5px",
@@ -147,7 +149,7 @@ function renderTile(action: string, payload: string, author: string) {
   }
 }
 
-const HistoryPanel: React.FC<{ collapsed?: boolean }> = ({ collapsed }) => {
+const HistoryPanel: React.FC<{}> = () => {
   const { code }: { code: string } = useParams();
   const { data: history } = useHistory(code);
   console.log(history);
@@ -172,11 +174,6 @@ const HistoryPanel: React.FC<{ collapsed?: boolean }> = ({ collapsed }) => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     className={cls.tile}
-                    style={{
-                      backgroundColor: !collapsed
-                        ? Colors.LIGHT_SHADE
-                        : Colors.WHITE,
-                    }}
                     key={timestamp}
                   >
                     <div>

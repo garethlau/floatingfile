@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateRows: "64px calc(100vh - 128px)",
     height: "100%",
     width: "100%",
+    backgroundColor: Colors.WHITE,
     [theme.breakpoints.up("md")]: {
       gridTemplateRows: "64px calc(100vh - 64px)",
     },
@@ -33,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
   tile: {
     display: "grid",
     gridTemplateColumns: "48px 168px",
+    backgroundColor: Colors.LIGHT_SHADE,
     borderRadius: "5px",
     height: "48px",
     padding: "5px",
@@ -46,11 +48,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface UsersPanelProps {
-  collapsed?: boolean;
   myClientId?: string;
 }
 
-const UsersPanel: React.FC<UsersPanelProps> = ({ collapsed, myClientId }) => {
+const UsersPanel: React.FC<UsersPanelProps> = ({ myClientId }) => {
   const { code }: { code: string } = useParams();
   const { data: users } = useUsers(code);
 
@@ -63,15 +64,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ collapsed, myClientId }) => {
         {users?.map(
           ({ username, id }: { username: string; id: string }, index) => {
             return (
-              <div
-                className={cls.tile}
-                style={{
-                  backgroundColor: !collapsed
-                    ? Colors.LIGHT_SHADE
-                    : Colors.WHITE,
-                }}
-                key={index}
-              >
+              <div className={cls.tile} key={index}>
                 <div>
                   <Center>
                     <FaceIcon
