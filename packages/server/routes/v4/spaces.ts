@@ -144,7 +144,7 @@ router.delete("/:code/files/:key", async (req, res) => {
     space.history = [...space.history, historyRecord];
     const updatedSpace = await space.save();
 
-    broadcast(code, EventTypes.HISTORY_UPDATED);
+    broadcast(code, EventTypes.FILES_UPDATED);
 
     return res.status(200).send({ space: updatedSpace });
   } catch (error) {
