@@ -1,22 +1,57 @@
 import React, { createContext, useState, useRef, useEffect } from "react";
-import axios from "axios";
+import axios, { CancelToken, CancelTokenSource } from "axios";
 import { BASE_API_URL } from "../env";
 import { v4 as uuidv4 } from "uuid";
 
-export const UploadServiceContext = createContext();
+interface Context {
+  enqueueMany: (files: File[]) => void;
+  peek: () => WrappedFile | null;
+  size: () => number;
+  updateProgress: (key: string, loaded: number, total: number) => void;
+  getProgress: (key: string) => number | null;
+  dequeue: () => WrappedFile | null;
+  pending: WrappedFile[];
+  complete: (key: string) => void;
+  cancel: (key: string) => void;
+  setCode: React.Dispatch<React.SetStateAction<string>>;
+  currentUpload: string;
+}
 
-export function UploadServiceProvider({ children }) {
-  const [pending, setPending] = useState([]);
-  const [code, setCode] = useState();
-  const [progress, setProgress] = useState({});
-  const [currentUpload, setCurrentUpload] = useState();
+export interface WrappedFile {
+  file: File;
+  key: string;
+  ext: string;
+}
 
-  const sourceRef = useRef();
+export const UploadServiceContext = createContext<Context>({
+  enqueueMany: (files: File[]) => {},
+  peek: () => null,
+  size: () => 0,
+  updateProgress: () => {},
+  getProgress: (key: string) => null,
+  dequeue: () => null,
+  pending: [],
+  complete: () => {},
+  cancel: () => {},
+  setCode: () => {},
+  currentUpload: "",
+});
+
+export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [pending, setPending] = useState<WrappedFile[]>([]);
+  const [code, setCode] = useState<string>("");
+  const [progress, setProgress] = useState<Record<string, number>>({});
+  const [currentUpload, setCurrentUpload] = useState<string>("");
+
+  const sourceRef = useRef<CancelTokenSource | null>(null);
 
   useEffect(() => {
     (async function () {
       if (size() > 0) {
-        const file = peek();
+        const wrappedFile = peek();
+        const { file, key, ext } = wrappedFile;
 
         if (!sourceRef.current) {
           sourceRef.current = axios.CancelToken.source();
@@ -25,30 +60,33 @@ export function UploadServiceProvider({ children }) {
         try {
           await new Promise((resolve, reject) => {
             const data = {
-              key: file.key,
+              key: key,
               size: file.size,
               name: file.name,
               type: file.type,
-              ext: file.ext,
+              ext: ext,
             };
             axios
-              .post(`${BASE_API_URL}/api/v4/signed-urls`, { file, code })
+              .post(`${BASE_API_URL}/api/v4/signed-urls`, {
+                file: { ...file, key },
+                code,
+              })
               .then((response) => {
                 const { signedUrl } = response.data;
-                setCurrentUpload(file.key);
+                setCurrentUpload(key);
                 axios
                   .put(signedUrl, file, {
                     onUploadProgress: (event) => {
-                      updateProgress(file.key, event.loaded, event.total);
+                      updateProgress(key, event.loaded, event.total);
                     },
-                    cancelToken: sourceRef.current.token,
+                    cancelToken: sourceRef.current?.token,
                   })
                   .then((response) => {
-                    setCurrentUpload(null);
+                    setCurrentUpload("");
                     axios
                       .patch(`${BASE_API_URL}/api/v4/spaces/${code}/file`, data)
                       .then((response) => {
-                        resolve();
+                        resolve(response);
                       })
                       .catch((error) => {
                         reject(error);
@@ -71,7 +109,7 @@ export function UploadServiceProvider({ children }) {
             console.log(error);
           }
         } finally {
-          complete(file.key);
+          complete(key);
           console.log("Done ", file.name);
           dequeue();
         }
@@ -79,45 +117,49 @@ export function UploadServiceProvider({ children }) {
     })();
   }, [pending]);
 
-  function enqueueMany(files) {
+  function enqueueMany(files: File[]) {
     // Add the files to the queue
-    files = files.map((file) => {
+    const extendedFiles = files.map((file) => {
       const key = uuidv4();
       const ext = file.name.split(".")[file.name.split(".").length - 1];
-      file.key = key;
-      file.ext = ext;
-      return file;
+
+      const wrappedFile: WrappedFile = {
+        key,
+        ext,
+        file,
+      };
+      return wrappedFile;
     });
 
-    setPending((prev) => [...prev, ...files]);
+    setPending((prev) => [...prev, ...extendedFiles]);
   }
 
-  function dequeue() {
+  function dequeue(): WrappedFile {
     const top = pending[0];
     setPending((prev) => prev.slice(1));
     return top;
   }
 
-  function peek() {
+  function peek(): WrappedFile {
     return pending[0];
   }
 
-  function size() {
+  function size(): number {
     return pending.length;
   }
 
-  function updateProgress(key, loaded, total) {
+  function updateProgress(key: string, loaded: number, total: number): void {
     setProgress((prev) => ({
       ...prev,
       [key]: loaded / total,
     }));
   }
 
-  function getProgress(key) {
+  function getProgress(key: string): number | null {
     return progress[key] || null;
   }
 
-  function complete(key) {
+  function complete(key: string): void {
     setProgress((prev) => {
       const newProgress = Object.assign({}, prev);
       delete newProgress[key];
@@ -125,9 +167,11 @@ export function UploadServiceProvider({ children }) {
     });
   }
 
-  function cancel(key) {
+  function cancel(key: string): void {
     console.log("Cancelling upload ", key);
-    sourceRef.current.cancel("Operation cancelled");
+    if (sourceRef.current) {
+      sourceRef.current.cancel("Operation cancelled");
+    }
   }
 
   return (
@@ -149,4 +193,4 @@ export function UploadServiceProvider({ children }) {
       {children}
     </UploadServiceContext.Provider>
   );
-}
+};

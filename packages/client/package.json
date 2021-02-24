@@ -18,6 +18,7 @@
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "@types/react-router-dom": "^5.1.7",
+    "@types/uuid": "^8.3.0",
     "axios": "^0.21.1",
     "bluebird": "^3.7.2",
     "env-cmd": "^10.1.0",

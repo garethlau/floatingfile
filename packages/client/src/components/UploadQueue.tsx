@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { UploadServiceContext } from "../contexts/uploadService";
+import { UploadServiceContext, WrappedFile } from "../contexts/uploadService";
 import { makeStyles } from "@material-ui/core/styles";
 import { formatFileSize } from "../utils";
 import { Colors } from "@floatingfile/common";
@@ -105,31 +105,33 @@ const UploadQueue: React.FC<{}> = () => {
             </IconButton>
           </div>
           <div className={cls.container}>
-            {uploadService.pending?.map((file: File) => (
-              <div
-                key={file.key}
-                className={`${cls.fileCard} ${
-                  uploadService.currentUpload === file.key ? cls.cancel : ""
-                }`}
-              >
-                <p>{file.name}</p>
-                <p>{formatFileSize(file.size)}</p>
-                {uploadService.currentUpload === file.key && (
-                  <Button
-                    className={cls.cancelBtn}
-                    variant="danger"
-                    onClick={() => uploadService.cancel(file.key)}
-                  >
-                    Cancel
-                  </Button>
-                )}
+            {uploadService.pending?.map(
+              ({ file, key, ext }: WrappedFile, index) => (
+                <div
+                  key={key}
+                  className={`${cls.fileCard} ${
+                    uploadService.currentUpload === key ? cls.cancel : ""
+                  }`}
+                >
+                  <p>{file.name}</p>
+                  <p>{formatFileSize(file.size)}</p>
+                  {uploadService.currentUpload === key && (
+                    <Button
+                      className={cls.cancelBtn}
+                      variant="danger"
+                      onClick={() => uploadService.cancel(key)}
+                    >
+                      Cancel
+                    </Button>
+                  )}
 
-                <LinearProgress
-                  variant="determinate"
-                  value={(uploadService.getProgress(file.key) || 0) * 100}
-                />
-              </div>
-            ))}
+                  <LinearProgress
+                    variant="determinate"
+                    value={(uploadService.getProgress(key) || 0) * 100}
+                  />
+                </div>
+              )
+            )}
           </div>
         </motion.div>
       )}
