@@ -1,5 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
-import { UploadServiceContext, WrappedFile } from "../contexts/uploadService";
+import {
+  UploadServiceContext,
+  WrappedFile,
+  useUploadService,
+} from "../contexts/uploadService";
 import { makeStyles } from "@material-ui/core/styles";
 import { formatFileSize } from "../utils";
 import { Colors } from "@floatingfile/common";
@@ -70,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
 
 const UploadQueue: React.FC<{}> = () => {
   const cls = useStyles();
-  const uploadService = useContext(UploadServiceContext);
+  const uploadService = useUploadService();
   const [open, setOpen] = useState<boolean>(false);
   const [minimized, setMinimized] = useState<boolean>(false);
 

@@ -1,4 +1,10 @@
-import React, { createContext, useState, useRef, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 import axios, { CancelToken, CancelTokenSource } from "axios";
 import { BASE_API_URL } from "../env";
 import { v4 as uuidv4 } from "uuid";
@@ -193,4 +199,14 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
       {children}
     </UploadServiceContext.Provider>
   );
+};
+
+export const useUploadService = () => {
+  const context = useContext(UploadServiceContext);
+  if (context === undefined) {
+    throw new Error(
+      "useUploadService must be used within a UploadServiceProvider"
+    );
+  }
+  return context;
 };

@@ -28,8 +28,7 @@ import { useDropzone } from "react-dropzone";
 import useWindowWidth from "../hooks/useWindowWidth";
 
 import { saveBlob } from "../utils";
-
-import { UploadServiceContext } from "../contexts/uploadService";
+import { useUploadService } from "../contexts/uploadService";
 import { useSelectedFiles } from "../contexts/selectedFiles";
 
 import { useSnackbar } from "notistack";
@@ -114,7 +113,7 @@ const FilesPanel: React.FC<Props> = ({}) => {
     setSelected,
   } = useSelectedFiles();
 
-  const uploadService = useContext(UploadServiceContext);
+  const uploadService = useUploadService();
 
   useEffect(() => {
     console.log("CODE", code);
