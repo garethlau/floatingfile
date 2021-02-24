@@ -1,39 +1,28 @@
-import React, { Suspense, useEffect, useContext, useCallback } from "react";
-
+import React, { useEffect, useCallback } from "react";
 import FileUploadBtn from "../components/FileUploadBtn";
-
 import MoonLoader from "react-spinners/MoonLoader";
 import { useParams } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import axios from "axios";
 import { BASE_API_URL } from "../env";
 import FolderIcon from "@material-ui/icons/Folder";
-
-import useSpace from "../queries/useSpace";
 import GIconButton from "./GIconButton";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ClearIcon from "@material-ui/icons/Clear";
 import { makeStyles } from "@material-ui/core/styles";
-import UploadQueue from "./UploadQueue";
-import NavBar from "./NavBar";
-
 import { AnimatePresence, motion } from "framer-motion";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Button from "./Button";
 import { Colors } from "@floatingfile/common";
 import { useDropzone } from "react-dropzone";
-
 import useWindowWidth from "../hooks/useWindowWidth";
-
 import { saveBlob } from "../utils";
 import { useUploadService } from "../contexts/uploadService";
 import { useSelectedFiles } from "../contexts/selectedFiles";
-
 import { useSnackbar } from "notistack";
 import useFiles from "../queries/useFiles";
-
 import useRemoveFiles from "../mutations/useRemoveFiles";
 import FileListItem from "./FileListItem";
 
@@ -116,7 +105,6 @@ const FilesPanel: React.FC<Props> = ({}) => {
   const uploadService = useUploadService();
 
   useEffect(() => {
-    console.log("CODE", code);
     uploadService.setCode(code);
   }, [code]);
 
