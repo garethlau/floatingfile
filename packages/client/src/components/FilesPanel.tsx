@@ -30,7 +30,7 @@ import useWindowWidth from "../hooks/useWindowWidth";
 import { saveBlob } from "../utils";
 
 import { UploadServiceContext } from "../contexts/uploadService";
-import { SelectedFilesContext } from "../contexts/selectedFiles";
+import { useSelectedFiles } from "../contexts/selectedFiles";
 
 import { useSnackbar } from "notistack";
 import useFiles from "../queries/useFiles";
@@ -112,7 +112,7 @@ const FilesPanel: React.FC<Props> = ({}) => {
     isSelected,
     clear: clearSelectedFiles,
     setSelected,
-  } = useContext(SelectedFilesContext);
+  } = useSelectedFiles();
 
   const uploadService = useContext(UploadServiceContext);
 
@@ -263,7 +263,9 @@ const FilesPanel: React.FC<Props> = ({}) => {
               </Button>
             ) : (
               <Button
-                onClick={() => setSelected(files?.map((file) => file.key))}
+                onClick={() => {
+                  setSelected(files?.map((file) => file.key) || []);
+                }}
                 event={{ category: "File", action: "Selected All Files" }}
                 variant="primary"
                 inverse
