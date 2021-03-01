@@ -1,14 +1,14 @@
 {
-    "compilerOptions": {
-      "target": "es6",
-      "module": "commonjs",
-      "rootDir": "./",
-      "outDir": "./build",
-      "esModuleInterop": true,
-      "strict": true,
-      "typeRoots": [
-        "@types",
-        "./node_modules/@types/"
-      ] /* List of folders to include type definitions from. */,
-    }
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "rootDir": "./",
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "strict": true,
+    "typeRoots": [
+      "types",
+      "./node_modules/@types/"
+    ] /* List of folders to include type definitions from. */
   }
+}
