@@ -70,9 +70,9 @@ export async function createImagePreview(key: string) {
   const buffer = obj.Body as Buffer;
   const resizedBuffer = await sharp(buffer)
     .jpeg({
-      quality: 80,
+      quality: 75,
     })
-    .resize(100, 100, { fit: "cover" })
+    .resize(64, 64, { fit: "cover" })
     .toBuffer();
 
   await s3
