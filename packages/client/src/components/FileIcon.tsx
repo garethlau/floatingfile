@@ -153,7 +153,7 @@ const FileIcon: React.FC<{
   useEffect(() => {
     if (preview) {
       axios
-        .get(`${BASE_API_URL}/api/v4/spaces/${code}/files/${s3Key}/preview/`)
+        .get(`${BASE_API_URL}/api/v4/spaces/${code}/files/${s3Key}/preview`)
         .then((response) => {
           const { file } = response.data;
           setPreviewSrc(file.previewSignedUrl);
