@@ -107,7 +107,13 @@ function reducer(state: State, action: any) {
     case actionTypes.SET_DOWNLOAD_QUEUE:
       return { ...state, total: action.payload, isDownloading: true };
     case actionTypes.COMPLETE_ALL_DOWNLOADS:
-      return { ...state, isDownloading: false };
+      return {
+        ...state,
+        total: 0,
+        current: 0,
+        progress: 0,
+        isDownloading: false,
+      };
     default:
       throw new Error(`Action of type ${action.type} not handled`);
   }
@@ -337,7 +343,7 @@ const FilesPanel: React.FC<Props> = ({}) => {
               event={{ category: "File", action: "Downloaded Selected Files" }}
               disabled={selected.length === 0 || state.isDownloading}
               inverse
-              // startIcon={<CloudDownloadIcon />}
+              startIcon={<CloudDownloadIcon />}
               onClick={downloadSelected}
             >
               <span style={{ opacity: state.isDownloading ? 0 : 1 }}>
@@ -354,7 +360,7 @@ const FilesPanel: React.FC<Props> = ({}) => {
                 {state.isDownloading &&
                   (state.progress * 100).toFixed() +
                     "%" +
-                    ` (${state.current} of ${state.total})`}
+                    ` (${state.current}/${state.total})`}
               </span>
             </Button>
           </div>
