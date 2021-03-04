@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Colors, Elevation } from "@floatingfile/common";
 import Button from "./Button";
@@ -11,7 +11,7 @@ import OpenInBrowserIcon from "@material-ui/icons/OpenInBrowser";
 import { isMobile } from "react-device-detect";
 import useRemoveFile from "../mutations/useRemoveFile";
 import { useParams } from "react-router-dom";
-import { SelectedFilesContext } from "../contexts/selectedFiles";
+import { useSelectedFiles } from "../contexts/selectedFiles";
 import axios from "axios";
 import { saveBlob } from "../utils";
 import { BASE_API_URL } from "../env";
@@ -117,7 +117,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
   const windowWidth: number = useWindowWidth();
   const cls = useStyles();
   const { mutateAsync: removeFile } = useRemoveFile(code);
-  const { toggleSelect, isSelected } = useContext(SelectedFilesContext);
+  const { toggleSelect, isSelected } = useSelectedFiles();
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
 
