@@ -376,15 +376,18 @@ const colors = {
   yellowgreen: "#9acd32",
 };
 
-router.get("/", (_, res) => {
-  const animal: string = animals[
-    (animals.length * Math.random()) << 0
-  ].toLowerCase();
-  const colorNames: string[] = Object.keys(colors);
-  const color: string = colorNames[(colorNames.length * Math.random()) << 0];
-
-  const username: string = `${color}-${animal}`;
-  return res.status(200).send({ username });
+router.get("/", (_, res, done) => {
+  try {
+    const animal: string = animals[
+      (animals.length * Math.random()) << 0
+    ].toLowerCase();
+    const colorNames: string[] = Object.keys(colors);
+    const color: string = colorNames[(colorNames.length * Math.random()) << 0];
+    const username: string = `${color}-${animal}`;
+    return res.status(200).send({ username });
+  } catch (error) {
+    done(error);
+  }
 });
 
 export default router;

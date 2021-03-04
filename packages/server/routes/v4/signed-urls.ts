@@ -8,7 +8,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const Space = mongoose.model("Space");
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, done) => {
   const { file, code }: { file: File; code: string } = req.body;
   console.log(code, file);
 
@@ -33,9 +33,7 @@ router.post("/", async (req, res) => {
 
     return res.status(200).send({ signedUrl });
   } catch (error) {
-    console.error(error);
-    Honeybadger.notify(error);
-    return res.status(500).send(error);
+    done(error);
   }
 });
 

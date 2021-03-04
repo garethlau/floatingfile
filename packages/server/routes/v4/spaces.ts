@@ -18,7 +18,7 @@ const mongoose = require("mongoose");
 const Space = mongoose.model("Space");
 
 // Get a space
-router.get("/:code", async (req: Request, res: Response) => {
+router.get("/:code", async (req: Request, res: Response, done) => {
   const code: string = req.params.code;
   if (!code) {
     return res.status(400).send({ message: "Invalid request." });
@@ -31,13 +31,12 @@ router.get("/:code", async (req: Request, res: Response) => {
       return res.status(200).send({ space });
     }
   } catch (error) {
-    Honeybadger.notify(error);
-    return res.status(500).send(error);
+    done(error);
   }
 });
 
 // Create a new space
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", async (req: Request, res: Response, done) => {
   // generate code
   try {
     const buf = crypto.randomBytes(3);
@@ -58,13 +57,12 @@ router.post("/", async (req: Request, res: Response) => {
     const savedSpace: Space = await space.save();
     return res.status(200).send({ space: savedSpace });
   } catch (error) {
-    Honeybadger.notify(error);
-    return res.status(500).send(error);
+    done(error);
   }
 });
 
 // Delete a space
-router.delete("/:code", async (req, res) => {
+router.delete("/:code", async (req, res, done) => {
   let code: string = req.params.code;
 
   if (!code) {
@@ -100,14 +98,12 @@ router.delete("/:code", async (req, res) => {
 
     return res.status(200).send();
   } catch (error) {
-    console.log(error);
-    Honeybadger.notify(error);
-    return res.status(500).send();
+    done(error);
   } finally {
     broadcast(code, EventTypes.SPACE_DELETED);
   }
 });
-router.delete("/:code/files/:key", async (req, res) => {
+router.delete("/:code/files/:key", async (req, res, done) => {
   const { code, key } = req.params;
   const username: string =
     typeof req.headers.username === "string" ? req.headers.username : "";
@@ -148,14 +144,12 @@ router.delete("/:code/files/:key", async (req, res) => {
 
     return res.status(200).send({ space: updatedSpace });
   } catch (error) {
-    console.log(error);
-    Honeybadger.notify(error);
-    return res.status(500).send(error);
+    done(error);
   }
 });
 
 // Remove multiple files
-router.delete("/:code/files", async (req, res) => {
+router.delete("/:code/files", async (req, res, done) => {
   const { code } = req.params;
   const username: string =
     typeof req.headers.username === "string" ? req.headers.username : "";
@@ -211,13 +205,11 @@ router.delete("/:code/files", async (req, res) => {
       .status(200)
       .send({ message: "Files removed.", space: updatedSpace });
   } catch (error) {
-    console.error(error);
-    Honeybadger.notify(error);
-    return res.status(500).send(error);
+    done(error);
   }
 });
 
-router.patch("/:code/file", async (req, res) => {
+router.patch("/:code/file", async (req, res, done) => {
   const { code } = req.params;
   const { key, name, type, ext, size } = req.body;
   const username: string =
@@ -259,13 +251,11 @@ router.patch("/:code/file", async (req, res) => {
       .status(200)
       .send({ message: "File added to space.", space: updatedSpace });
   } catch (error) {
-    console.log(error);
-    Honeybadger.notify(error);
-    return res.status(500).send(error);
+    done(error);
   }
 });
 
-router.get("/:code/files", async (req, res) => {
+router.get("/:code/files", async (req, res, done) => {
   const { code } = req.params;
   try {
     const space: SpaceDocument = await Space.findOne({ code }).exec();
@@ -285,13 +275,11 @@ router.get("/:code/files", async (req, res) => {
 
     return res.status(200).send({ files });
   } catch (error) {
-    console.error(error);
-    Honeybadger.notify(error);
-    return res.status(500).send();
+    done(error);
   }
 });
 
-router.get("/:code/files/:key/preview", async (req, res) => {
+router.get("/:code/files/:key/preview", async (req, res, done) => {
   const { code, key } = req.params;
   try {
     const space: SpaceDocument = await Space.findOne({ code }).exec();
@@ -310,12 +298,11 @@ router.get("/:code/files/:key/preview", async (req, res) => {
     file.previewSignedUrl = signedUrl;
     return res.status(200).send({ file });
   } catch (error) {
-    console.error(error);
-    return res.status(500).send();
+    done(error);
   }
 });
 
-router.get("/:code/files/zip", async (req, res: any) => {
+router.get("/:code/files/zip", async (req, res: any, done) => {
   const { code } = req.params;
 
   let s3Keys: string[];
@@ -381,9 +368,7 @@ router.get("/:code/files/zip", async (req, res: any) => {
     // TODO Add zip action to space history
     return res.zip({ files: values, filename: `${folderName}.zip` });
   } catch (error) {
-    console.error(error);
-    Honeybadger.notify(error);
-    return res.status(500).send(error);
+    done(error);
   }
 });
 
@@ -415,7 +400,7 @@ const deleteFolderRecursive = function (path: string) {
   }
 };
 
-router.patch("/:code/history", async (req, res) => {
+router.patch("/:code/history", async (req, res, done) => {
   const { code } = req.params;
   const { action, payload }: { action: string; payload: string } = req.body;
   const username: string =
@@ -454,13 +439,11 @@ router.patch("/:code/history", async (req, res) => {
       .status(200)
       .send({ message: "History updated.", space: updatedSpace });
   } catch (error) {
-    console.error(error);
-    Honeybadger.notify(error);
-    return res.status(500).send(error);
+    done(error);
   }
 });
 
-router.get("/:code/history", async (req, res) => {
+router.get("/:code/history", async (req, res, done) => {
   const { code } = req.params;
   try {
     const space: SpaceDocument = await Space.findOne({ code }).exec();
@@ -470,12 +453,11 @@ router.get("/:code/history", async (req, res) => {
     const { history } = space;
     return res.status(200).send({ history });
   } catch (error) {
-    console.error(error);
-    return res.status(500).send();
+    done(error);
   }
 });
 
-router.get("/:code/users", async (req, res) => {
+router.get("/:code/users", async (req, res, done) => {
   const { code } = req.params;
   try {
     const space: SpaceDocument = await Space.findOne({ code }).exec();
@@ -485,9 +467,7 @@ router.get("/:code/users", async (req, res) => {
     const { users } = space;
     return res.status(200).send({ users });
   } catch (error) {
-    Honeybadger.notify(error);
-    console.error(error);
-    return res.status(500).send();
+    done(error);
   }
 });
 

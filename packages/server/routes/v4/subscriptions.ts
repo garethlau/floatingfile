@@ -9,7 +9,7 @@ import {
 
 const router = express.Router();
 
-router.get("/:code", async (req: Request, res: Response) => {
+router.get("/:code", async (req: Request, res: Response, done) => {
   try {
     const { code } = req.params;
     let username = "";
@@ -40,7 +40,7 @@ router.get("/:code", async (req: Request, res: Response) => {
       removeClient(code, client);
     });
   } catch (error) {
-    console.log(error);
+    done(error);
   }
 });
 
