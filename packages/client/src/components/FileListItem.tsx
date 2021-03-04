@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Colors, Elevation } from "@floatingfile/common";
 import Button from "./Button";
@@ -261,14 +261,22 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
   const cls = useStyles();
   const { mutateAsync: removeFile } = useRemoveFile(code);
   const { toggleSelect, isSelected } = useContext(SelectedFilesContext);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
+  const [downloadProgress, setDownloadProgress] = useState<number>(0);
 
   async function download(): Promise<void> {
     if (isMobile) {
       window.open(signedUrl, "_blank");
     } else {
       try {
+        setIsDownloading(true);
         if (!signedUrl) return;
-        const response = await axios.get(signedUrl, { responseType: "blob" });
+        const response = await axios.get(signedUrl, {
+          responseType: "blob",
+          onDownloadProgress: (event) => {
+            setDownloadProgress(event.loaded / event.total);
+          },
+        });
         const { data } = response;
         await saveBlob(data, name);
         await axios.patch(`${BASE_API_URL}/api/v4/spaces/${code}/history`, {
@@ -278,6 +286,8 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
         console.log("Succesfully downloaded ", name);
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsDownloading(false);
       }
     }
   }
@@ -361,8 +371,19 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
               onClick={download}
               variant="primary"
               debounce={5}
+              disabled={isDownloading}
             >
-              Download
+              <span style={{ opacity: isDownloading ? 0 : 1 }}>Download</span>
+              <span
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                {isDownloading && (downloadProgress * 100).toFixed(1) + "%"}
+              </span>
             </Button>
           ) : (
             <GIconButton
