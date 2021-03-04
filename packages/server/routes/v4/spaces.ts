@@ -7,6 +7,11 @@ import { S3_BUCKET_NAME } from "../../config";
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
+import {
+  createPreview,
+  deletePreview,
+  deletePreviews,
+} from "../../services/previews";
 
 const router = express.Router();
 const mongoose = require("mongoose");
@@ -90,14 +95,8 @@ router.delete("/:code", async (req, res) => {
       },
     };
 
-    await new Promise((resolve, reject) => {
-      s3.deleteObjects(params, (error, data) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(data);
-      });
-    });
+    await s3.deleteObjects(params).promise();
+    await deletePreviews(s3Keys);
 
     return res.status(200).send();
   } catch (error) {
@@ -125,7 +124,8 @@ router.delete("/:code/files/:key", async (req, res) => {
       Key: key,
       Bucket: S3_BUCKET_NAME,
     };
-    await s3.deleteObject(params);
+    await s3.deleteObject(params).promise();
+    await deletePreview(key);
 
     // Remove the file from the space
     const removedFile = space.files.find((file: File) => file.key === key);
@@ -176,14 +176,15 @@ router.delete("/:code/files", async (req, res) => {
 
     // Remove objects from s3
     const params = {
-      Bucket: "examplebucket",
+      Bucket: S3_BUCKET_NAME,
       Delete: {
         Objects: toRemove.map((key) => ({ Key: key })),
         Quiet: false,
       },
     };
 
-    await s3.deleteObjects(params);
+    await s3.deleteObjects(params).promise();
+    await deletePreviews(toRemove);
 
     const files: File[] = space.files;
 
@@ -218,7 +219,7 @@ router.delete("/:code/files", async (req, res) => {
 
 router.patch("/:code/file", async (req, res) => {
   const { code } = req.params;
-  const { key, size, name, type, ext } = req.body;
+  const { key, name, type, ext, size } = req.body;
   const username: string =
     typeof req.headers.username === "string" ? req.headers.username : "";
 
@@ -230,6 +231,9 @@ router.patch("/:code/file", async (req, res) => {
     if (!space) {
       return res.status(404).send({ message: "Space not found." });
     }
+
+    // Create image preview
+    await createPreview({ key, type });
 
     // Attach the file object to the space
     const newFile: File = { key, size, name, type, ext };
@@ -283,6 +287,30 @@ router.get("/:code/files", async (req, res) => {
   } catch (error) {
     console.error(error);
     Honeybadger.notify(error);
+    return res.status(500).send();
+  }
+});
+
+router.get("/:code/files/:key/preview", async (req, res) => {
+  const { code, key } = req.params;
+  try {
+    const space: SpaceDocument = await Space.findOne({ code }).exec();
+    if (!space) {
+      return res.status(404).send({ message: "Space not found." });
+    }
+    const file = space.files.find((file) => file.key === key);
+    if (!file) {
+      return res.status(404).send({ message: "File not found." });
+    }
+    const params = {
+      Key: key + "-preview",
+      Bucket: S3_BUCKET_NAME,
+    };
+    const signedUrl = s3.getSignedUrl("getObject", params);
+    file.previewSignedUrl = signedUrl;
+    return res.status(200).send({ file });
+  } catch (error) {
+    console.error(error);
     return res.status(500).send();
   }
 });

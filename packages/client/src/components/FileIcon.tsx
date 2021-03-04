@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { BASE_API_URL } from "../env";
+import axios from "axios";
 import {
   mdiMicrosoftWord,
   mdiMicrosoftPowerpoint,
@@ -137,7 +139,39 @@ function getPath(extension: string) {
   }
   return path;
 }
-const FileIcon: React.FC<{ extension: string }> = ({ extension }) => {
+
+const imagePreviewExtensions: string[] = ["png", "jpeg", "jpg"];
+
+const FileIcon: React.FC<{
+  extension: string;
+  s3Key: string;
+  code: string;
+}> = ({ extension, s3Key, code }) => {
+  const preview = imagePreviewExtensions.includes(extension);
+  const [previewSrc, setPreviewSrc] = useState<string>("");
+
+  useEffect(() => {
+    if (preview) {
+      axios
+        .get(`${BASE_API_URL}/api/v4/spaces/${code}/files/${s3Key}/preview/`)
+        .then((response) => {
+          const { file } = response.data;
+          setPreviewSrc(file.previewSignedUrl);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
+
+  if (preview && !!previewSrc) {
+    return (
+      <img
+        src={previewSrc}
+        style={{ width: "80%", marginTop: "5px", borderRadius: "5px" }}
+      />
+    );
+  }
   return (
     <Icon
       path={getPath(extension)}

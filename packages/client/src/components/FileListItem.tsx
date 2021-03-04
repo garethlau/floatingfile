@@ -164,7 +164,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
     >
       <div className={cls.icon} onClick={() => toggleSelect(key)}>
         <Center>
-          <FileIcon extension={ext} />
+          <FileIcon extension={ext} s3Key={key} code={code} />
         </Center>
       </div>
       <div
