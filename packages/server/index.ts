@@ -7,6 +7,11 @@ require("./models");
 import { router } from "./routes";
 import logger from "./utils/logger";
 import Honeybadger from "./utils/honeybadger";
+import {
+  logErrors,
+  clientErrorHandler,
+  errorHandler,
+} from "./middleware/errorHandler";
 const zip = require("express-easy-zip");
 const morgan = require("morgan");
 import { PORT, NODE_ENV, MONGO_URI } from "./config";
@@ -31,6 +36,7 @@ const corsOptions: CorsOptions = {
   credentials: true,
   exposedHeaders: ["Content-Disposition"],
 };
+
 app.use(Honeybadger.requestHandler);
 app.use(cors(corsOptions));
 
@@ -71,6 +77,10 @@ mongoose
   });
 
 app.use(router);
+app.use(Honeybadger.errorHandler);
+app.use(logErrors);
+app.use(clientErrorHandler);
+app.use(errorHandler);
 
 app.get("/ping", (req, res) => {
   return res.send("pong");
