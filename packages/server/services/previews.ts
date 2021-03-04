@@ -64,22 +64,27 @@ export async function deletePreview(key: string) {
 }
 
 export async function createImagePreview(key: string) {
-  const obj = await s3
-    .getObject({ Key: key, Bucket: S3_BUCKET_NAME })
-    .promise();
-  const buffer = obj.Body as Buffer;
-  const resizedBuffer = await sharp(buffer)
-    .jpeg({
-      quality: 75,
-    })
-    .resize(64, 64, { fit: "cover" })
-    .toBuffer();
+  try {
+    const obj = await s3
+      .getObject({ Key: key, Bucket: S3_BUCKET_NAME })
+      .promise();
+    const buffer = obj.Body as Buffer;
+    const resizedBuffer = await sharp(buffer)
+      .jpeg({
+        quality: 75,
+      })
+      .resize(64, 64, { fit: "cover" })
+      .toBuffer();
 
-  await s3
-    .putObject({
-      Key: createPreviewKey(key),
-      Bucket: S3_BUCKET_NAME,
-      Body: resizedBuffer,
-    })
-    .promise();
+    await s3
+      .putObject({
+        Key: createPreviewKey(key),
+        Bucket: S3_BUCKET_NAME,
+        Body: resizedBuffer,
+      })
+      .promise();
+  } catch (error) {
+    console.error(error);
+    return;
+  }
 }
