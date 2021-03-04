@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState, useReducer } from "react";
 import FileUploadBtn from "../components/FileUploadBtn";
 import MoonLoader from "react-spinners/MoonLoader";
 import { useParams } from "react-router-dom";
@@ -85,12 +85,46 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {}
 
+enum actionTypes {
+  UPDATE_DOWNLOAD_PROGRESS,
+  START_DOWNLOAD,
+  SET_DOWNLOAD_QUEUE,
+  COMPLETE_ALL_DOWNLOADS,
+}
+
+interface State {
+  total: number;
+  progress: number;
+  isDownloading: boolean;
+  current: number;
+}
+function reducer(state: State, action: any) {
+  switch (action.type) {
+    case actionTypes.UPDATE_DOWNLOAD_PROGRESS:
+      return { ...state, progress: action.payload };
+    case actionTypes.START_DOWNLOAD:
+      return { ...state, current: state.current + 1, progress: 0 };
+    case actionTypes.SET_DOWNLOAD_QUEUE:
+      return { ...state, total: action.payload, isDownloading: true };
+    case actionTypes.COMPLETE_ALL_DOWNLOADS:
+      return { ...state, isDownloading: false };
+    default:
+      throw new Error(`Action of type ${action.type} not handled`);
+  }
+}
+const initialState: State = {
+  current: 0,
+  total: 0,
+  progress: 0,
+  isDownloading: false,
+};
+
 const FilesPanel: React.FC<Props> = ({}) => {
   const classes = useStyles();
   const windowWidth = useWindowWidth();
   const { code }: { code: string } = useParams();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
+  const [state, dispatch] = useReducer(reducer, initialState);
   const { data: files, isLoading } = useFiles(code);
 
   const { mutateAsync: removeFiles } = useRemoveFiles(code);
@@ -126,11 +160,24 @@ const FilesPanel: React.FC<Props> = ({}) => {
     );
 
     let downloadQueue = files?.filter((file) => isSelected(file.key));
+
+    // Set the total number of files in the download queue
+    dispatch({
+      type: actionTypes.SET_DOWNLOAD_QUEUE,
+      payload: downloadQueue?.length || 0,
+    });
     while (!!downloadQueue && downloadQueue.length > 0) {
       const file = downloadQueue.shift();
+      dispatch({ type: actionTypes.START_DOWNLOAD });
       if (!file || !file.signedUrl) return;
       const response = await axios.get(file.signedUrl, {
         responseType: "blob",
+        onDownloadProgress: (event) => {
+          dispatch({
+            type: actionTypes.UPDATE_DOWNLOAD_PROGRESS,
+            payload: event.loaded / event.total,
+          });
+        },
       });
       const { data } = response;
       await saveBlob(data, file.name);
@@ -139,6 +186,7 @@ const FilesPanel: React.FC<Props> = ({}) => {
         payload: file.key,
       });
     }
+    dispatch({ type: actionTypes.COMPLETE_ALL_DOWNLOADS });
   }
 
   async function removeSelected(): Promise<void> {
@@ -287,12 +335,27 @@ const FilesPanel: React.FC<Props> = ({}) => {
             <Button
               variant="primary"
               event={{ category: "File", action: "Downloaded Selected Files" }}
-              disabled={selected.length === 0}
+              disabled={selected.length === 0 || state.isDownloading}
               inverse
-              startIcon={<CloudDownloadIcon />}
+              // startIcon={<CloudDownloadIcon />}
               onClick={downloadSelected}
             >
-              Download
+              <span style={{ opacity: state.isDownloading ? 0 : 1 }}>
+                Download
+              </span>
+              <span
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                {state.isDownloading &&
+                  (state.progress * 100).toFixed() +
+                    "%" +
+                    ` (${state.current} of ${state.total})`}
+              </span>
             </Button>
           </div>
         </div>
