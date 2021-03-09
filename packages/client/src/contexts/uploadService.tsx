@@ -73,7 +73,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
               ext: ext,
             };
             axios
-              .post(`${BASE_API_URL}/api/v4/signed-urls`, {
+              .post(`${BASE_API_URL}/api/v5/signed-urls`, {
                 file: { ...file, key },
                 code,
               })
