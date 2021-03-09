@@ -1,7 +1,6 @@
 import express from "express";
 import s3 from "../../s3";
 import { S3_BUCKET_NAME } from "../../config";
-import Honeybadger from "honeybadger";
 import { File, SpaceDocument } from "@floatingfile/types";
 import { v4 as uuidv4 } from "uuid";
 
@@ -11,7 +10,6 @@ const Space = mongoose.model("Space");
 
 router.post("/", async (req, res, done) => {
   const { file, code }: { file: File; code: string } = req.body;
-  console.log(code, file);
 
   try {
     // Check if the space has capacity for this file
