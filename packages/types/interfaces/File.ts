@@ -5,5 +5,6 @@ export interface File {
   signedUrl?: string;
   size: number;
   type: string;
+  hasPreview?: boolean;
   previewSignedUrl?: string;
 }

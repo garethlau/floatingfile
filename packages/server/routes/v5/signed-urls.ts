@@ -3,6 +3,7 @@ import s3 from "../../s3";
 import { S3_BUCKET_NAME } from "../../config";
 import Honeybadger from "honeybadger";
 import { File, SpaceDocument } from "@floatingfile/types";
+import { v4 as uuidv4 } from "uuid";
 
 const router = express.Router();
 const mongoose = require("mongoose");
@@ -23,15 +24,18 @@ router.post("/", async (req, res, done) => {
       // Space has reached max storage capacity
       return res.status(403).send({ message: "Max capacity reached." });
     }
+    // Generate key
+    const key = uuidv4();
 
     // Generate signed URL
     const params = {
-      Key: file.key,
+      Key: key,
       Bucket: S3_BUCKET_NAME,
     };
     const signedUrl = s3.getSignedUrl("putObject", params);
 
-    return res.status(200).send({ signedUrl });
+    // Return both key and signed URL
+    return res.status(200).send({ signedUrl, key });
   } catch (error) {
     done(error);
   }

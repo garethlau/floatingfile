@@ -110,20 +110,20 @@ const UploadQueue: React.FC<{}> = () => {
           </div>
           <div className={cls.container}>
             {uploadService.pending?.map(
-              ({ file, key, ext }: WrappedFile, index) => (
+              ({ file, id, ext }: WrappedFile, index) => (
                 <div
-                  key={key}
+                  key={id}
                   className={`${cls.fileCard} ${
-                    uploadService.currentUpload === key ? cls.cancel : ""
+                    uploadService.currentUpload === id ? cls.cancel : ""
                   }`}
                 >
                   <p>{file.name}</p>
                   <p>{formatFileSize(file.size)}</p>
-                  {uploadService.currentUpload === key && (
+                  {uploadService.currentUpload === id && (
                     <Button
                       className={cls.cancelBtn}
                       variant="danger"
-                      onClick={() => uploadService.cancel(key)}
+                      onClick={() => uploadService.cancel(id)}
                     >
                       Cancel
                     </Button>
@@ -131,7 +131,7 @@ const UploadQueue: React.FC<{}> = () => {
 
                   <LinearProgress
                     variant="determinate"
-                    value={(uploadService.getProgress(key) || 0) * 100}
+                    value={(uploadService.getProgress(id) || 0) * 100}
                   />
                 </div>
               )
