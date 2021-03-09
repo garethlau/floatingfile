@@ -140,34 +140,14 @@ function getPath(extension: string) {
   return path;
 }
 
-const imagePreviewExtensions: string[] = ["png", "jpeg", "jpg"];
-
 const FileIcon: React.FC<{
   extension: string;
-  s3Key: string;
-  code: string;
-}> = ({ extension, s3Key, code }) => {
-  const preview = imagePreviewExtensions.includes(extension);
-  const [previewSrc, setPreviewSrc] = useState<string>("");
-
-  useEffect(() => {
-    if (preview) {
-      axios
-        .get(`${BASE_API_URL}/api/v4/spaces/${code}/files/${s3Key}/preview`)
-        .then((response) => {
-          const { file } = response.data;
-          setPreviewSrc(file.previewSignedUrl);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, []);
-
-  if (preview && !!previewSrc) {
+  previewUrl?: string;
+}> = ({ extension, previewUrl }) => {
+  if (previewUrl) {
     return (
       <img
-        src={previewSrc}
+        src={`${previewUrl}`}
         style={{ width: "80%", marginTop: "5px", borderRadius: "5px" }}
       />
     );

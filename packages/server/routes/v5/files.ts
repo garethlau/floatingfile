@@ -138,10 +138,10 @@ router.patch("/", async (req, res, done) => {
     }
 
     // Create image preview
-    await createPreview({ key, type });
+    const previewUrl = await createPreview({ key, type });
 
     // Attach the file object to the space
-    const newFile: File = { key, size, name, type, ext };
+    const newFile: File = { key, size, name, type, ext, previewUrl };
     space.files = [...space.files, newFile];
 
     // Increase used space
@@ -187,29 +187,6 @@ router.get("/", async (req, res, done) => {
     });
 
     return res.status(200).send({ files });
-  } catch (error) {
-    done(error);
-  }
-});
-
-router.get("/:key/preview", async (req, res, done) => {
-  const { code, key } = req.params;
-  try {
-    const space: SpaceDocument = await Space.findOne({ code }).exec();
-    if (!space) {
-      return res.status(404).send({ message: "Space not found." });
-    }
-    const file = space.files.find((file) => file.key === key);
-    if (!file) {
-      return res.status(404).send({ message: "File not found." });
-    }
-    const params = {
-      Key: key + "-preview",
-      Bucket: S3_BUCKET_NAME,
-    };
-    const signedUrl = s3.getSignedUrl("getObject", params);
-    file.previewSignedUrl = signedUrl;
-    return res.status(200).send({ file });
   } catch (error) {
     done(error);
   }
