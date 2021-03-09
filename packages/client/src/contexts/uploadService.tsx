@@ -90,7 +90,10 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
                   .then((response) => {
                     setCurrentUpload("");
                     axios
-                      .patch(`${BASE_API_URL}/api/v4/spaces/${code}/file`, data)
+                      .patch(
+                        `${BASE_API_URL}/api/v5/spaces/${code}/files`,
+                        data
+                      )
                       .then((response) => {
                         resolve(response);
                       })
