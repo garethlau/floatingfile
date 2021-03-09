@@ -2,16 +2,9 @@ import express, { Request, Response } from "express";
 import { File, HistoryRecord, Space, SpaceDocument } from "@floatingfile/types";
 import s3 from "../../s3";
 import { broadcast, EventTypes } from "../../services/subscriptionManager";
-import Honeybadger from "honeybadger";
 import { S3_BUCKET_NAME } from "../../config";
-import fs from "fs";
-import path from "path";
 import crypto from "crypto";
-import {
-  createPreview,
-  deletePreview,
-  deletePreviews,
-} from "../../services/previews";
+import { deletePreviews } from "../../services/previews";
 import filesRouter from "./files";
 
 const router = express.Router();
