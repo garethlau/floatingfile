@@ -8,7 +8,7 @@ export default function useUsers(code: string) {
   function query(): Promise<Array<User>> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`${BASE_API_URL}/api/v4/spaces/${code}/users`)
+        .get(`${BASE_API_URL}/api/v5/spaces/${code}/users`)
         .then((response) => {
           const { users } = response.data;
           resolve(users);

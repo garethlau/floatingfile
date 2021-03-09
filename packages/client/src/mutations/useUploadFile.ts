@@ -27,14 +27,14 @@ export default function useUploadFile(code: string) {
         ext: file.ext,
       };
       axios
-        .post(`${BASE_API_URL}/api/v4/signed-urls`, { file, code })
+        .post(`${BASE_API_URL}/api/v5/signed-urls`, { file, code })
         .then((response) => {
           const { signedUrl } = response.data;
           axios
             .put(signedUrl, file, { onUploadProgress })
             .then((response) => {
               axios
-                .patch(`${BASE_API_URL}/api/v4/spaces/${code}/file`, data)
+                .patch(`${BASE_API_URL}/api/v5/spaces/${code}/files`, data)
                 .then((response) => {
                   resolve();
                 })

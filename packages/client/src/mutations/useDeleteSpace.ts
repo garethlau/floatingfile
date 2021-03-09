@@ -7,7 +7,7 @@ export default function useDeleteSpace(code: string) {
   const queryKey = ["space", code];
 
   function mutate(): Promise<void> {
-    return axios.delete(`${BASE_API_URL}/api/v4/spaces/${code}`);
+    return axios.delete(`${BASE_API_URL}/api/v5/spaces/${code}`);
   }
 
   async function onMutate() {

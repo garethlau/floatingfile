@@ -8,7 +8,7 @@ export default function useFiles(code: String) {
   function query(): Promise<Array<File>> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`${BASE_API_URL}/api/v4/spaces/${code}/files`)
+        .get(`${BASE_API_URL}/api/v5/spaces/${code}/files`)
         .then((response) => {
           const { files } = response.data;
           resolve(files);

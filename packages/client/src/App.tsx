@@ -73,7 +73,7 @@ const App: React.FC<{}> = () => {
       new Date(lastVisit) < new Date(threeHoursAgo)
     ) {
       // Generate new username
-      axios.get(`${BASE_API_URL}/api/v4/nickname`).then((res) => {
+      axios.get(`${BASE_API_URL}/api/v5/nickname`).then((res) => {
         localStorage.setItem(USERNAME_STORAGE_KEY, res.data.username);
         axios.defaults.headers.common["username"] = res.data.username;
         setLoading(false);
