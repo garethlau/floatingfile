@@ -8,7 +8,7 @@ export default function useSpace(code: string) {
   function query(): Promise<Space> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`${BASE_API_URL}/api/v4/spaces/${code}`)
+        .get(`${BASE_API_URL}/api/v5/spaces/${code}`)
         .then((response) => {
           const { space } = response.data;
           resolve(space);

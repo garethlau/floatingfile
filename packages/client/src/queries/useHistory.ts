@@ -9,7 +9,7 @@ export default function useHistory(code: string) {
   function query(): Promise<Array<HistoryRecord>> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`${BASE_API_URL}/api/v4/spaces/${code}/history`)
+        .get(`${BASE_API_URL}/api/v5/spaces/${code}/history`)
         .then((response) => {
           const { history } = response.data;
           resolve(history);

@@ -8,7 +8,7 @@ export default function useRemoveFile(code: string) {
   const queryKey = ["space", code, "files"];
 
   function mutate(key: string): Promise<AxiosResponse> {
-    return axios.delete(`${BASE_API_URL}/api/v4/spaces/${code}/files/${key}`);
+    return axios.delete(`${BASE_API_URL}/api/v5/spaces/${code}/files/${key}`);
   }
 
   async function onMutate(key: string) {

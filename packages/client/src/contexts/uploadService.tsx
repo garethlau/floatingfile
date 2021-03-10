@@ -25,7 +25,8 @@ interface Context {
 
 export interface WrappedFile {
   file: File;
-  key: string;
+  // ID used soley by the client to keep track of uploads
+  id: string;
   ext: string;
 }
 
@@ -57,7 +58,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
     (async function () {
       if (size() > 0) {
         const wrappedFile = peek();
-        const { file, key, ext } = wrappedFile;
+        const { file, id, ext } = wrappedFile;
 
         if (!sourceRef.current) {
           sourceRef.current = axios.CancelToken.source();
@@ -65,32 +66,43 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
 
         try {
           await new Promise((resolve, reject) => {
-            const data = {
-              key: key,
-              size: file.size,
-              name: file.name,
-              type: file.type,
-              ext: ext,
-            };
+            // Generate a signed URL to upload file directly from client
+            // The file meta data is provided to ensure that the space has capacity to upload the file
             axios
-              .post(`${BASE_API_URL}/api/v4/signed-urls`, {
-                file: { ...file, key },
+              .post(`${BASE_API_URL}/api/v5/signed-urls`, {
+                file: file,
                 code,
               })
               .then((response) => {
-                const { signedUrl } = response.data;
-                setCurrentUpload(key);
+                const { signedUrl, key } = response.data;
+                setCurrentUpload(id);
+
+                // Upload the file using the signed URL. The signed URL generated is for the returned key.
                 axios
                   .put(signedUrl, file, {
                     onUploadProgress: (event) => {
-                      updateProgress(key, event.loaded, event.total);
+                      // Set upload progress for current file
+                      updateProgress(id, event.loaded, event.total);
                     },
                     cancelToken: sourceRef.current?.token,
                   })
                   .then((response) => {
                     setCurrentUpload("");
+
+                    // Create data object which is used by the server to create the file object.
+                    const data = {
+                      size: file.size,
+                      name: file.name,
+                      type: file.type,
+                      ext: ext,
+                      key: key,
+                    };
+                    // Adds a file object to the file array of the space
                     axios
-                      .patch(`${BASE_API_URL}/api/v4/spaces/${code}/file`, data)
+                      .patch(
+                        `${BASE_API_URL}/api/v5/spaces/${code}/files`,
+                        data
+                      )
                       .then((response) => {
                         resolve(response);
                       })
@@ -115,7 +127,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
             console.log(error);
           }
         } finally {
-          complete(key);
+          complete(id);
           console.log("Done ", file.name);
           dequeue();
         }
@@ -123,14 +135,20 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
     })();
   }, [pending]);
 
+  /**
+   * This function adds multiple files to the upload queue. It generates a
+   * unique ID for the file and parses the file extension to create a
+   * WrappedFile object.
+   * @param files Array of files to add to the upload queue.
+   */
   function enqueueMany(files: File[]) {
     // Add the files to the queue
     const extendedFiles = files.map((file) => {
-      const key = uuidv4();
+      const id = uuidv4();
       const ext = file.name.split(".")[file.name.split(".").length - 1];
 
       const wrappedFile: WrappedFile = {
-        key,
+        id,
         ext,
         file,
       };
@@ -140,41 +158,72 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
     setPending((prev) => [...prev, ...extendedFiles]);
   }
 
+  /**
+   * Removes and returns the first file in the upload queue
+   * @returns File at the front of the queue
+   */
   function dequeue(): WrappedFile {
     const top = pending[0];
     setPending((prev) => prev.slice(1));
     return top;
   }
 
+  /**
+   *
+   * @returns Peek the first file in the queue
+   */
   function peek(): WrappedFile {
     return pending[0];
   }
 
+  /**
+   *
+   * @returns Number of files in the queue to be uploaded
+   */
   function size(): number {
     return pending.length;
   }
 
-  function updateProgress(key: string, loaded: number, total: number): void {
+  /**
+   * This function sets the uploaded value of a file
+   * @param id ID of the file to update the upload progress for
+   * @param loaded Uploaded data
+   * @param total File size
+   */
+  function updateProgress(id: string, loaded: number, total: number): void {
     setProgress((prev) => ({
       ...prev,
-      [key]: loaded / total,
+      [id]: loaded / total,
     }));
   }
 
-  function getProgress(key: string): number | null {
-    return progress[key] || null;
+  /**
+   *
+   * @param id ID of file to get upload progress for
+   * @returns Decminal value of upload progress (between 0 and 1)
+   */
+  function getProgress(id: string): number | null {
+    return progress[id] || null;
   }
 
-  function complete(key: string): void {
+  /**
+   *
+   * @param id ID of file that has successfully been uploaded. Removes the upload object for the file.
+   */
+  function complete(id: string): void {
     setProgress((prev) => {
       const newProgress = Object.assign({}, prev);
-      delete newProgress[key];
+      delete newProgress[id];
       return newProgress;
     });
   }
 
-  function cancel(key: string): void {
-    console.log("Cancelling upload ", key);
+  /**
+   *
+   * @param id ID of file to cancel upload
+   */
+  function cancel(id: string): void {
+    console.log("Cancelling upload ", id);
     if (sourceRef.current) {
       sourceRef.current.cancel("Operation cancelled");
     }

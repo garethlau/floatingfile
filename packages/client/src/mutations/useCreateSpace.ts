@@ -6,7 +6,7 @@ import { Space } from "@floatingfile/types";
 export default function useCreateSpace() {
   function mutate(): Promise<Space> {
     return axios
-      .post(`${BASE_API_URL}/api/v4/spaces`)
+      .post(`${BASE_API_URL}/api/v5/spaces`)
       .then((response) => response.data.space);
   }
 

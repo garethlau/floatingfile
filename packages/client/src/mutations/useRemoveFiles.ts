@@ -9,7 +9,7 @@ export default function useRemoveFiles(code: string) {
     return new Promise((resolve, reject) => {
       axios
         .delete(
-          `${BASE_API_URL}/api/v4/spaces/${code}/files?toRemove=${JSON.stringify(
+          `${BASE_API_URL}/api/v5/spaces/${code}/files?toRemove=${JSON.stringify(
             keysToRemove
           )}`
         )

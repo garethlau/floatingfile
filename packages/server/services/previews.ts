@@ -24,7 +24,7 @@ export async function createPreview({
 }: {
   key: string;
   type: string;
-}) {
+}): Promise<string | undefined> {
   if (type.includes("image")) {
     return await createImagePreview(key);
   } else {
@@ -63,28 +63,27 @@ export async function deletePreview(key: string) {
     .promise();
 }
 
-export async function createImagePreview(key: string) {
-  try {
-    const obj = await s3
-      .getObject({ Key: key, Bucket: S3_BUCKET_NAME })
-      .promise();
-    const buffer = obj.Body as Buffer;
-    const resizedBuffer = await sharp(buffer)
-      .jpeg({
-        quality: 75,
-      })
-      .resize(64, 64, { fit: "cover" })
-      .toBuffer();
+export async function createImagePreview(key: string): Promise<string> {
+  const obj = await s3
+    .getObject({ Key: key, Bucket: S3_BUCKET_NAME })
+    .promise();
+  const buffer = obj.Body as Buffer;
+  const resizedBuffer = await sharp(buffer)
+    .jpeg({
+      quality: 75,
+    })
+    .resize(64, 64, { fit: "cover" })
+    .toBuffer();
+  const previewKey = createPreviewKey(key);
+  await s3
+    .putObject({
+      Key: previewKey,
+      Bucket: S3_BUCKET_NAME,
+      Body: resizedBuffer,
+      ACL: "public-read",
+    })
+    .promise();
 
-    await s3
-      .putObject({
-        Key: createPreviewKey(key),
-        Bucket: S3_BUCKET_NAME,
-        Body: resizedBuffer,
-      })
-      .promise();
-  } catch (error) {
-    console.error(error);
-    return;
-  }
+  const previewUrl = `https://${S3_BUCKET_NAME}.s3.us-east-2.amazonaws.com/${previewKey}`;
+  return previewUrl;
 }
