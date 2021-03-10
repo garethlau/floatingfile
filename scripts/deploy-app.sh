@@ -5,7 +5,7 @@ die () {
 }
 
 [ "$#" -eq 1 ] || die "1 argument required, $# provided"
-environment=$1
+environment=$1 # environment should be "staging" or "prod"
 
 echo ">>> deploying floatingfile"
 echo ">>> environment: $environment"
@@ -18,8 +18,11 @@ yarn install
 echo ">>> increase memory for build"
 export NODE_OPTIONS="--max-old-space-size=5120" # increase to 5gb
 
-echo ">>> building app"
-yarn build
+echo ">>> building frontend"
+yarn build-client:$environment
+
+echo ">>> building backend"
+yarn build-server:$environment
 
 echo ">>> restarting application"
 if [ "$username" = "staging" ];
