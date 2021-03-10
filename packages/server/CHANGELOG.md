@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/garethlau/floatingfile-mono/compare/v1.3.1...v1.4.0) (2021-03-10)
+
+
+### Bug Fixes
+
+* Broadcast correct event ([2def487](https://github.com/garethlau/floatingfile-mono/commit/2def48723bb4486d496df0d67386c7c8f1aa669e))
+* Handle invalid image type ([48a7b15](https://github.com/garethlau/floatingfile-mono/commit/48a7b151278a57d1da68ac69dfee145ee2647518))
+
+
+### Features
+
+* Configure default error handler ([c7ad95b](https://github.com/garethlau/floatingfile-mono/commit/c7ad95ba21842fed3c082d980ada753b638929e9))
+* File preview for images ([33d34aa](https://github.com/garethlau/floatingfile-mono/commit/33d34aa5bb465abc37218a1e4703c8b24ff55fe6))
+
+
+### Performance Improvements
+
+* Reduce image preview size ([1b4afa8](https://github.com/garethlau/floatingfile-mono/commit/1b4afa89faab2992203eece882aa2c0a6be5146b))
+
+
+
+
+
+
 ## [1.3.1](https://github.com/garethlau/floatingfile-mono/compare/v1.3.0...v1.3.1) (2021-02-21)
 
 **Note:** Version bump only for package @floatingfile/server
