@@ -20,6 +20,7 @@
     "build-server:staging": "yarn run build-server",
     "build-app": "yarn run build-client && yarn run build-server",
     "build-app:staging": "yarn run build-client:staging && yarn run build-server:staging",
+    "build-landing": "lerna run build --stream --scope=@floatingfile/landing",
     "new-version": "lerna version --conventional-commits --yes",
     "diff": "lerna diff"
   },
