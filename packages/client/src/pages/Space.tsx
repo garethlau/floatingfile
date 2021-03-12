@@ -297,7 +297,7 @@ const Space: React.FC<SpaceProps> = (props) => {
     const username = localStorage.getItem(USERNAME_STORAGE_KEY);
     console.log("Event source username ", username);
     let eventSource = new EventSource(
-      `${BASE_API_URL}/api/v4/subscriptions/${code}?username=${username}`
+      `${BASE_API_URL}/api/v5/subscriptions/${code}?username=${username}`
     );
 
     eventSource.onerror = (error) => {
@@ -350,7 +350,7 @@ const Space: React.FC<SpaceProps> = (props) => {
   useEffect(() => {
     if (code) {
       axios
-        .get(`${BASE_API_URL}/api/v4/spaces/${code}`)
+        .get(`${BASE_API_URL}/api/v5/spaces/${code}`)
         .then(() => {
           setExists(true);
         })
