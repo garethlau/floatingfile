@@ -304,6 +304,7 @@ const Space: React.FC<SpaceProps> = (props) => {
       switch (type) {
         case Events.CONNECTION_ESTABLISHED:
           setMyClientId(clientId);
+          refetchSpace();
           break;
         case Events.FILES_UPDATED:
         case Events.HISTORY_UPDATED:
