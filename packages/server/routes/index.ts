@@ -35,4 +35,4 @@ router.get("/apple-app-site-association", (req, res) => {
 
 router.use("/api/v3", middlewares.requireKey, v3Routes);
 router.use("/api/v4", middlewares.requireKey, v4Routes);
-router.use("/api/v5", middlewares.requireKey, v5Routes);
+router.use("/api/v5", v5Routes);
