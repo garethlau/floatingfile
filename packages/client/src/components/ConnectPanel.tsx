@@ -63,7 +63,6 @@ const ConnectPanel: React.FC<{}> = () => {
   const { data: space } = useSpace(code);
   const history = useHistory();
   const { mutateAsync: deleteSpace } = useDeleteSpace(code);
-
   const [timeLeft, setTimeLeft] = useState<number>(0); // In seconds
 
   async function close() {
