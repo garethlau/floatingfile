@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     overflowY: "hidden",
     display: "flex",
     flexDirection: "row",
+    backgroundColor: Colors.LIGHT_SHADE,
   },
   sidebar: {
     width: 0,
