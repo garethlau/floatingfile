@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Colors, Elevation } from "@floatingfile/common";
 import FaceIcon from "@material-ui/icons/Face";
 import Center from "./Center";
-import useUsers from "../queries/useUsers";
+import useSpace from "../queries/useSpace";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,7 +53,8 @@ interface UsersPanelProps {
 
 const UsersPanel: React.FC<UsersPanelProps> = ({ myClientId }) => {
   const { code }: { code: string } = useParams();
-  const { data: users } = useUsers(code);
+  const { data: space } = useSpace(code);
+  const users = space?.users || [];
 
   const cls = useStyles();
 
@@ -61,63 +62,61 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ myClientId }) => {
     <div className={cls.root}>
       <h2 className={cls.title}>Users</h2>
       <div className={cls.tileContainer}>
-        {users?.map(
-          ({ username, id }: { username: string; id: string }, index) => {
-            return (
-              <div className={cls.tile} key={index}>
-                <div>
-                  <Center>
-                    <FaceIcon
-                      style={{ color: username?.split("-")[0], fontSize: 36 }}
-                    />
-                  </Center>
-                </div>
-
-                {myClientId === id ? (
-                  <div>
-                    <p
-                      style={{
-                        margin: 0,
-                        fontWeight: 500,
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {username}
-                    </p>
-
-                    <p
-                      style={{
-                        margin: 0,
-                        opacity: 0.7,
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      (me)
-                    </p>
-                  </div>
-                ) : (
-                  <div>
-                    <p
-                      style={{
-                        marginTop: "10px",
-                        fontWeight: 500,
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {username}
-                    </p>
-                  </div>
-                )}
+        {users.map(({ username, id }, index) => {
+          return (
+            <div className={cls.tile} key={index}>
+              <div>
+                <Center>
+                  <FaceIcon
+                    style={{ color: username?.split("-")[0], fontSize: 36 }}
+                  />
+                </Center>
               </div>
-            );
-          }
-        )}
+
+              {myClientId === id ? (
+                <div>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontWeight: 500,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {username}
+                  </p>
+
+                  <p
+                    style={{
+                      margin: 0,
+                      opacity: 0.7,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    (me)
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <p
+                    style={{
+                      marginTop: "10px",
+                      fontWeight: 500,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {username}
+                  </p>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

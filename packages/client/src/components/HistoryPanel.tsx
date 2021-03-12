@@ -11,7 +11,7 @@ import {
   mdiAccountMinus,
 } from "@mdi/js";
 import Icon from "@mdi/react";
-import useHistory from "../queries/useHistory";
+import useSpace from "../queries/useSpace";
 import { useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -151,7 +151,9 @@ function renderTile(action: string, payload: string, author: string) {
 
 const HistoryPanel: React.FC<{}> = () => {
   const { code }: { code: string } = useParams();
-  const { data: history } = useHistory(code);
+  const { data: space } = useSpace(code);
+  const history = space?.history || [];
+
   const cls = useStyles();
   return (
     <div className={cls.root}>
@@ -160,7 +162,7 @@ const HistoryPanel: React.FC<{}> = () => {
         {history && history.length > 0 ? (
           <AnimatePresence>
             {history
-              ?.sort((a, b) => {
+              .sort((a, b) => {
                 return (
                   new Date(b.timestamp).getTime() -
                   new Date(a.timestamp).getTime()

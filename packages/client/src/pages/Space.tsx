@@ -27,9 +27,6 @@ import Button from "../components/Button";
 import IntroToast from "../components/IntroToast";
 import UploadQueue from "../components/UploadQueue";
 import useSpace from "../queries/useSpace";
-import useFiles from "../queries/useFiles";
-import useUsers from "../queries/useUsers";
-import { default as useSpaceHistory } from "../queries/useHistory";
 import useWindowWidth from "../hooks/useWindowWidth";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import FullPageLoader from "../components/FullPageLoader";
@@ -241,10 +238,6 @@ const Space: React.FC<SpaceProps> = (props) => {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const { refetch: refetchFiles } = useFiles(code);
-  const { refetch: refetchHistory } = useSpaceHistory(code);
-  const { refetch: refetchUsers } = useUsers(code);
-
   const [myClientId, setMyClientId] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -297,7 +290,7 @@ const Space: React.FC<SpaceProps> = (props) => {
     const username = localStorage.getItem(USERNAME_STORAGE_KEY);
     console.log("Event source username ", username);
     let eventSource = new EventSource(
-      `${BASE_API_URL}/api/v4/subscriptions/${code}?username=${username}`
+      `${BASE_API_URL}/api/v5/subscriptions/${code}?username=${username}`
     );
 
     eventSource.onerror = (error) => {
@@ -311,21 +304,11 @@ const Space: React.FC<SpaceProps> = (props) => {
       switch (type) {
         case Events.CONNECTION_ESTABLISHED:
           setMyClientId(clientId);
-          refetchSpace();
-          refetchFiles();
-          refetchHistory();
-          refetchUsers();
           break;
         case Events.FILES_UPDATED:
-          refetchFiles();
-          refetchHistory();
-          break;
         case Events.HISTORY_UPDATED:
-          refetchHistory();
-          break;
         case Events.USERS_UPDATED:
-          refetchHistory();
-          refetchUsers();
+          refetchSpace();
           break;
         case Events.SPACE_DELETED:
           enqueueSnackbar(
@@ -350,7 +333,7 @@ const Space: React.FC<SpaceProps> = (props) => {
   useEffect(() => {
     if (code) {
       axios
-        .get(`${BASE_API_URL}/api/v4/spaces/${code}`)
+        .get(`${BASE_API_URL}/api/v5/spaces/${code}`)
         .then(() => {
           setExists(true);
         })

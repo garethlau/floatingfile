@@ -22,7 +22,7 @@ import { saveBlob } from "../utils";
 import { useUploadService } from "../contexts/uploadService";
 import { useSelectedFiles } from "../contexts/selectedFiles";
 import { useSnackbar } from "notistack";
-import useFiles from "../queries/useFiles";
+import useSpace from "../queries/useSpace";
 import useRemoveFiles from "../mutations/useRemoveFiles";
 import FileListItem from "./FileListItem";
 
@@ -131,9 +131,10 @@ const FilesPanel: React.FC<Props> = ({}) => {
   const { code }: { code: string } = useParams();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { data: files, isLoading } = useFiles(code);
-
+  const { data: space, isLoading } = useSpace(code);
   const { mutateAsync: removeFiles } = useRemoveFiles(code);
+
+  const files = space?.files || [];
 
   const {
     selected,
@@ -409,9 +410,9 @@ const FilesPanel: React.FC<Props> = ({}) => {
             <FileUploadBtn handleFiles={onDrop} />
           </div>
         )}
-        {files && files.length > 0 ? (
+        {files.length > 0 ? (
           <AnimatePresence>
-            {files?.map((file, index) => (
+            {files.map((file, index) => (
               <motion.div
                 initial={{ opacity: 0, x: 100 }}
                 animate={{ opacity: 1, x: 0 }}

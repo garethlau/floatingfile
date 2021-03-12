@@ -6,7 +6,6 @@ import MoonLoader from "react-spinners/MoonLoader";
 import { ORIGIN } from "../env";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useSnackbar } from "notistack";
-import Center from "./Center";
 import useSpace from "../queries/useSpace";
 import { useParams, useHistory } from "react-router-dom";
 import useDeleteSpace from "../mutations/useDeleteSpace";
@@ -63,7 +62,6 @@ const ConnectPanel: React.FC<{}> = () => {
   const { data: space } = useSpace(code);
   const history = useHistory();
   const { mutateAsync: deleteSpace } = useDeleteSpace(code);
-
   const [timeLeft, setTimeLeft] = useState<number>(0); // In seconds
 
   async function close() {
