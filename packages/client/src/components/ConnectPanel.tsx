@@ -6,7 +6,6 @@ import MoonLoader from "react-spinners/MoonLoader";
 import { ORIGIN } from "../env";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useSnackbar } from "notistack";
-import Center from "./Center";
 import useSpace from "../queries/useSpace";
 import { useParams, useHistory } from "react-router-dom";
 import useDeleteSpace from "../mutations/useDeleteSpace";

@@ -16,7 +16,6 @@ import axios from "axios";
 import ReactGA from "react-ga";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtoolsPanel } from "react-query/devtools";
-
 import { SelectedFilesProvider } from "./contexts/selectedFiles";
 import { UploadServiceProvider } from "./contexts/uploadService";
 
