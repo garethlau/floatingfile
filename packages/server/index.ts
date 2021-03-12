@@ -88,7 +88,7 @@ app.get("/ping", (req, res) => {
 
 if (NODE_ENV === "staging" || NODE_ENV === "beta") {
   logger.info("ENVIRONMENT IS " + NODE_ENV);
-  logger.info("SERVING CLIEN");
+  logger.info("SERVING CLIENT");
 
   const APP_OUT_DIRECTORY = path.join(__dirname, "..", "..", "client/out");
   const APP_INDEX = path.join(APP_OUT_DIRECTORY, "index.html");
@@ -101,6 +101,5 @@ if (NODE_ENV === "staging" || NODE_ENV === "beta") {
 }
 
 app.listen(PORT, () => {
-  logger.info(`${MONGO_URI} ${NODE_ENV}`);
   logger.info("Listening on PORT: " + PORT);
 });
