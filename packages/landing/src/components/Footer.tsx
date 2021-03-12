@@ -90,8 +90,8 @@ const Footer: React.FC<{}> = () => {
             </div>
           </Grid>
           <Grid container spacing={3} item xs={12} md={6}>
-            {resources.map(({ heading, links }) => (
-              <Grid item md={6} sm={6} xs={12}>
+            {resources.map(({ heading, links }, index) => (
+              <Grid item md={6} sm={6} xs={12} key={index}>
                 <h3 className={classes.heading}>{heading}</h3>
                 {links.map(({ text, href, path }, index) =>
                   path ? (
