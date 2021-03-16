@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Suspense } from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, ThemeProvider } from "@material-ui/core";
+import CssBaseline from "@material-ui/core/CssBaseline";
 import { Router, Switch, Route } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { SnackbarProvider } from "notistack";
@@ -16,6 +17,7 @@ import axios from "axios";
 import ReactGA from "react-ga";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtoolsPanel } from "react-query/devtools";
+import theme from "./theme";
 import { SelectedFilesProvider } from "./contexts/selectedFiles";
 import { UploadServiceProvider } from "./contexts/uploadService";
 
@@ -98,24 +100,25 @@ const App: React.FC<{}> = () => {
     );
   } else {
     return (
-      <div className={classes.root}>
-        <QueryClientProvider client={queryClient}>
-          <SnackbarProvider
-            maxSnack={3}
-            classes={{
-              variantSuccess: classes.success,
-              variantError: classes.error,
-              variantWarning: classes.warning,
-              variantInfo: classes.info,
-            }}
-            anchorOrigin={{
-              vertical: windowWidth > Breakpoints.MD ? "bottom" : "top",
-              horizontal: windowWidth > Breakpoints.MD ? "right" : "center",
-            }}
-          >
-            <UploadServiceProvider>
-              <SelectedFilesProvider>
-                <header className="App-header">
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <div className={classes.root}>
+          <QueryClientProvider client={queryClient}>
+            <SnackbarProvider
+              maxSnack={3}
+              classes={{
+                variantSuccess: classes.success,
+                variantError: classes.error,
+                variantWarning: classes.warning,
+                variantInfo: classes.info,
+              }}
+              anchorOrigin={{
+                vertical: windowWidth > Breakpoints.MD ? "bottom" : "top",
+                horizontal: windowWidth > Breakpoints.MD ? "right" : "center",
+              }}
+            >
+              <UploadServiceProvider>
+                <SelectedFilesProvider>
                   <Router history={history}>
                     <Suspense fallback={null}>
                       <Switch>
@@ -125,13 +128,13 @@ const App: React.FC<{}> = () => {
                       </Switch>
                     </Suspense>
                   </Router>
-                </header>
-              </SelectedFilesProvider>
-            </UploadServiceProvider>
-          </SnackbarProvider>
-          <ReactQueryDevtoolsPanel />
-        </QueryClientProvider>
-      </div>
+                </SelectedFilesProvider>
+              </UploadServiceProvider>
+            </SnackbarProvider>
+            <ReactQueryDevtoolsPanel />
+          </QueryClientProvider>
+        </div>
+      </ThemeProvider>
     );
   }
 };
