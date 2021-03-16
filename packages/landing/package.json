@@ -20,7 +20,6 @@
     "next-seo": "^4.7.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-intersection-observer": "^8.31.0",
-    "react-soft-slider": "^2.2.2"
+    "react-intersection-observer": "^8.31.0"
   }
 }

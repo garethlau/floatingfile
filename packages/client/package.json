@@ -24,6 +24,7 @@
     "framer-motion": "^3.1.1",
     "http-proxy-middleware": "^0.20.0",
     "notistack": "^0.9.17",
+    "prop-types": "^15.7.2",
     "qrcode.react": "^1.0.0",
     "react": "^16.13.1",
     "react-copy-to-clipboard": "^5.0.2",

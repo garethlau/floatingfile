@@ -24,5 +24,7 @@
     "new-version": "lerna version --conventional-commits --yes",
     "diff": "lerna diff"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@octokit/core": "^3.3.1"
+  }
 }
