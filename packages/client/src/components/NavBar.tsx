@@ -66,7 +66,10 @@ const NavBar: React.FC<{
         { name: `/users`, icon: <PeopleIcon /> },
         // { name: "/settings", icon: <SettingsIcon /> },
       ].map(({ name, icon }, index) => (
-        <div className={clsx(name === "/files" && classes.filesTab)}>
+        <div
+          key={index}
+          className={clsx(name === "/files" && classes.filesTab)}
+        >
           <NavTile
             active={index === active}
             baseUrl={baseUrl}
