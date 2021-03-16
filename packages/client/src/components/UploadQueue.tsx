@@ -7,7 +7,7 @@ import MinimizeIcon from "@material-ui/icons/Minimize";
 import IconButton from "@material-ui/core/IconButton";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { isMobile } from "react-device-detect";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, AnimateSharedLayout } from "framer-motion";
 import Button from "./Button";
 import clsx from "clsx";
 
@@ -105,31 +105,34 @@ const UploadQueue: React.FC<{}> = () => {
             </IconButton>
           </div>
           <div className={cls.container}>
-            {uploadService.pending?.map(({ file, id }: WrappedFile) => (
-              <div
-                key={id}
-                className={clsx(
-                  cls.fileCard,
-                  uploadService.currentUpload === id && cls.cancel
-                )}
-              >
-                <p>{file.name}</p>
-                <p>{formatFileSize(file.size)}</p>
-                {uploadService.currentUpload === id && (
-                  <Button
-                    className={cls.cancelBtn}
-                    variant="danger"
-                    onClick={() => uploadService.cancel(id)}
-                  >
-                    Cancel
-                  </Button>
-                )}
-                <LinearProgress
-                  variant="determinate"
-                  value={(uploadService.getProgress(id) || 0) * 100}
-                />
-              </div>
-            ))}
+            <AnimateSharedLayout>
+              {uploadService.pending?.map(({ file, id }: WrappedFile) => (
+                <motion.div
+                  layout
+                  key={id}
+                  className={clsx(
+                    cls.fileCard,
+                    uploadService.currentUpload === id && cls.cancel
+                  )}
+                >
+                  <p>{file.name}</p>
+                  <p>{formatFileSize(file.size)}</p>
+                  {uploadService.currentUpload === id && (
+                    <Button
+                      className={cls.cancelBtn}
+                      variant="danger"
+                      onClick={() => uploadService.cancel(id)}
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                  <LinearProgress
+                    variant="determinate"
+                    value={(uploadService.getProgress(id) || 0) * 100}
+                  />
+                </motion.div>
+              ))}
+            </AnimateSharedLayout>
           </div>
         </motion.div>
       )}
