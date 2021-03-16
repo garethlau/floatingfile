@@ -1,14 +1,19 @@
 import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import Honeybadger from "honeybadger-js";
+import Honeybadger from "@honeybadger-io/js";
 import ErrorBoundary from "@honeybadger-io/react";
 
 Honeybadger.configure({
   apiKey: process.env.REACT_APP_HONEYBADGER_API_KEY || "",
   environment: process.env.REACT_APP_ENVIRONMENT,
   disabled: process.env.REACT_APP_ENVIRONMENT === "development",
-  breadcrumbsEnabled: true,
+  breadcrumbsEnabled: {
+    dom: true,
+    network: true,
+    navigation: true,
+    console: false,
+  },
 });
 
 function noop() {}

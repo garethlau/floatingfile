@@ -1,5 +1,6 @@
 import { Response } from "express";
 import { SpaceDocument, Events } from "@floatingfile/types";
+import Honeybadger from "@honeybadger-io/js";
 
 export enum EventTypes {
   CONNECTION_ESTABLISHED = "CONNECTION_ESTABLISHED",
@@ -11,7 +12,6 @@ export enum EventTypes {
 
 const mongoose = require("mongoose");
 const Space = mongoose.model("Space");
-const Honeybadger = require("honeybadger");
 
 interface Client {
   id: string;

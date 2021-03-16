@@ -1629,6 +1629,13 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
+"@honeybadger-io/js@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@honeybadger-io/js/-/js-3.1.0.tgz#8274c22e06f1e427f1d71eb68c8af7ce316c9ccf"
+  integrity sha512-An371pjE5jYtF5XlWgIiYL2HTDKjwyzmiJmbJ4Y84lDvKl7J36mzqk+X2uQceFwJo6xHZC6Pwd0WBAKjttg5vA==
+  dependencies:
+    stacktrace-parser "^0.1.10"
+
 "@honeybadger-io/react@0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@honeybadger-io/react/-/react-0.0.8.tgz#f92acda61bb4ff591d1f7cfa6ad7026cd1d8a192"
@@ -8510,14 +8517,6 @@ honeybadger-js@^2.3.0:
   resolved "https://registry.yarnpkg.com/honeybadger-js/-/honeybadger-js-2.3.0.tgz#040200066d60a8c1eca036e9f8568f9cff8b8d55"
   integrity sha512-Tq1jPNumPe/l5RRDPDi+KNGULoaJQ9BSVZC+TEZOlPUzJx3AUn5ESb2NkCd7oSx/J221/aWUfz2/JrltHldx7A==
 
-honeybadger@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/honeybadger/-/honeybadger-1.4.0.tgz#3c74518b53c9bcb1c3327659d5ea4ead2d3adb43"
-  integrity sha512-n7i8cTfOvGx2z4kG4YSdzye+y3QOesfsSoGkmhWm2ddLTWlra+NLBPmGoo8CmCaYEQMbo3CpA56m5VOdc7LFqg==
-  dependencies:
-    request "~2.88.0"
-    stack-trace "~0.0.9"
-
 hoopy@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/hoopy/-/hoopy-0.1.4.tgz#609207d661100033a9a9402ad3dea677381c1b1d"
@@ -14065,7 +14064,7 @@ request-promise-native@^1.0.8:
     stealthy-require "^1.1.1"
     tough-cookie "^2.3.3"
 
-request@^2.88.0, request@^2.88.2, request@~2.88.0:
+request@^2.88.0, request@^2.88.2:
   version "2.88.2"
   resolved "https://registry.yarnpkg.com/request/-/request-2.88.2.tgz#d73c918731cb5a87da047e207234146f664d12b3"
   integrity sha512-MsvtOrfG9ZcrOwAW+Qi+F6HbD0CWXEh9ou77uOb7FM2WPhwT7smM833PzanhJLsgXjN89Ir6V2PczXNnMpwKhw==
@@ -15114,7 +15113,7 @@ stable@^0.1.8:
   resolved "https://registry.yarnpkg.com/stable/-/stable-0.1.8.tgz#836eb3c8382fe2936feaf544631017ce7d47a3cf"
   integrity sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w==
 
-stack-trace@0.0.x, stack-trace@~0.0.9:
+stack-trace@0.0.x:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/stack-trace/-/stack-trace-0.0.10.tgz#547c70b347e8d32b4e108ea1a2a159e5fdde19c0"
   integrity sha1-VHxws0fo0ytOEI6hoqFZ5f3eGcA=
@@ -15131,7 +15130,7 @@ stackframe@^1.1.1:
   resolved "https://registry.yarnpkg.com/stackframe/-/stackframe-1.2.0.tgz#52429492d63c62eb989804c11552e3d22e779303"
   integrity sha512-GrdeshiRmS1YLMYgzF16olf2jJ/IzxXY9lhKOskuVziubpTYcYqyOwYeJKzQkwy7uN0fYSsbsC4RQaXf9LCrYA==
 
-stacktrace-parser@0.1.10:
+stacktrace-parser@0.1.10, stacktrace-parser@^0.1.10:
   version "0.1.10"
   resolved "https://registry.yarnpkg.com/stacktrace-parser/-/stacktrace-parser-0.1.10.tgz#29fb0cae4e0d0b85155879402857a1639eb6051a"
   integrity sha512-KJP1OCML99+8fhOHxwwzyWrlUuVX5GQ0ZpJTd1DFXhdkrvg1szxfHhawXUZ3g9TkXORQd4/WG68jMlQZ2p8wlg==

@@ -1,7 +1,6 @@
 import express from "express";
 import s3 from "../../s3";
 import { S3_BUCKET_NAME } from "../../config";
-import Honeybadger from "honeybadger";
 import { File, SpaceDocument } from "@floatingfile/types";
 
 const router = express.Router();
