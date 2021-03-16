@@ -4,7 +4,7 @@
     "packages/*"
   ],
   "version": "0.0.0",
-  "name": "floatingfile-mono",
+  "name": "floatingfile",
   "devDependencies": {
     "lerna": "^3.22.1"
   },
