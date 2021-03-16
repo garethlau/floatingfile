@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { SpaceDocument, Events } from "@floatingfile/types";
-import Honeybadger from "@honeybadger-io/js";
+import honeybadger from "../utils/honeybadger";
 
 export enum EventTypes {
   CONNECTION_ESTABLISHED = "CONNECTION_ESTABLISHED",
@@ -37,7 +37,7 @@ export async function addClient(code: string, client: Client) {
     spaces[code].push(client);
     broadcast(code, EventTypes.USERS_UPDATED);
   } catch (error) {
-    Honeybadger.notify(error);
+    honeybadger.notify(error);
   }
 }
 
@@ -58,7 +58,7 @@ export async function removeClient(code: string, client: Client) {
     broadcast(code, EventTypes.USERS_UPDATED);
     await space.save();
   } catch (error) {
-    Honeybadger.notify(error);
+    honeybadger.notify(error);
   }
 }
 
@@ -70,7 +70,7 @@ export function sendDataToClients(code: string, data: any) {
       client.res.write(`data: ${JSON.stringify(data)}\n\n`);
     });
   } catch (error) {
-    Honeybadger.notify(error);
+    honeybadger.notify(error);
   }
 }
 
