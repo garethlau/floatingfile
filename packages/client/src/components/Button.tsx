@@ -45,6 +45,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   const cls = useStyles();
   const style: any = {
     fontFamily: "DM Sans",
+    fontSize: "14px",
   };
   if (variant === "primary") {
     style.backgroundColor = Colors.PRIMARY;
