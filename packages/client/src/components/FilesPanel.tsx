@@ -12,7 +12,7 @@ import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ClearIcon from "@material-ui/icons/Clear";
 import { makeStyles } from "@material-ui/core/styles";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimateSharedLayout, AnimatePresence, motion } from "framer-motion";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Button from "./Button";
 import { Colors } from "@floatingfile/common";
@@ -412,17 +412,19 @@ const FilesPanel: React.FC<Props> = ({}) => {
         )}
         {files.length > 0 ? (
           <AnimatePresence>
-            {files.map((file, index) => (
-              <motion.div
-                initial={{ opacity: 0, x: 100 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 100 }}
-                transition={{ delay: index * 0.3 }}
-                key={file.key}
-              >
-                <FileListItem file={file} />
-              </motion.div>
-            ))}
+            <AnimateSharedLayout>
+              {files.map((file) => (
+                <motion.div
+                  layout
+                  key={file.key}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scaleY: 0.5, scaleX: 0.8 }}
+                >
+                  <FileListItem file={file} />
+                </motion.div>
+              ))}
+            </AnimateSharedLayout>
           </AnimatePresence>
         ) : (
           dropZone
