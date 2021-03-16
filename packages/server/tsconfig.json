@@ -5,6 +5,7 @@
     "rootDir": "./",
     "outDir": "./build",
     "esModuleInterop": true,
+    "skipLibCheck": true,
     "strict": true,
     "typeRoots": [
       "types",
