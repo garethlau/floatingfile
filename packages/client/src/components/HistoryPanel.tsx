@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     display: "grid",
     borderRadius: "5px",
     gridTemplateColumns: "48px calc(100vw - 48px - 50px)",
-    height: "48px",
+    height: "52px",
     padding: "5px",
     margin: "10px",
     boxShadow: Elevation.ONE,

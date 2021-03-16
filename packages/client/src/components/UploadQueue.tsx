@@ -34,9 +34,10 @@ const useStyles = makeStyles((theme) => ({
     padding: "10px",
     color: theme.palette.common.white,
     borderRadius: "5px 5px 0 0",
-    height: "30px",
+    height: "50px",
   },
   container: {
+    width: "100%",
     height: "350px",
     overflowY: "auto",
   },

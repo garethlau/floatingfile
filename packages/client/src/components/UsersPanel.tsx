@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateColumns: "48px 168px",
     backgroundColor: Colors.LIGHT_SHADE,
     borderRadius: "5px",
-    height: "48px",
+    height: "52px",
     padding: "5px",
     margin: "10px",
     boxShadow: Elevation.ONE,
