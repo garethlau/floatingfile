@@ -61,12 +61,12 @@ const ConnectPanel: React.FC<{}> = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { data: space } = useSpace(code);
   const history = useHistory();
-  const { mutateAsync: deleteSpace } = useDeleteSpace(code);
+  const { mutateAsync: deleteSpace, isLoading } = useDeleteSpace(code);
   const [timeLeft, setTimeLeft] = useState<number>(0); // In seconds
 
   async function close() {
     try {
-      await deleteSpace(null);
+      await deleteSpace();
       history.push("/");
     } catch (error) {
       console.error(error);
@@ -200,7 +200,12 @@ const ConnectPanel: React.FC<{}> = () => {
           />
         )}
         <div>
-          <Button variant="danger" onClick={close} debounce={5}>
+          <Button
+            variant="danger"
+            onClick={close}
+            isLoading={isLoading}
+            debounce={5}
+          >
             Destroy Now
           </Button>
         </div>
