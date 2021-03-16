@@ -33,6 +33,7 @@ import FullPageLoader from "../components/FullPageLoader";
 import SpaceNotFound from "../components/SpaceNotFound";
 import FilesPanel from "../components/FilesPanel";
 import NavBar from "../components/NavBar";
+import FadeIn from "../components/animations/FadeIn";
 
 const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
 const ConnectPanel = React.lazy(() => import("../components/ConnectPanel"));
@@ -96,36 +97,30 @@ const SMLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
         <NavBar size="small" baseUrl={match.url} />
       </div>
       <div className={classes.mainContainer}>
-        <Switch>
-          <Route path={`${match.path}/settings`}>
-            <Suspense fallback={panelFallback}>
+        <Suspense fallback={panelFallback}>
+          <Switch>
+            <Route path={`${match.path}/settings`}>
               <SettingsPanel />
-            </Suspense>
-          </Route>
-          <Route path={`${match.path}/history`}>
-            <Suspense fallback={panelFallback}>
+            </Route>
+            <Route path={`${match.path}/history`}>
               <HistoryPanel />
-            </Suspense>
-          </Route>
+            </Route>
 
-          <Route path={`${match.path}/users`}>
-            <Suspense fallback={panelFallback}>
+            <Route path={`${match.path}/users`}>
               <UsersPanel myClientId={clientId} />
-            </Suspense>
-          </Route>
-          <Route path={`${match.path}/files`} component={FilesPanel} />
-          <Route path={`${match.path}`}>
-            <div
-              style={{
-                height: "100%",
-              }}
-            >
-              <Suspense fallback={panelFallback}>
+            </Route>
+            <Route path={`${match.path}/files`} component={FilesPanel} />
+            <Route path={`${match.path}`}>
+              <div
+                style={{
+                  height: "100%",
+                }}
+              >
                 <ConnectPanel />
-              </Suspense>
-            </div>
-          </Route>
-        </Switch>
+              </div>
+            </Route>
+          </Switch>
+        </Suspense>
       </div>
     </div>
   );
@@ -136,36 +131,38 @@ const MDLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
   return (
     <div className={classes.rootMedium}>
       <div className={classes.mainContainer}>
-        <Switch>
-          <Route path={`${match.path}/settings`}>
-            <Suspense fallback={panelFallback}>
-              <SettingsPanel />
-            </Suspense>
-          </Route>
-          <Route path={`${match.path}/history`}>
-            <Suspense fallback={panelFallback}>
-              <HistoryPanel />
-            </Suspense>
-          </Route>
+        <Suspense fallback={panelFallback}>
+          <Switch>
+            <Route path={`${match.path}/settings`}>
+              <FadeIn>
+                <SettingsPanel />
+              </FadeIn>
+            </Route>
+            <Route path={`${match.path}/history`}>
+              <FadeIn>
+                <HistoryPanel />
+              </FadeIn>
+            </Route>
 
-          <Route path={`${match.path}/users`}>
-            <Suspense fallback={panelFallback}>
-              <UsersPanel myClientId={clientId} />
-            </Suspense>
-          </Route>
-          <Route path={`${match.path}/files`} component={FilesPanel} />
-          <Route path={`${match.path}`}>
-            <div
-              style={{
-                height: "100%",
-              }}
-            >
-              <Suspense fallback={panelFallback}>
-                <ConnectPanel />
-              </Suspense>
-            </div>
-          </Route>
-        </Switch>
+            <Route path={`${match.path}/users`}>
+              <FadeIn>
+                <UsersPanel myClientId={clientId} />
+              </FadeIn>
+            </Route>
+            <Route path={`${match.path}/files`} component={FilesPanel} />
+            <Route path={`${match.path}`}>
+              <div
+                style={{
+                  height: "100%",
+                }}
+              >
+                <FadeIn>
+                  <ConnectPanel />
+                </FadeIn>
+              </div>
+            </Route>
+          </Switch>
+        </Suspense>
       </div>
       <div className={classes.navContainer}>
         <NavBar baseUrl={match.url} size="medium" />
@@ -182,35 +179,37 @@ const LGLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
         <NavBar baseUrl={match.url} size="large" />
       </div>
       <div className={classes.panelContainer}>
-        <Switch>
-          <Route path={`${match.path}/settings`}>
-            <Suspense fallback={panelFallback}>
-              <SettingsPanel />
-            </Suspense>
-          </Route>
-          <Route path={`${match.path}/history`}>
-            <Suspense fallback={panelFallback}>
-              <HistoryPanel />
-            </Suspense>
-          </Route>
+        <Suspense fallback={panelFallback}>
+          <Switch>
+            <Route path={`${match.path}/settings`}>
+              <FadeIn>
+                <SettingsPanel />
+              </FadeIn>
+            </Route>
+            <Route path={`${match.path}/history`}>
+              <FadeIn>
+                <HistoryPanel />
+              </FadeIn>
+            </Route>
 
-          <Route path={`${match.path}/users`}>
-            <Suspense fallback={panelFallback}>
-              <UsersPanel myClientId={clientId} />
-            </Suspense>
-          </Route>
-          <Route path={`${match.path}`}>
-            <div
-              style={{
-                height: "100%",
-              }}
-            >
-              <Suspense fallback={panelFallback}>
-                <ConnectPanel />
-              </Suspense>
-            </div>
-          </Route>
-        </Switch>
+            <Route path={`${match.path}/users`}>
+              <FadeIn>
+                <UsersPanel myClientId={clientId} />
+              </FadeIn>
+            </Route>
+            <Route path={`${match.path}`}>
+              <div
+                style={{
+                  height: "100%",
+                }}
+              >
+                <FadeIn>
+                  <ConnectPanel />
+                </FadeIn>
+              </div>
+            </Route>
+          </Switch>
+        </Suspense>
       </div>
       <div className={classes.mainContainer}>
         <FilesPanel />
