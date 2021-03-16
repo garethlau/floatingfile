@@ -1,9 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
-import {
-  UploadServiceContext,
-  WrappedFile,
-  useUploadService,
-} from "../contexts/uploadService";
+import React, { useState, useEffect } from "react";
+import { WrappedFile, useUploadService } from "../contexts/uploadService";
 import { makeStyles } from "@material-ui/core/styles";
 import { formatFileSize } from "../utils";
 import { Colors } from "@floatingfile/common";
@@ -13,7 +9,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import { isMobile } from "react-device-detect";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "./Button";
-import { File } from "@floatingfile/types";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -96,8 +92,8 @@ const UploadQueue: React.FC<{}> = () => {
         <motion.div
           initial={{ y: 50 }}
           animate={{ y: 0 }}
-          exit={{ y: 50 }}
-          className={`${cls.root} ${minimized ? cls.minimized : ""}`}
+          exit={{ y: 400 }}
+          className={clsx(cls.root, minimized && cls.minimized)}
         >
           <div className={cls.header}>
             <h2 style={{ margin: 0, float: "left" }}>Upload Queue</h2>
@@ -109,33 +105,31 @@ const UploadQueue: React.FC<{}> = () => {
             </IconButton>
           </div>
           <div className={cls.container}>
-            {uploadService.pending?.map(
-              ({ file, id, ext }: WrappedFile, index) => (
-                <div
-                  key={id}
-                  className={`${cls.fileCard} ${
-                    uploadService.currentUpload === id ? cls.cancel : ""
-                  }`}
-                >
-                  <p>{file.name}</p>
-                  <p>{formatFileSize(file.size)}</p>
-                  {uploadService.currentUpload === id && (
-                    <Button
-                      className={cls.cancelBtn}
-                      variant="danger"
-                      onClick={() => uploadService.cancel(id)}
-                    >
-                      Cancel
-                    </Button>
-                  )}
-
-                  <LinearProgress
-                    variant="determinate"
-                    value={(uploadService.getProgress(id) || 0) * 100}
-                  />
-                </div>
-              )
-            )}
+            {uploadService.pending?.map(({ file, id }: WrappedFile) => (
+              <div
+                key={id}
+                className={clsx(
+                  cls.fileCard,
+                  uploadService.currentUpload === id && cls.cancel
+                )}
+              >
+                <p>{file.name}</p>
+                <p>{formatFileSize(file.size)}</p>
+                {uploadService.currentUpload === id && (
+                  <Button
+                    className={cls.cancelBtn}
+                    variant="danger"
+                    onClick={() => uploadService.cancel(id)}
+                  >
+                    Cancel
+                  </Button>
+                )}
+                <LinearProgress
+                  variant="determinate"
+                  value={(uploadService.getProgress(id) || 0) * 100}
+                />
+              </div>
+            ))}
           </div>
         </motion.div>
       )}
