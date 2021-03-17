@@ -21,11 +21,21 @@ router.get("/:code", async (req: Request, res: Response, done) => {
   }
   try {
     const space: Space = await Space.findOne({ code }).exec();
+
+    // Generate signed URLs
+    space.files = space.files.map((file) => {
+      const params = {
+        Key: file.key,
+        Bucket: S3_BUCKET_NAME,
+      };
+      const signedUrl = s3.getSignedUrl("getObject", params);
+      file.signedUrl = signedUrl;
+      return file;
+    });
     if (!space) {
       return res.status(404).send({ message: "Space does not exist." });
-    } else {
-      return res.status(200).send({ space });
     }
+    return res.status(200).send({ space });
   } catch (error) {
     done(error);
   }
