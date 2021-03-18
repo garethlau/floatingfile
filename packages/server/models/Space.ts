@@ -1,18 +1,7 @@
-import { model, Schema, Model } from "mongoose";
-import { SpaceDocument } from "@floatingfile/types";
+import { model, Schema, Model, Document } from "mongoose";
+import { Space } from "@floatingfile/types";
 
-// {
-// 	action: {
-// 		type: String,
-// 		enum: ["UPLOAD", "DOWNLOAD", "TIMEOUT", "REMOVE", "JOIN", "LEAVE"],
-// 	},
-// 	author: String,
-// 	payload: String,
-// },
-
-// plan: [Basic,  Premium, Pro]
-
-const SpaceSchema: Schema = new Schema({
+const SpaceSchemaFields: Record<keyof Space, any> = {
   code: String,
   files: Array,
   expires: String,
@@ -36,9 +25,10 @@ const SpaceSchema: Schema = new Schema({
     default: 3,
   },
   createdAt: { type: Date, expires: 24 * 60 * 60, default: Date.now },
-});
+};
 
-export const SpaceModel: Model<SpaceDocument> = model<SpaceDocument>(
-  "Space",
-  SpaceSchema
-);
+interface SpaceDocument extends Space, Document {}
+
+const SpaceSchema: Schema = new Schema(SpaceSchemaFields);
+
+export const SpaceModel = model<SpaceDocument>("Space", SpaceSchema);

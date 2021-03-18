@@ -1,5 +1,5 @@
 import express from "express";
-import { File, HistoryRecord, Space, SpaceDocument } from "@floatingfile/types";
+import { File, HistoryRecord } from "@floatingfile/types";
 import s3 from "../../s3";
 import { broadcast, EventTypes } from "../../services/subscriptionManager";
 import { S3_BUCKET_NAME } from "../../config";
@@ -11,10 +11,9 @@ import {
   deletePreview,
   deletePreviews,
 } from "../../services/previews";
+import { SpaceModel } from "../../models";
 
 const router = express.Router({ mergeParams: true });
-const mongoose = require("mongoose");
-const Space = mongoose.model("Space");
 
 router.delete("/:key", async (req, res, done) => {
   const { code, key } = req.params;
@@ -23,7 +22,7 @@ router.delete("/:key", async (req, res, done) => {
 
   try {
     // Find the space
-    const space = await Space.findOne({ code }).exec();
+    const space = await SpaceModel.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send();
     }
@@ -37,8 +36,11 @@ router.delete("/:key", async (req, res, done) => {
     await deletePreview(key);
 
     // Remove the file from the space
-    const removedFile = space.files.find((file: File) => file.key === key);
     space.files = space.files.filter((file: File) => file.key !== key);
+    const removedFile = space.files.find((file: File) => file.key === key);
+    if (!removedFile) {
+      return res.status(404).send({ message: "No file removed." });
+    }
 
     // Adjust the used size of the space
     space.size = space.size - removedFile.size;
@@ -76,7 +78,7 @@ router.delete("/", async (req, res, done) => {
   }
 
   try {
-    const space: SpaceDocument = await Space.findOne({ code }).exec();
+    const space = await SpaceModel.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send({ message: "Space does not exist." });
     }
@@ -110,7 +112,7 @@ router.delete("/", async (req, res, done) => {
     space.history = [...space.history, ...historyRecords];
 
     // Save changes
-    const updatedSpace: SpaceDocument = await space.save();
+    const updatedSpace = await space.save();
 
     broadcast(code, EventTypes.FILES_UPDATED);
 
@@ -132,7 +134,7 @@ router.patch("/", async (req, res, done) => {
     return res.status(422).send({ message: "No code supplied." });
   }
   try {
-    const space: SpaceDocument = await Space.findOne({ code }).exec();
+    const space = await SpaceModel.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send({ message: "Space not found." });
     }
@@ -156,7 +158,7 @@ router.patch("/", async (req, res, done) => {
     };
     space.history = [...space.history, newHistoryRecord];
 
-    const updatedSpace: SpaceDocument = await space.save();
+    const updatedSpace = await space.save();
 
     broadcast(code, EventTypes.FILES_UPDATED);
 
@@ -171,7 +173,7 @@ router.patch("/", async (req, res, done) => {
 router.get("/", async (req, res, done) => {
   const { code } = req.params;
   try {
-    const space: SpaceDocument = await Space.findOne({ code }).exec();
+    const space = await SpaceModel.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send({ message: "Space not found." });
     }
@@ -207,7 +209,10 @@ router.get("/zip", async (req, res: any, done) => {
 
   try {
     // Find the space
-    const space: SpaceDocument = await Space.findOne({ code }).exec();
+    const space = await SpaceModel.findOne({ code }).exec();
+    if (!space) {
+      return res.status(404).send({ message: "Resource not found." });
+    }
 
     // Get the file objects to zip
     const files = space.files.filter((file) => s3Keys.includes(file.key));

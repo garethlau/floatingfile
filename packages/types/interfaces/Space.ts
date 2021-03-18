@@ -12,6 +12,10 @@ export interface Space {
   size: number;
   capacity: number;
   maxUsers: number;
+  plan: "Basic" | "Premium";
+  createdAt: Date;
 }
 
+// TODO - Remove this exported interface once v4 APIs are deprecated.
+// @floatingfile/server defines its own SpaceDocument interface.
 export interface SpaceDocument extends Space, Document {}
