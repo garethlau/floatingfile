@@ -1,7 +1,7 @@
 import React from "react";
 import { chakra, Container, Box } from "@chakra-ui/react";
 import NavigationBar from "components/navigation-bar";
-import Footer from "components/_Footer";
+import Footer from "components/footer";
 
 const Custom404: React.FC = () => {
   return (

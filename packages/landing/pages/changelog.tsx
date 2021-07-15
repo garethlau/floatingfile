@@ -1,5 +1,5 @@
 import { NextSeo } from "next-seo";
-import Footer from "components/_Footer";
+import Footer from "components/footer";
 import EnterInView from "../src/wrappers/EnterInView";
 import fs from "fs";
 import path from "path";

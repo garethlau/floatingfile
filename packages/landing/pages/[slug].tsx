@@ -11,7 +11,7 @@ import {
   Heading,
   useColorModeValue,
 } from "@chakra-ui/react";
-import Footer from "components/_Footer";
+import Footer from "components/footer";
 import NavigationBar from "components/navigation-bar";
 
 const Post: React.FC<{
