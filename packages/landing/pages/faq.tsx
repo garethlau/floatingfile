@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
-import Footer from "../src/components/footer";
-import { faqs } from "../src/scaffold";
 import {
   Accordion,
   AccordionButton,
@@ -14,6 +12,8 @@ import {
 } from "@chakra-ui/react";
 import PageTitle from "components/page-title";
 import NavigationBar from "components/navigation-bar";
+import Footer from "components/footer";
+import { faqs } from "src/scaffold";
 
 const FaqPage: React.FC = () => {
   const router = useRouter();

@@ -29,7 +29,7 @@ const spaceModel = {
 
 const response500 = { status: 500, description: "Internal server error." };
 
-const apis = [
+export const apis = [
   {
     method: "GET",
     summary: "Retrieve the space for a given code.",
@@ -336,7 +336,7 @@ const apis = [
   },
 ];
 
-const faqs = [
+export const faqs = [
   {
     q: "Why should I use floatingfile?",
     a:
