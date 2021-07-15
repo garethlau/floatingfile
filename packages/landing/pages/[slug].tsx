@@ -1,78 +1,23 @@
 import fs from "fs";
 import path from "path";
 import { NextSeo } from "next-seo";
-import Nav from "../src/components/Nav";
-import Footer from "../src/components/Footer";
 import matter from "gray-matter";
 import marked from "marked";
-import Icon from "@mdi/react";
-import { mdiLock, mdiFileDocument } from "@mdi/js";
-import { motion } from "framer-motion";
-import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: "#f1f3f9",
-    height: "100%",
-  },
-  content: {
-    minHeight: "100vh",
-    marginTop: "64px",
-  },
-  page: {
-    borderRadius: "10px",
-    boxShadow: theme.shadows[2],
-    backgroundColor: "#FFFFFF",
-    padding: "20px",
-    transform: "translateY(50px)",
-    maxWidth: "960px",
-    margin: "auto",
-    zIndex: -1,
-  },
-  iconContainer: {
-    textAlign: "center",
-    paddingTop: "20px",
-  },
-  icon: {
-    color: "#34448e",
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: 0,
-  },
-  datetime: {
-    opacity: 0.5,
-    textAlign: "center",
-    marginBottom: "30px",
-    marginTop: "0",
-  },
-  main: {
-    "& p": {
-      textAlign: "justify",
-    },
-  },
-}));
+import {
+  Box,
+  Text,
+  chakra,
+  Heading,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import Footer from "components/footer";
+import NavigationBar from "components/navigation-bar";
 
 const Post: React.FC<{
   data: any;
   htmlString: string;
 }> = ({ data, htmlString }) => {
-  const classes = useStyles();
-
-  function renderIcon(iconType) {
-    switch (iconType) {
-      case "mdiLock":
-        return <Icon path={mdiLock} size={"42px"} className={classes.icon} />;
-      case "mdiFileDocument":
-        return (
-          <Icon path={mdiFileDocument} size="42px" className={classes.icon} />
-        );
-      default:
-        return null;
-    }
-  }
-
   return (
     <>
       <NextSeo
@@ -85,47 +30,52 @@ const Post: React.FC<{
           description: data.seo_description,
         }}
       />
-      <div className={classes.root}>
-        <Nav />
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: {
-              opacity: 0,
-              y: 50,
-            },
-            visible: {
-              y: 0,
-              opacity: 1,
-              transition: {
-                delay: 0.2,
-              },
-            },
-          }}
-        >
-          <div className={classes.content}>
-            <div className={classes.page}>
-              <div className={classes.iconContainer}>
-                {renderIcon(data.iconType)}
-              </div>
-              <h1 className={classes.title}>{data.title}</h1>
-              <p className={classes.datetime}>
-                Last Updated: {data.lastUpdated}
-              </p>
+      <NavigationBar />
 
-              <div
-                className={classes.main}
-                dangerouslySetInnerHTML={{ __html: htmlString }}
-              />
-            </div>
-          </div>
-        </motion.div>
+      <Box bg={useColorModeValue("gray.100", "gray.700")}>
+        <Box px={4} py="120px">
+          <Box
+            maxW="960px"
+            mx="auto"
+            bg={useColorModeValue("white", "black")}
+            py={16}
+            px={14}
+            borderRadius="md"
+            shadow="lg"
+          >
+            <Heading>{data.title}</Heading>
+            <Text mb={4}>Last Updated: {data.lastUpdated}</Text>
 
-        <div style={{ marginTop: "50px" }}>
-          <Footer />
-        </div>
-      </div>
+            <chakra.div
+              sx={{
+                h1: {
+                  fontSize: "2rem",
+                  fontWeight: "bold",
+                },
+                h2: {
+                  fontSize: "1.75rem",
+                  fontWeight: "bold",
+                },
+                h3: {
+                  fontSize: "1.5rem",
+                  fontWeight: "bold",
+                },
+                p: {
+                  mb: 2,
+                  color: useColorModeValue("black", "white"),
+                  textAlign: "justify",
+                },
+                ul: {
+                  pl: "20px",
+                },
+              }}
+              dangerouslySetInnerHTML={{ __html: htmlString }}
+            />
+          </Box>
+        </Box>
+      </Box>
+
+      <Footer />
     </>
   );
 };
