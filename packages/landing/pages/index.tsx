@@ -18,6 +18,8 @@ import {
   Icon,
   useBreakpointValue,
   Text,
+  Skeleton,
+  AspectRatio,
 } from "@chakra-ui/react";
 import NavigationBar from "components/navigation-bar";
 import Footer from "components/footer";
@@ -98,12 +100,28 @@ const Home: React.FC = () => {
             base: "/images/space-ui-mobile.png",
             md: "/images/space-ui.png",
           })}
-          alt="Home"
           shadow={useBreakpointValue({
             base: "none",
             md: "dark-lg",
           })}
           pos="relative"
+          fallback={
+            <AspectRatio
+              pos="relative"
+              w="90%"
+              mx="auto"
+              ratio={useBreakpointValue({ base: 0.6, md: 1.95 })}
+            >
+              <Box bg="gray.700" shadow="dark-lg" borderRadius="md">
+                <Skeleton
+                  fadeDuration={1}
+                  w="100%"
+                  h="100%"
+                  borderRadius="md"
+                />
+              </Box>
+            </AspectRatio>
+          }
         />
       </Box>
 
