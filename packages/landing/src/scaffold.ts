@@ -1,9 +1,3 @@
-import React from "react";
-import { NextSeo } from "next-seo";
-import Nav from "../../src/components/Nav";
-import Footer from "../../src/components/Footer";
-import { makeStyles } from "@material-ui/core/styles";
-
 const userModel = {
   socketId: "String",
   username: "String",
@@ -342,188 +336,51 @@ const apis = [
   },
 ];
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: "#f1f3f9",
-    minHeight: "100vh",
-    paddingTop: "64px",
-    padding: "20px",
+const faqs = [
+  {
+    q: "Why should I use floatingfile?",
+    a:
+      "You should use floatingfile if you need a fast way to transfer files between two devices!",
   },
-  title: {
-    textAlign: "center",
-    "& h1": {
-      paddingTop: "100px",
-    },
+  {
+    q: "Is it secure?",
+    a:
+      "When you upload a file to floatingfile, your file immediately gets uploaded to Amazon's cloud (floatingfile uses AWS S3). While the URL of your file is hashed, it still exists and is accessible on the public web. Furthermore, please remember that anyone with the space's 6-digit code can view and download all files associated with that space! With these in mind, I would strongly recommend against using floatingfile to transfer sensitive documents such as bank statements, personal identification and passport information to name a few. To minimize the risk of files being compromised, ensure that you manually remove the file or destroy the space to reduce the time which your files are on the public web.",
   },
-  table: {
-    maxWidth: "640px",
-    margin: "auto",
-    display: "grid",
-    gridAutoRwos: "auto",
-    gridTemplateColumns: "auto",
-    gridGap: "10px",
-    [theme.breakpoints.up("md")]: {
-      gridTemplateColumns: "150px auto",
-    },
-    "& p": {
-      margin: 0,
-      ["&:nth-child(odd)"]: {
-        fontWeight: "bold",
-      },
-    },
+  {
+    q: "What are the storage constraints?",
+    a:
+      "The total file sizes within an individual space cannot exceed 1 GB. As such, each individual file cannot exceed 1 GB.",
   },
-  endpointContainer: {
-    maxWidth: "700px",
-    margin: "auto",
+  {
+    q: "How long do spaces and files last?",
+    a:
+      "Spaces and files are automatically deleted after 24 hours. If you do not need the files, I recommend manually closing the space to remove all your data earlier.",
   },
-  codeblock: {
-    backgroundColor: "#34448e",
-    padding: "10px",
-    color: "#FFFFFF",
-    borderRadius: "5px",
-    overflowX: "auto",
+  {
+    q: "How was my username generated?",
+    a:
+      "Your username is a randomly generated color-animal pair. The username is saved to your browser storage and is refreshed after a few hours of inactivity. The username is just a mechanism to identify differnet users in a space.",
   },
-  columnBlock: {
-    display: "grid",
-    gridTemplateColumns: "auto",
-    gridAutoRows: "auto",
-    [theme.breakpoints.up("md")]: {
-      gridTemplateColumns: "150px auto",
-      "& h2": {
-        fontSize: "24px",
-      },
-    },
-    "& h2": {
-      fontSize: "18px",
-    },
+  {
+    q: "Why did you build floatingfile?",
+    a:
+      "I (Gareth) built floatingfile to improve my workflow of moving files from university workstations to my personal computer. Common solutions such as Gmail, Google Drive and OneDrive all required that I sign in on the university computer which added extra minutes to the process (even moreso because I use a password manager and don't know these passwords from memory). Dedicated file transfer solutions like Wetransfer and FireFox send on the other hand didn't allow me to edit the files I am sending. As well, there were occasions in which I needed to send files both ways.",
   },
-}));
+  {
+    q: "What was used to build floatingfile?",
+    a:
+      "The web application was built using the MERN (Mongo, Express, React, and Node) stack. The web application is hosted on Digital Ocean and uses Amazon S3 as the storage solution.",
+  },
+  {
+    q: "Who built floatingfile?",
+    a:
+      "floatingfile is collaboration between Gareth Lau (https://garethlau.me) and Alan Yan (https://alanyan.ca)! The landing page, web application, and backend services were built and are managed by Gareth. The iOS application was built entirely by Alan Yan. ",
+  },
+  { q: "Is there an Android app?", a: "No." },
+];
 
-const V4Docs: React.FC<{}> = () => {
-  const classes = useStyles();
-
-  return (
-    <>
-      <NextSeo
-        title={"floatingfile | Developers"}
-        description={"Learn about floatingfile's APIs."}
-        openGraph={{
-          url: "https://www.floatingfile.space",
-          title: "floatingfile | Developers",
-          description: "Learn about floatingfile's APIs.",
-        }}
-      />
-      <Nav />
-      <main className={classes.root}>
-        <div className={classes.title}>
-          <h1>floatingfile APIs</h1>
-        </div>
-        <div style={{ maxWidth: "700px", margin: "auto" }}>
-          <p>
-            Please keep in mind that all APIs documented here require an API key
-            passed with each request in the header. If you are interested in
-            using these APIs, please contact Gareth.
-          </p>
-        </div>
-        <div className={classes.table}>
-          <p>Version:</p>
-          <p>4</p>
-          <p>Base URL:</p>
-          <p>https://developer.floatingfile.space</p>
-          <p>Last Updated:</p>
-          <p>January 31, 2021</p>
-          <p>Status:</p>
-          <p>Stable</p>
-        </div>
-        <div>
-          {apis.map((api, index) => {
-            return (
-              <div className={classes.endpointContainer}>
-                <div style={{ marginTop: "30px" }}>
-                  <div className={classes.columnBlock}>
-                    <h2 style={{ fontWeight: "bold", margin: 0 }}>
-                      {api.method}
-                    </h2>
-                    <h2 style={{ margin: 0 }}>{api.endpoint}</h2>
-                  </div>
-                </div>
-                <p style={{ margin: "10px 0" }}>{api.summary}</p>
-
-                {!(
-                  api.request.pathParameters.length === 0 &&
-                  api.request.queryParameters.length === 0 &&
-                  api.request.body === null
-                ) && <h3 style={{ margin: 0 }}>Request</h3>}
-                {api.request.pathParameters.length > 0 && (
-                  <p style={{ margin: 0, textDecoration: "underline" }}>
-                    Path Parameters
-                  </p>
-                )}
-                <div className={classes.columnBlock}>
-                  {(api.request.pathParameters || []).map((x) => {
-                    return (
-                      <>
-                        <p style={{ margin: "5px 0" }}>{x.name}</p>
-                        <p style={{ margin: "5px 0" }}>{x.description}</p>
-                      </>
-                    );
-                  })}
-                </div>
-                {api.request.queryParameters.length > 0 && (
-                  <p style={{ margin: 0, textDecoration: "underline" }}>
-                    Query Parameters
-                  </p>
-                )}
-                <div className={classes.columnBlock}>
-                  {(api.request.queryParameters || []).map((x) => {
-                    return (
-                      <>
-                        <p style={{ margin: "5px 0" }}>{x.name}</p>
-                        <p style={{ margin: "5px 0" }}>{x.description}</p>
-                      </>
-                    );
-                  })}
-                </div>
-                {api.request.body && (
-                  <>
-                    <p style={{ margin: 0, textDecoration: "underline" }}>
-                      Body
-                    </p>
-                    <pre className={classes.codeblock}>
-                      {JSON.stringify(api.request.body, null, 2)}
-                    </pre>
-                  </>
-                )}
-
-                <h3 style={{ margin: 0 }}>Responses</h3>
-                <div>
-                  {(api.responses || []).map((response) => {
-                    return (
-                      <div className={classes.columnBlock}>
-                        <p style={{ margin: "5px 0" }}>{response.status}</p>
-                        <p style={{ margin: "5px 0" }}>
-                          {response.description}
-                        </p>
-                        {/* {response?.body && (
-                          <>
-                            <div></div>
-                            <pre className={classes.codeblock}>
-                              {JSON.stringify(response.body, null, 4)}
-                            </pre>
-                          </>
-                        )} */}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </main>
-      <Footer />
-    </>
-  );
+export default {
+  faqs,
+  apis,
 };
-
-export default V4Docs;
