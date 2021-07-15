@@ -1,24 +1,15 @@
+import "@fontsource/dm-sans/400.css";
 import React from "react";
-import PropTypes from "prop-types";
 import Head from "next/head";
-import { ThemeProvider } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import { theme } from "@floatingfile/common";
 import { DefaultSeo } from "next-seo";
+import { ChakraProvider } from "@chakra-ui/react";
+import theme from "src/theme";
 
 // This default export is required in a new `pages/_app.js` file.
 const App: React.FC<{ Component: any; pageProps: any }> = ({
   Component,
   pageProps,
 }) => {
-  React.useEffect(() => {
-    // Remove the server-side injected CSS.
-    const jssStyles = document.querySelector("#jss-server-side");
-    if (jssStyles) {
-      jssStyles.parentElement.removeChild(jssStyles);
-    }
-  }, []);
-
   return (
     <React.Fragment>
       <Head>
@@ -77,17 +68,15 @@ const App: React.FC<{ Component: any; pageProps: any }> = ({
             site_name: "floatingfile",
           }}
         />
-        <title>My page</title>
+        <title>floatingfile</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
-      <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
+      <ChakraProvider theme={theme}>
         <Component {...pageProps} />
-      </ThemeProvider>
+      </ChakraProvider>
     </React.Fragment>
   );
 };

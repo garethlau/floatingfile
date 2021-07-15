@@ -1,235 +1,182 @@
-import Head from "next/head";
-import { NextSeo } from "next-seo";
-import Container from "../src/components/Container";
-import Center from "../src/components/Center";
-import Nav from "../src/components/Nav";
-import Footer from "../src/components/Footer";
-import Features from "../src/components/Features";
-import AppButton from "../src/components/AppButton";
-import { motion } from "framer-motion";
-import EnterInView from "../src/wrappers/EnterInView";
-import StoreButton from "../src/components/StoreButton";
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { NextSeo } from "next-seo";
+import { DiGithubBadge } from "react-icons/di";
+import { IoSpeedometerOutline } from "react-icons/io5";
+import { FaUserSecret } from "react-icons/fa";
+import { CgTrashEmpty } from "react-icons/cg";
+import { MdGroup } from "react-icons/md";
+import {
+  Box,
+  Container,
+  Image,
+  Button,
+  Heading,
+  Stack,
+  Grid,
+  useColorModeValue,
+  chakra,
+  Icon,
+  useBreakpointValue,
+  Text,
+} from "@chakra-ui/react";
+import NavigationBar from "components/navigation-bar";
+import Footer from "components/footer";
 
-const useStyles = makeStyles((theme) => ({
-  main: {
-    marginTop: "64px",
-    // backgroundColor: "#4560f6",
-    backgroundColor: "#f1f3f9",
-  },
-  hero: {
-    // color: "#FFFFFF",
-    color: "#000000",
-    textAlign: "center",
-    paddingBottom: "30px",
-    // background: "linear-gradient(180deg, #4560f6 65%, #f1f3f9 50%)",
-    paddingTop: "100px",
-    [theme.breakpoints.up("md")]: {
-      paddingBottom: "100px",
-      // background: "linear-gradient(180deg, #4560f6 65%, #f1f3f9 50%)",
-    },
-  },
-  landingImg: {
-    borderRadius: "5px",
-    boxShadow: theme.shadows[3],
-    width: "90%",
-    display: "none",
-    [theme.breakpoints.up("md")]: {
-      display: "inherit",
-    },
-  },
-  landingImgMobile: {
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      display: "none",
-    },
-  },
-  cardContainer: {
-    overflowX: "auto",
-    whiteSpace: "nowrap",
-    paddingBottom: "15px",
-    textAlign: "center",
-  },
-  mobileBanner: {
-    height: "auto",
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gridTempalteRows: "1fr 1fr",
-    padding: "20px",
-    minHeight: "150px",
-    [theme.breakpoints.up("md")]: {
-      gridTemplateColumns: "1fr 360px",
-      gridTempalteRows: "1fr",
-    },
-  },
-  downloadBtnContainer: {
-    display: "grid",
-    gridGap: "10px",
-    gridTemplateColumns: "1fr",
-    gridTemplateRows: "1fr 1fr",
-    [theme.breakpoints.up("md")]: {
-      gridTemplateColumns: "1fr 1fr",
-      gridTemplateRows: "1fr",
-    },
-  },
-}));
+const Feature = ({ icon, title, children }) => (
+  <Box
+    bg={useColorModeValue("white", "gray.800")}
+    borderRadius="md"
+    shadow="base"
+    p={6}
+    textAlign="left"
+  >
+    <Icon fontSize="32px" as={icon} color="blue.500" mb={2} />
+    <Text fontSize="xl" color="blue.500" fontWeight="bold">
+      {title}
+    </Text>
+    <Text fontSize="xl">{children}</Text>
+  </Box>
+);
 
-const Home: React.FC<{}> = () => {
-  const classes = useStyles();
+const Home: React.FC = () => {
   return (
-    <div>
+    <>
       <NextSeo title={"floatingfile"} />
-      {/* <Head></Head> */}
-      <Nav />
-      <main className={classes.main}>
-        <div className={classes.hero}>
-          <Container>
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  y: 50,
-                },
-                visible: {
-                  y: 0,
-                  opacity: 1,
-                  transition: {
-                    delay: 0.2,
-                  },
-                },
-              }}
+      <NavigationBar />
+      <Box as="section" w="100%" h="auto" py="120px">
+        <Container>
+          <Box textAlign="center">
+            <chakra.h1
+              maxW="16ch"
+              mx="auto"
+              fontSize={{ base: "2.25rem", sm: "3rem", lg: "4rem" }}
+              fontFamily="heading"
+              fontWeight="extrabold"
+              mb="16px"
+              lineHeight="1.2"
+              color={useColorModeValue("gray.700", "white")}
             >
-              <img src="/floatingfile.png" style={{ width: "64px" }} />
-              <h1 style={{ margin: 0 }}>floatingfile</h1>
-            </motion.div>
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  y: 50,
-                },
-                visible: {
-                  y: 0,
-                  opacity: 1,
-                  transition: {
-                    delay: 0.4,
-                  },
-                },
-              }}
-            >
-              <h3>Simplify your file transfer workflow</h3>
-            </motion.div>
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  y: 50,
-                },
-                visible: {
-                  y: 0,
-                  opacity: 1,
-                  transition: {
-                    delay: 0.8,
-                  },
-                },
-              }}
-            >
-              <AppButton />
-            </motion.div>
-          </Container>
+              Simplify your file transfer workflow with{" "}
+              <chakra.span color="blue.500">floatingfile</chakra.span>
+            </chakra.h1>
 
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: {
-                opacity: 0,
-                y: 50,
-              },
-              visible: {
-                y: 0,
-                opacity: 1,
-                transition: {
-                  delay: 1.2,
-                },
-              },
+            <Stack
+              mt={4}
+              justify="center"
+              direction={{ base: "column", sm: "row" }}
+              spacing={4}
+            >
+              <Button
+                size="lg"
+                colorScheme="blue"
+                as="a"
+                href="https://floatingfile.space"
+              >
+                Open floatingfile
+              </Button>
+              <Button
+                size="lg"
+                as="a"
+                href="/"
+                target="__blank"
+                colorScheme="gray"
+                leftIcon={<DiGithubBadge size="1.5em" />}
+              >
+                Github
+              </Button>
+            </Stack>
+          </Box>
+        </Container>
+      </Box>
+
+      <Box mb="-300px">
+        <Image
+          borderRadius="md"
+          w="90%"
+          mx="auto"
+          src={useBreakpointValue({
+            base: "/images/space-ui-mobile.png",
+            md: "/images/space-ui.png",
+          })}
+          alt="Home"
+          shadow="dark-lg"
+          pos="relative"
+        />
+      </Box>
+
+      <Box h="300px" bg={useColorModeValue("blue.400", "blue.800")} pb="20px" />
+
+      <Box
+        bg={useColorModeValue("blue.400", "blue.800")}
+        as="section"
+        pt="240px"
+        pb="240px"
+        px={6}
+      >
+        <Box maxW="1200px" mx="auto" textAlign="center" mb="56px">
+          <Heading
+            mb="5"
+            fontSize={["3rem", "4rem"]}
+            color={useColorModeValue("white", "gray.100")}
+          >
+            How is floatingfile different?
+          </Heading>
+          <Text
+            color={useColorModeValue("white", "gray.100")}
+            fontSize="xl"
+            mb={6}
+          >
+            floatingfile is a file sharing platform that marries the flexibility
+            of file storage with the convenience of file transfer applications.
+          </Text>
+          <Grid
+            gap={6}
+            templateColumns={{
+              base: "repeat(1, 1fr)",
+              md: "repeat(2, 1fr)",
+              xl: "repeat(4, 1fr)",
             }}
           >
-            <div style={{ textAlign: "center", marginTop: "30px" }}>
-              <picture>
-                <source type="image/webp" srcSet="/images/space-ui.webp" />
-                <source type="image/png" srcSet="/images/space-ui.png" />
-                <img
-                  className={classes.landingImg}
-                  src="/images/space-ui.png"
-                  alt="Home"
-                />
-              </picture>
-            </div>
+            <Feature icon={CgTrashEmpty} title="Clutter Free">
+              Keep your inboxes and chat histories clear of temporary files.
+            </Feature>
+            <Feature icon={FaUserSecret} title="No Accounts">
+              Use floatingfile to the fullest on any device and anywhere,
+              completely login free.
+            </Feature>
+            <Feature icon={MdGroup} title="Collaborative">
+              Anyone in the space can contribute files. Perfect for group work.
+            </Feature>
+            <Feature icon={IoSpeedometerOutline} title="Fast">
+              Join with a 6 character code or by scanning a QR code. Reduce your
+              file transfer workflow to seconds.
+            </Feature>
+          </Grid>
+        </Box>
+      </Box>
 
-            <div style={{ textAlign: "center", marginTop: "30px" }}>
-              <picture>
-                <img
-                  className={classes.landingImgMobile}
-                  src="/images/space-ui-mobile.png"
-                  alt="Home"
-                />
-              </picture>
-            </div>
-          </motion.div>
-        </div>
+      <Box py="240px" as="section" px={6}>
+        <Box maxW="960px" mx="auto">
+          <Text fontSize={["3rem", "4rem"]}>
+            To date, floatingfile has helped{" "}
+            <chakra.span color="blue.500" fontWeight="bold">
+              500+
+            </chakra.span>{" "}
+            people transfer{" "}
+            <chakra.span color="blue.500" fontWeight="bold">
+              9000+
+            </chakra.span>{" "}
+            files in{" "}
+            <chakra.span color="blue.500" fontWeight="bold">
+              14
+            </chakra.span>{" "}
+            months.
+          </Text>
+        </Box>
+      </Box>
 
-        <div style={{ backgroundColor: "#f1f3f9", padding: "10px 0" }}>
-          <Container>
-            <div style={{ textAlign: "center" }}>
-              <h2>How is floatingfile different?</h2>
-              <p
-                style={{ maxWidth: "550px", margin: "auto", padding: "0 20px" }}
-              >
-                floatingfile is a file sharing platform that marries the
-                flexibility of file storage with the convenience of file
-                transfer applications.
-              </p>
-            </div>
-          </Container>
-          <EnterInView>
-            <Features />
-          </EnterInView>
-        </div>
-
-        <div style={{ backgroundColor: "#4560f6" }}>
-          <Container>
-            <div className={classes.mobileBanner}>
-              <Center>
-                <h2 style={{ color: "white" }}>
-                  Get floatingfile for your mobile device
-                </h2>
-              </Center>
-              <div className={classes.downloadBtnContainer}>
-                <Center>
-                  <EnterInView>
-                    <StoreButton store="apple" />
-                  </EnterInView>
-                </Center>
-                <Center>
-                  <EnterInView>
-                    <StoreButton store="google" disabled />
-                  </EnterInView>
-                </Center>
-              </div>
-            </div>
-          </Container>
-        </div>
-      </main>
       <Footer />
-    </div>
+    </>
   );
 };
 

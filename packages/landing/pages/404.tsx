@@ -1,28 +1,22 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Center from "../src/components/Center";
+import { chakra, Container, Box } from "@chakra-ui/react";
+import NavigationBar from "components/navigation-bar";
+import Footer from "components/footer";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: "#F1F3F9",
-  },
-  message: {
-    userSelect: "none",
-    opacity: 0.5,
-  },
-}));
-
-const Custom404: React.FC<{}> = () => {
-  const classes = useStyles();
+const Custom404: React.FC = () => {
   return (
-    <div className={classes.root}>
-      <Center>
-        <p className={classes.message}>🙁 Oops</p>
-        <h1>404 | Page Not Found</h1>
-      </Center>
-    </div>
+    <>
+      <NavigationBar />
+      <Box minH="100vh">
+        <Container my="100px">
+          <chakra.p fontWeight="bold">404</chakra.p>
+          <chakra.p fontSize="4rem" fontWeight="bold">
+            Sorry, the page you were looking was not found
+          </chakra.p>
+        </Container>
+      </Box>
+      <Footer />
+    </>
   );
 };
 export default Custom404;
