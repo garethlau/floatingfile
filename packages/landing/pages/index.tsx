@@ -20,7 +20,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import NavigationBar from "components/navigation-bar";
-import Footer from "components/footer";
+import Footer from "components/_Footer";
 
 const Feature = ({ icon, title, children }) => (
   <Box

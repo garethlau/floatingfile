@@ -2,7 +2,7 @@ import React from "react";
 import { NextSeo } from "next-seo";
 import PageTitle from "components/page-title";
 import NavigationBar from "components/navigation-bar";
-import Footer from "components/footer";
+import Footer from "components/_Footer";
 import InstallAppButton from "components/install-app-button";
 
 import {
