@@ -70,7 +70,7 @@ const Home: React.FC = () => {
                 size="lg"
                 colorScheme="blue"
                 as="a"
-                href="https://floatingfile.space"
+                href="https://app.floatingfile.space"
               >
                 Open floatingfile
               </Button>
