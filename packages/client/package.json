@@ -42,6 +42,7 @@
   "scripts": {
     "start": "react-scripts start",
     "dev": "react-scripts start",
+    "build:master": "yarn run build",
     "build": "react-scripts build && rm -rf out && mv build out",
     "build:staging": "env-cmd -f .env.staging react-scripts build && rm -rf out && mv build out",
     "build:beta": "env-cmd -f .env.beta react-scripts build && rm -rf out && mv build out",
