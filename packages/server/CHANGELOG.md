@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/garethlau/floatingfile/compare/v1.4.0...v1.5.0) (2021-07-15)
+
+
+### Bug Fixes
+
+* **@floatingfile/server:** Generate signed URL ([ff5be3f](https://github.com/garethlau/floatingfile/commit/ff5be3f800acd1b5f3fccd9b2d84585c4094cbd7))
+* Remove key requirement for subscription endpoint ([1ee5359](https://github.com/garethlau/floatingfile/commit/1ee5359b59aa5b128c505bfa16e7a42e1333f66b))
+
+
+
+
+
 # [1.4.0](https://github.com/garethlau/floatingfile-mono/compare/v1.3.1...v1.4.0) (2021-03-10)
 
 

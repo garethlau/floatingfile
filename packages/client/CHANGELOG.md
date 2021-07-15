@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/garethlau/floatingfile/compare/v1.4.0...v1.5.0) (2021-07-15)
+
+
+### Bug Fixes
+
+* **@floatingfile/client:** Incorrect version ([e9026c2](https://github.com/garethlau/floatingfile/commit/e9026c2e558700a067f1ad23c63dfa85748c7556))
+* **@floatingfile/client:** Optimisticly remove files ([e11f3cc](https://github.com/garethlau/floatingfile/commit/e11f3ccd68519886365be3e43528a5c2d0f19aaf))
+* **@floatingfile/client:** Refetch space on successful connection ([f1cfaf7](https://github.com/garethlau/floatingfile/commit/f1cfaf70660002c8be103dc1d70f767846c52cee))
+* **@floatingfile/client:** Styling ([f0cbaf6](https://github.com/garethlau/floatingfile/commit/f0cbaf6bc59697816737c4f9b28a3c22ffa244c5))
+
+
+### Features
+
+* **@floatingfile/client:** Add sidebar to home page ([ee7d345](https://github.com/garethlau/floatingfile/commit/ee7d34510e244678565cd53d3f5dae832bc2c10c))
+* **@floatingfile/client:** Update intro message ([acdc3cb](https://github.com/garethlau/floatingfile/commit/acdc3cb26b6bd9142dd17d6dd29e7bc610557752))
+
+
+### Performance Improvements
+
+* **@floatingfile/client:** Consolidate and reduce queries ([74a17f9](https://github.com/garethlau/floatingfile/commit/74a17f9dd395937808c5d69abc3f71018aa72570))
+* **@floatingfile/client:** Smoothen file enter and exit animations ([c4c3424](https://github.com/garethlau/floatingfile/commit/c4c3424702c383e181a2d0e8b0b70e19bdf8a44c))
+
+
+
+
+
 # [1.4.0](https://github.com/garethlau/floatingfile-mono/compare/v1.3.1...v1.4.0) (2021-03-10)
 
 
