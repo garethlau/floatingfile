@@ -12,7 +12,7 @@
     "dev": "concurrently \"yarn dev:client\" \"yarn dev:server\"",
     "dev:server": "yarn --cwd packages/server dev",
     "dev:client": "yarn --cwd packages/client dev",
-    "dev:landing": "yarn ---cwd packages/landing dev",
+    "dev:landing": "yarn --cwd packages/landing dev",
     "build:server": "yarn --cwd packages/server build",
     "build:client": "yarn --cwd packages/client build",
     "deploy:app": "./scripts/deploy-app.sh",
