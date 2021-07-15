@@ -1,44 +1,23 @@
 import React, { useState, useEffect } from "react";
-import Nav from "../src/components/Nav";
-import Footer from "../src/components/Footer";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Icon from "@mdi/react";
-import { mdiMenuDown } from "@mdi/js";
+import Footer from "../src/components/footer";
 import { faqs } from "../src/scaffold";
-import { makeStyles } from "@material-ui/core/styles";
+import {
+  Accordion,
+  AccordionButton,
+  AccordionPanel,
+  AccordionItem,
+  AccordionIcon,
+  Box,
+  Container,
+} from "@chakra-ui/react";
+import PageTitle from "components/page-title";
+import NavigationBar from "components/navigation-bar";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: "#f1f3f9",
-    minHeight: "100vh",
-    paddingTop: "64px",
-  },
-  titleContainer: {
-    textAlign: "center",
-  },
-  title: {
-    marginTop: "50px",
-  },
-  contentContainer: {
-    padding: "0px 20px 100px",
-    maxWidth: "960px",
-    margin: "auto",
-  },
-  question: {
-    opacity: 0.7,
-    margin: "10px 0",
-  },
-  answer: {},
-}));
-
-const FaqPage: React.FC<{}> = () => {
+const FaqPage: React.FC = () => {
   const router = useRouter();
   const [active, setActive] = useState<number>(-1);
-  const classes = useStyles();
 
   useEffect(() => {
     if (router.query.active && typeof router.query.active === "string") {
@@ -46,7 +25,7 @@ const FaqPage: React.FC<{}> = () => {
     }
   }, [router.query.active]);
 
-  const handlePanelClick = (index) => () => {
+  const handlePanelClick = (index) => {
     if (active === index) {
       setActive(-1);
     } else {
@@ -75,40 +54,33 @@ const FaqPage: React.FC<{}> = () => {
           site_name: "floatingfile",
         }}
       />
-      <Nav />
-      <div className={classes.root}>
-        <div className={classes.titleContainer}>
-          <h1 className={classes.title}>FAQ</h1>
-          <p>Get your questions answered</p>
-        </div>
-        <div className={classes.contentContainer}>
-          {faqs.map((x, index) => {
-            return (
-              <Accordion
-                key={index}
-                style={{ margin: "30px 0" }}
-                expanded={active === index}
-              >
-                <AccordionSummary
-                  onClick={handlePanelClick(index)}
-                  expandIcon={
-                    <Icon
-                      path={mdiMenuDown}
-                      style={{ opacity: 0.7 }}
-                      size="32px"
-                    />
-                  }
-                >
-                  <h3 className={classes.question}>{x.q}</h3>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <p className={classes.answer}>{x.a}</p>
-                </AccordionDetails>
-              </Accordion>
-            );
-          })}
-        </div>
-      </div>
+      <NavigationBar />
+
+      <PageTitle>Fequently Asked Questions</PageTitle>
+
+      <Box mb="240px">
+        <Container maxW="4xl">
+          <Accordion
+            index={active}
+            onChange={(index) => handlePanelClick(index)}
+          >
+            {faqs.map(({ q, a }) => (
+              <AccordionItem key={q}>
+                <h2>
+                  <AccordionButton>
+                    <Box flex="1" textAlign="left">
+                      {q}
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>{a}</AccordionPanel>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </Container>
+      </Box>
+
       <Footer />
     </>
   );

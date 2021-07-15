@@ -1,15 +1,14 @@
 import express, { Request, Response } from "express";
-import { File, HistoryRecord, Space, SpaceDocument } from "@floatingfile/types";
+import { File, HistoryRecord } from "@floatingfile/types";
 import s3 from "../../s3";
 import { broadcast, EventTypes } from "../../services/subscriptionManager";
 import { S3_BUCKET_NAME } from "../../config";
 import crypto from "crypto";
 import { deletePreviews } from "../../services/previews";
 import filesRouter from "./files";
+import { SpaceModel } from "../../models/Space";
 
 const router = express.Router();
-const mongoose = require("mongoose");
-const Space = mongoose.model("Space");
 
 router.use("/:code/files", filesRouter);
 
@@ -20,7 +19,11 @@ router.get("/:code", async (req: Request, res: Response, done) => {
     return res.status(400).send({ message: "Invalid request." });
   }
   try {
-    const space: Space = await Space.findOne({ code }).exec();
+    const space = await SpaceModel.findOne({ code }).exec();
+
+    if (!space) {
+      return res.status(404).send({ message: "Space does not exist." });
+    }
 
     // Generate signed URLs
     space.files = space.files.map((file) => {
@@ -32,9 +35,6 @@ router.get("/:code", async (req: Request, res: Response, done) => {
       file.signedUrl = signedUrl;
       return file;
     });
-    if (!space) {
-      return res.status(404).send({ message: "Space does not exist." });
-    }
     return res.status(200).send({ space });
   } catch (error) {
     done(error);
@@ -53,14 +53,14 @@ router.post("/", async (req: Request, res: Response, done) => {
       60 /* mins */ *
       60 /* seconds */ *
       1000; /* milliseconds */
-    let space = new Space({
+    let space = new SpaceModel({
       code: code,
       files: [],
       expires: Date.now() + expiresIn,
       history: [],
       users: [],
     });
-    const savedSpace: Space = await space.save();
+    const savedSpace = await space.save();
     return res.status(200).send({ space: savedSpace });
   } catch (error) {
     done(error);
@@ -76,7 +76,7 @@ router.delete("/:code", async (req, res, done) => {
   }
   try {
     // Delete the space
-    let deletedSpace = await Space.findOneAndDelete({ code: code }).exec();
+    let deletedSpace = await SpaceModel.findOneAndDelete({ code: code }).exec();
     if (!deletedSpace) {
       return res.status(404).send({ message: "Space does not exist." });
     }
@@ -117,7 +117,7 @@ router.patch("/:code/history", async (req, res, done) => {
     typeof req.headers.username === "string" ? req.headers.username : "";
 
   try {
-    const space: SpaceDocument = await Space.findOne({ code }).exec();
+    const space = await SpaceModel.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send({ message: "Space not found." });
     }
@@ -156,7 +156,7 @@ router.patch("/:code/history", async (req, res, done) => {
 router.get("/:code/history", async (req, res, done) => {
   const { code } = req.params;
   try {
-    const space: SpaceDocument = await Space.findOne({ code }).exec();
+    const space = await SpaceModel.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send();
     }
@@ -170,7 +170,7 @@ router.get("/:code/history", async (req, res, done) => {
 router.get("/:code/users", async (req, res, done) => {
   const { code } = req.params;
   try {
-    const space: SpaceDocument = await Space.findOne({ code }).exec();
+    const space = await SpaceModel.findOne({ code }).exec();
     if (!space) {
       return res.status(404).send();
     }
