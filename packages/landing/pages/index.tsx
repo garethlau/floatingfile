@@ -99,7 +99,10 @@ const Home: React.FC = () => {
             md: "/images/space-ui.png",
           })}
           alt="Home"
-          shadow="dark-lg"
+          shadow={useBreakpointValue({
+            base: "none",
+            md: "dark-lg",
+          })}
           pos="relative"
         />
       </Box>
