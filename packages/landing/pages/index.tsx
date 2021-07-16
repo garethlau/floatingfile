@@ -79,7 +79,7 @@ const Home: React.FC = () => {
               <Button
                 size="lg"
                 as="a"
-                href="/"
+                href="https://github.com/garethlau/floatingfile"
                 target="__blank"
                 colorScheme="gray"
                 leftIcon={<DiGithubBadge size="1.5em" />}
