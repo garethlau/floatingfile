@@ -6,7 +6,7 @@ export default function requireKey(
   res: Response,
   next: NextFunction
 ) {
-  if (req.originalUrl.includes("/api/v4/subscriptions")) {
+  if (req.originalUrl.includes("/api/v5/subscriptions")) {
     return next();
   }
   if (!req.headers || !req.headers["api-key"]) {
