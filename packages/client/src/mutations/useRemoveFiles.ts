@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "react-query";
 import { BASE_API_URL } from "../env";
 import axios from "axios";
-import { Space } from "@floatingfile/common/interfaces";
+import { Space } from "@floatingfile/common";
 
 export default function useRemoveFiles(code: string) {
   const queryClient = useQueryClient();
