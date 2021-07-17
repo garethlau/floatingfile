@@ -1,7 +1,7 @@
 export function getMobileOperatingSystem(): string {
   // let userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
-  let userAgent = navigator.userAgent || navigator.vendor;
+  const userAgent = navigator.userAgent || navigator.vendor;
   if (/windows phone/i.test(userAgent)) return "Windows Phone";
   if (/android/i.test(userAgent)) return "Android";
   if (/ipad|iPhone|iPod/.test(userAgent) && !window.MSStream) return "iOS";
@@ -11,12 +11,12 @@ export function getMobileOperatingSystem(): string {
 export function saveBlob(data: any, filename: string): Promise<string> {
   return new Promise((resolve, reject) => {
     // Create blob data to download
-    let blobData = [data];
-    let blob = new Blob(blobData, { type: data.type });
+    const blobData = [data];
+    const blob = new Blob(blobData, { type: data.type });
     // Adjust the download mmethod based on operating system
-    let os = getMobileOperatingSystem();
+    const os = getMobileOperatingSystem();
     if (os === "iOS") {
-      let reader = new FileReader();
+      const reader = new FileReader();
       reader.onload = (e) => {
         window.location.href = reader.result?.toString() || "";
       };
@@ -26,14 +26,14 @@ export function saveBlob(data: any, filename: string): Promise<string> {
       });
 
       reader.addEventListener("error", () => {
-        reject(`Error reading file ${filename}`);
+        reject(new Error(`Error reading file ${filename}`));
       });
 
       reader.readAsDataURL(blob);
     } else {
       try {
-        let blobURL = window.URL.createObjectURL(blob);
-        let tempLink = document.createElement("a");
+        const blobURL = window.URL.createObjectURL(blob);
+        const tempLink = document.createElement("a");
         tempLink.style.display = "none";
         tempLink.href = blobURL;
         tempLink.setAttribute("download", filename);
@@ -47,19 +47,19 @@ export function saveBlob(data: any, filename: string): Promise<string> {
         window.URL.revokeObjectURL(blobURL);
         resolve(filename);
       } catch (err) {
-        reject(`Error reading file ${filename}`);
+        reject(new Error(`Error reading file ${filename}`));
       }
     }
   });
 }
 
 export function formatFileSize(size: number): string {
-  if (isNaN(size)) return "";
-  if (size >= Math.pow(1024, 3)) {
-    return `${(size / Math.pow(1024, 3)).toFixed(1)} GB`;
-  } else if (size >= Math.pow(1024, 2)) {
-    return `${(size / Math.pow(1024, 2)).toFixed(1)} MB`;
-  } else {
-    return `${(size / Math.pow(1024, 1)).toFixed(1)} KB`;
+  if (Number.isNaN(size)) return "";
+  if (size >= 1024 ** 3) {
+    return `${(size / 1024 ** 3).toFixed(1)} GB`;
   }
+  if (size >= 1024 ** 2) {
+    return `${(size / 1024 ** 2).toFixed(1)} MB`;
+  }
+  return `${(size / 1024 ** 1).toFixed(1)} KB`;
 }

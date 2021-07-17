@@ -20,7 +20,7 @@ const FileUploadBtn: React.FC<{ handleFiles: any }> = ({ handleFiles }) => {
   }
 
   return (
-    <React.Fragment>
+    <>
       <Button
         onClick={handleClick}
         fullWidth
@@ -37,7 +37,7 @@ const FileUploadBtn: React.FC<{ handleFiles: any }> = ({ handleFiles }) => {
         id="hiddenFileInput"
         style={{ display: "none" }}
       />
-    </React.Fragment>
+    </>
   );
 };
 

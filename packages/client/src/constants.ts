@@ -5,3 +5,7 @@ export const Breakpoints = {
   LG: 1280,
   XL: 1920,
 };
+
+export default {
+  Breakpoints,
+};

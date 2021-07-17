@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Colors } from "@floatingfile/common";
-import Center from "../components/Center";
+import Center from "./Center";
 
 const useStyles = makeStyles((theme) => ({
   page: {

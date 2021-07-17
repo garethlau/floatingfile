@@ -80,10 +80,8 @@ const Landing: React.FC<void> = () => {
   const classes = useStyles();
   const history = useHistory();
   const [code, setCode] = useState("");
-  const {
-    mutateAsync: createSpace,
-    isLoading: creatingSpace,
-  } = useCreateSpace();
+  const { mutateAsync: createSpace, isLoading: creatingSpace } =
+    useCreateSpace();
 
   const phrase = useRandomElement([
     "Simplify your file transfer workflow.",
@@ -121,14 +119,14 @@ const Landing: React.FC<void> = () => {
     }
 
     try {
-      await axios.get(`${BASE_API_URL}/api/v5/spaces/` + code);
+      await axios.get(`${BASE_API_URL}/api/v5/spaces/${code}`);
       enqueueSnackbar("Joining space.", {
         variant: "success",
         anchorOrigin,
       });
       setTimeout(() => {
         closeSnackbar();
-        history.push("/s/" + code);
+        history.push(`/s/${code}`);
       }, 1500);
     } catch (err) {
       console.log(err);
@@ -150,7 +148,7 @@ const Landing: React.FC<void> = () => {
     try {
       const space = await createSpace();
       if (space && space.code) {
-        history.push("/s/" + space.code);
+        history.push(`/s/${space.code}`);
       }
     } catch {
       enqueueSnackbar("There was an error.", {
@@ -244,7 +242,7 @@ const Landing: React.FC<void> = () => {
           </div>
 
           <div style={{ margin: "20px 0" }}>
-            <Seperator text={"OR"} />
+            <Seperator text="OR" />
           </div>
 
           <div className={classes.formInput}>

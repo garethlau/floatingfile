@@ -29,7 +29,7 @@ ReactGA.initialize("UA-159864166-1", { debug: ENVIRONMENT === "development" });
 
 axios.defaults.headers.common["api-key"] = "secretcat";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     maxWidth: "100%",
     minHeight: "100vh",
@@ -67,9 +67,9 @@ const App: React.FC<{}> = () => {
 
   useEffect(() => {
     const lastVisit = localStorage.getItem(LAST_VISIT_STORAGE_KEY);
-    let threeHoursAgo = new Date();
+    const threeHoursAgo = new Date();
     threeHoursAgo.setHours(threeHoursAgo.getHours() - 3);
-    let username = localStorage.getItem(USERNAME_STORAGE_KEY);
+    const username = localStorage.getItem(USERNAME_STORAGE_KEY);
     if (
       !username ||
       !lastVisit ||
@@ -78,12 +78,12 @@ const App: React.FC<{}> = () => {
       // Generate new username
       axios.get(`${BASE_API_URL}/api/v5/nickname`).then((res) => {
         localStorage.setItem(USERNAME_STORAGE_KEY, res.data.username);
-        axios.defaults.headers.common["username"] = res.data.username;
+        axios.defaults.headers.common.username = res.data.username;
         setLoading(false);
       });
     } else {
       // Use previous username
-      axios.defaults.headers.common["username"] = username;
+      axios.defaults.headers.common.username = username;
       setLoading(false);
     }
   }, []);
@@ -96,47 +96,46 @@ const App: React.FC<{}> = () => {
           height: "100vh",
           backgroundColor: Colors.LIGHT_SHADE,
         }}
-      ></div>
-    );
-  } else {
-    return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <div className={classes.root}>
-          <QueryClientProvider client={queryClient}>
-            <SnackbarProvider
-              maxSnack={3}
-              classes={{
-                variantSuccess: classes.success,
-                variantError: classes.error,
-                variantWarning: classes.warning,
-                variantInfo: classes.info,
-              }}
-              anchorOrigin={{
-                vertical: windowWidth > Breakpoints.MD ? "bottom" : "top",
-                horizontal: windowWidth > Breakpoints.MD ? "right" : "center",
-              }}
-            >
-              <UploadServiceProvider>
-                <SelectedFilesProvider>
-                  <Router history={history}>
-                    <Suspense fallback={null}>
-                      <Switch>
-                        <Route exact path="/" component={Landing} />
-                        <Route path="/s/:code" component={Space} />
-                        <Route component={NotFound} />
-                      </Switch>
-                    </Suspense>
-                  </Router>
-                </SelectedFilesProvider>
-              </UploadServiceProvider>
-            </SnackbarProvider>
-            <ReactQueryDevtoolsPanel />
-          </QueryClientProvider>
-        </div>
-      </ThemeProvider>
+      />
     );
   }
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <div className={classes.root}>
+        <QueryClientProvider client={queryClient}>
+          <SnackbarProvider
+            maxSnack={3}
+            classes={{
+              variantSuccess: classes.success,
+              variantError: classes.error,
+              variantWarning: classes.warning,
+              variantInfo: classes.info,
+            }}
+            anchorOrigin={{
+              vertical: windowWidth > Breakpoints.MD ? "bottom" : "top",
+              horizontal: windowWidth > Breakpoints.MD ? "right" : "center",
+            }}
+          >
+            <UploadServiceProvider>
+              <SelectedFilesProvider>
+                <Router history={history}>
+                  <Suspense fallback={null}>
+                    <Switch>
+                      <Route exact path="/" component={Landing} />
+                      <Route path="/s/:code" component={Space} />
+                      <Route component={NotFound} />
+                    </Switch>
+                  </Suspense>
+                </Router>
+              </SelectedFilesProvider>
+            </UploadServiceProvider>
+          </SnackbarProvider>
+          <ReactQueryDevtoolsPanel />
+        </QueryClientProvider>
+      </div>
+    </ThemeProvider>
+  );
 };
 
 export default App;

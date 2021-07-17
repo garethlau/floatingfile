@@ -62,7 +62,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   }
 
   if (inverse) {
-    let tmp = style.backgroundColor;
+    const tmp = style.backgroundColor;
     style.backgroundColor = style.color;
     style.color = tmp;
   }

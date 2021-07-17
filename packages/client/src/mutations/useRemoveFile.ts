@@ -15,8 +15,8 @@ export default function useRemoveFile(code: string) {
         await queryClient.cancelQueries(queryKey);
         const snapshot = queryClient.getQueryData<Space>(queryKey);
         queryClient.setQueryData<Space | undefined>(queryKey, (prev) => {
-          if (!prev) return;
-          let newFiles = prev.files.filter((file) => file.key !== key);
+          if (!prev) return prev;
+          const newFiles = prev.files.filter((file) => file.key !== key);
           prev.files = newFiles;
           return prev;
         });

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Colors, Elevation } from "@floatingfile/common";
+import { Colors, Elevation, File } from "@floatingfile/common";
 import Button from "./Button";
 import GIconButton from "./GIconButton";
 import Center from "./Center";
@@ -15,7 +15,7 @@ import { useSelectedFiles } from "../contexts/selectedFiles";
 import axios from "axios";
 import { saveBlob } from "../utils";
 import { BASE_API_URL } from "../env";
-import { File } from "@floatingfile/common";
+
 import FileIcon from "./FileIcon";
 
 const useStyles = makeStyles((theme) => ({
@@ -140,7 +140,6 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
           action: "DOWNLOAD_FILE",
           payload: key,
         });
-        console.log("Succesfully downloaded ", name);
       } catch (error) {
         console.error(error);
       } finally {
@@ -192,7 +191,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
             textOverflow: "ellipsis",
           }}
         >
-          {!isNaN(size / 1000)
+          {!Number.isNaN(size / 1000)
             ? size > 1000000
               ? `${(size / (1024 * 1024)).toFixed(1)} MB`
               : `${(size / 1024).toFixed(1)} KB`
@@ -241,7 +240,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
                   transform: "translate(-50%, -50%)",
                 }}
               >
-                {isDownloading && (downloadProgress * 100).toFixed(1) + "%"}
+                {isDownloading && `${(downloadProgress * 100).toFixed(1)}%`}
               </span>
             </Button>
           ) : (

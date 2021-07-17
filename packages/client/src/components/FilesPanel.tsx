@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState, useReducer } from "react";
-import FileUploadBtn from "../components/FileUploadBtn";
+import FileUploadBtn from "./FileUploadBtn";
 import MoonLoader from "react-spinners/MoonLoader";
 import { useParams } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
@@ -125,11 +125,11 @@ const initialState: State = {
   isDownloading: false,
 };
 
-const FilesPanel: React.FC<Props> = ({}) => {
+const FilesPanel: React.FC<Props> = () => {
   const classes = useStyles();
   const windowWidth = useWindowWidth();
   const { code }: { code: string } = useParams();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { data: space, isLoading } = useSpace(code);
   const { mutateAsync: removeFiles } = useRemoveFiles(code);
@@ -166,13 +166,14 @@ const FilesPanel: React.FC<Props> = ({}) => {
       }
     );
 
-    let downloadQueue = files?.filter((file) => isSelected(file.key));
+    const downloadQueue = files?.filter((file) => isSelected(file.key));
 
     // Set the total number of files in the download queue
     dispatch({
       type: actionTypes.SET_DOWNLOAD_QUEUE,
       payload: downloadQueue?.length || 0,
     });
+    /* eslint-disable */
     while (!!downloadQueue && downloadQueue.length > 0) {
       const file = downloadQueue.shift();
       dispatch({ type: actionTypes.START_DOWNLOAD });
@@ -193,12 +194,13 @@ const FilesPanel: React.FC<Props> = ({}) => {
         payload: file.key,
       });
     }
+    /* eslint-enable */
     dispatch({ type: actionTypes.COMPLETE_ALL_DOWNLOADS });
   }
 
   async function removeSelected(): Promise<void> {
     try {
-      let keysToRemove = selected;
+      const keysToRemove = selected;
       await removeFiles(keysToRemove);
       clearSelectedFiles();
       enqueueSnackbar("Selected files have been removed", {
@@ -223,7 +225,7 @@ const FilesPanel: React.FC<Props> = ({}) => {
           responseType: "blob",
         }
       );
-      let folderName = response.headers["content-disposition"]
+      const folderName = response.headers["content-disposition"]
         .split("=")[1]
         .replace(/"/g, "");
       const { data } = response;
@@ -359,8 +361,7 @@ const FilesPanel: React.FC<Props> = ({}) => {
                 }}
               >
                 {state.isDownloading &&
-                  (state.progress * 100).toFixed() +
-                    "%" +
+                  `${(state.progress * 100).toFixed()}%` +
                     ` (${state.current}/${state.total})`}
               </span>
             </Button>

@@ -34,7 +34,7 @@ export const SelectedFilesProvider: React.FC<{
 
   function unselect(key: string) {
     setValues((prev) => {
-      let newValues = prev.filter((val) => val !== key);
+      const newValues = prev.filter((val) => val !== key);
       return newValues;
     });
   }

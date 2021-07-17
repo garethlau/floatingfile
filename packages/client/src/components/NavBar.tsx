@@ -3,14 +3,11 @@ import PublicIcon from "@material-ui/icons/Public";
 import HistoryIcon from "@material-ui/icons/History";
 import PeopleIcon from "@material-ui/icons/People";
 import FolderIcon from "@material-ui/icons/Folder";
-
 import { useLocation } from "react-router-dom";
-import SettingsIcon from "@material-ui/icons/Settings";
-import NavTile from "./NavTile";
 import clsx from "clsx";
 import { Colors } from "@floatingfile/common";
-
 import { makeStyles } from "@material-ui/core/styles";
+import NavTile from "./NavTile";
 
 const useStyles = makeStyles((theme) => ({
   nav: {
@@ -46,7 +43,6 @@ const NavBar: React.FC<{
     const pathArr = location.pathname.split("/");
     const panel =
       pathArr.length === 3 ? "connect" : pathArr[pathArr.length - 1];
-    console.log(panel);
 
     if (panel === "files") {
       if (size === "large") setActive(1);
@@ -66,10 +62,7 @@ const NavBar: React.FC<{
         { name: `/users`, icon: <PeopleIcon /> },
         // { name: "/settings", icon: <SettingsIcon /> },
       ].map(({ name, icon }, index) => (
-        <div
-          key={index}
-          className={clsx(name === "/files" && classes.filesTab)}
-        >
+        <div key={name} className={clsx(name === "/files" && classes.filesTab)}>
           <NavTile
             active={index === active}
             baseUrl={baseUrl}

@@ -70,7 +70,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
             // The file meta data is provided to ensure that the space has capacity to upload the file
             axios
               .post(`${BASE_API_URL}/api/v5/signed-urls`, {
-                file: file,
+                file,
                 code,
               })
               .then((response) => {
@@ -86,7 +86,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
                     },
                     cancelToken: sourceRef.current?.token,
                   })
-                  .then((response) => {
+                  .then(() => {
                     setCurrentUpload("");
 
                     // Create data object which is used by the server to create the file object.
@@ -94,8 +94,8 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
                       size: file.size,
                       name: file.name,
                       type: file.type,
-                      ext: ext,
-                      key: key,
+                      ext,
+                      key,
                     };
                     // Adds a file object to the file array of the space
                     axios
@@ -103,12 +103,8 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
                         `${BASE_API_URL}/api/v5/spaces/${code}/files`,
                         data
                       )
-                      .then((response) => {
-                        resolve(response);
-                      })
-                      .catch((error) => {
-                        reject(error);
-                      });
+                      .then(resolve)
+                      .catch(reject);
                   })
                   .catch((error) => {
                     reject(error);
@@ -128,7 +124,6 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
           }
         } finally {
           complete(id);
-          console.log("Done ", file.name);
           dequeue();
         }
       }
@@ -212,7 +207,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
    */
   function complete(id: string): void {
     setProgress((prev) => {
-      const newProgress = Object.assign({}, prev);
+      const newProgress = { ...prev };
       delete newProgress[id];
       return newProgress;
     });

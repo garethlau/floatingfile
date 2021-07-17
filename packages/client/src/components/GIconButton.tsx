@@ -40,7 +40,7 @@ const GIconButton: React.FC<GIconButtonProps> = ({
     style.color = Colors.WHITE;
   }
   if (inverse) {
-    let tmp = style.backgroundColor;
+    const tmp = style.backgroundColor;
     style.backgroundColor = style.color;
     style.color = tmp;
   }

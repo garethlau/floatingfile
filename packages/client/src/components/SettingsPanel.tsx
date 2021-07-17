@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { Colors } from "@floatingfile/common";
 import { useParams } from "react-router-dom";
@@ -78,7 +78,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ collapsed }) => {
         >
           <h4>Storage</h4>
           {space && (
-            <React.Fragment>
+            <>
               <StyledLinearProgress
                 variant="determinate"
                 value={(space.size * 100) / space.capacity}
@@ -89,7 +89,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ collapsed }) => {
               </p>
               <p>{((space.size * 100) / space.capacity).toFixed(1)}%</p>
               <Button variant="primary">Upgrade</Button>
-            </React.Fragment>
+            </>
           )}
         </div>
       </div>

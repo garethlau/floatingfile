@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { USERNAME_STORAGE_KEY } from "../env";
+import React from "react";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Colors, Elevation } from "@floatingfile/common";
@@ -62,9 +61,9 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ myClientId }) => {
     <div className={cls.root}>
       <h2 className={cls.title}>Users</h2>
       <div className={cls.tileContainer}>
-        {users.map(({ username, id }, index) => {
+        {users.map(({ username, id }) => {
           return (
-            <div className={cls.tile} key={index}>
+            <div className={cls.tile} key={id}>
               <div>
                 <Center>
                   <FaceIcon

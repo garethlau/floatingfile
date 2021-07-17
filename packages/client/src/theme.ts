@@ -1,7 +1,7 @@
-import { createMuiTheme } from "@material-ui/core";
+import { createTheme } from "@material-ui/core";
 import { theme as baseTheme } from "@floatingfile/common";
 
-const theme = createMuiTheme({
+const theme = createTheme({
   ...baseTheme,
   overrides: {
     MuiCssBaseline: {

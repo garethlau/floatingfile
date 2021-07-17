@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  Suspense,
-  useContext,
-} from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import {
   useHistory,
   useParams,
@@ -13,8 +7,6 @@ import {
   RouteComponentProps,
 } from "react-router-dom";
 import axios from "axios";
-import { isMobile } from "react-device-detect";
-import MoonLoader from "react-spinners/MoonLoader";
 import { useSnackbar } from "notistack";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -235,8 +227,7 @@ const Space: React.FC<SpaceProps> = (props) => {
   const [exists, setExists] = useState<boolean>(false);
 
   useEffect(() => {
-    if (spaceStatus === "success") {
-    } else if (spaceStatus === "error") {
+    if (spaceStatus === "error") {
       enqueueSnackbar(
         "There was an error loading the space. Please reload the page.",
         {
@@ -257,9 +248,9 @@ const Space: React.FC<SpaceProps> = (props) => {
 
   useEffect(() => {
     // Show intro modal
-    let weekAgo = new Date();
+    const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);
-    let lastVisit = localStorage.getItem(LAST_VISIT_STORAGE_KEY || "");
+    const lastVisit = localStorage.getItem(LAST_VISIT_STORAGE_KEY || "");
     if (!lastVisit || new Date(lastVisit) < new Date(weekAgo)) {
       const key = enqueueSnackbar(
         <IntroToast handleClose={() => closeSnackbar(key)} />,
@@ -279,8 +270,7 @@ const Space: React.FC<SpaceProps> = (props) => {
 
   useEffect(() => {
     const username = localStorage.getItem(USERNAME_STORAGE_KEY);
-    console.log("Event source username ", username);
-    let eventSource = new EventSource(
+    const eventSource = new EventSource(
       `${BASE_API_URL}/api/v5/subscriptions/${code}?username=${username}`
     );
 
@@ -290,7 +280,6 @@ const Space: React.FC<SpaceProps> = (props) => {
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log(data);
       const { type, clientId } = data;
       switch (type) {
         case SpaceEvents.CONNECTION_ESTABLISHED:
@@ -314,7 +303,7 @@ const Space: React.FC<SpaceProps> = (props) => {
           }, 3000);
           break;
         default:
-          console.log(event + " is not handled");
+          console.log(`${event} is not handled`);
       }
     };
     return () => {
@@ -330,10 +319,7 @@ const Space: React.FC<SpaceProps> = (props) => {
           setExists(true);
         })
         .catch((err) => {
-          if (!err.response) {
-            console.log(err);
-            return;
-          } else if (err.response.status === 404) {
+          if (err.response?.status === 404) {
             // Space not found
             setExists(false);
           }
@@ -346,11 +332,12 @@ const Space: React.FC<SpaceProps> = (props) => {
 
   if (isLoading) {
     return <FullPageLoader />;
-  } else if (!exists) {
+  }
+  if (!exists) {
     return <SpaceNotFound />;
   }
   return (
-    <React.Fragment>
+    <>
       <UploadQueue />
       {windowWidth > 960 ? (
         <LGLayout {...props} clientId={myClientId} />
@@ -359,7 +346,7 @@ const Space: React.FC<SpaceProps> = (props) => {
       ) : (
         <SMLayout {...props} clientId={myClientId} />
       )}
-    </React.Fragment>
+    </>
   );
 };
 export default Space;

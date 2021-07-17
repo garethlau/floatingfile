@@ -8,19 +8,18 @@ export default function useRemoveFiles(code: string) {
   const queryKey = ["space", code];
 
   return useMutation(
-    (keysToRemove: string[]) => {
-      return axios.delete(
+    (keysToRemove: string[]) =>
+      axios.delete(
         `${BASE_API_URL}/api/v5/spaces/${code}/files?toRemove=${JSON.stringify(
           keysToRemove
         )}`
-      );
-    },
+      ),
     {
       onMutate: async (toRemove: string[]) => {
         await queryClient.cancelQueries(queryKey);
         const snapshot = queryClient.getQueryData<Space>(queryKey);
         queryClient.setQueryData<Space | undefined>(queryKey, (prev) => {
-          if (!prev) return;
+          if (!prev) return prev;
           const remainingFiles = prev.files.filter(
             (file) => !toRemove.includes(file.key)
           );

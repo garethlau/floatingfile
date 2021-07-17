@@ -74,11 +74,11 @@ const ConnectPanel: React.FC<{}> = () => {
   }
 
   useEffect(() => {
-    let timers: any = {};
+    const timers: any = {};
     if (space) {
-      let expiryDate = new Date(parseInt(space.expires));
-      let currDate = new Date();
-      let duration = expiryDate.getTime() - currDate.getTime();
+      const expiryDate = new Date(parseInt(space.expires, 10));
+      const currDate = new Date();
+      const duration = expiryDate.getTime() - currDate.getTime();
 
       if (duration < 0) {
         // This space has already expired
@@ -128,7 +128,7 @@ const ConnectPanel: React.FC<{}> = () => {
   }, [space]);
 
   useEffect(() => {
-    if (!timeLeft) return;
+    if (!timeLeft) return undefined;
     const intervalId = setInterval(() => setTimeLeft(timeLeft - 1), 1000);
     return () => clearInterval(intervalId);
   }, [timeLeft]);
@@ -157,17 +157,17 @@ const ConnectPanel: React.FC<{}> = () => {
                 setTimeout(closeSnackbar, 3000);
               }}
             >
-              <div className={cls.code}>{code ? code : ""}</div>
+              <div className={cls.code}>{code || ""}</div>
             </CopyToClipboard>
             <div>
               <QRCode
                 value={`${ORIGIN}/s/${code}`}
                 size={200}
-                bgColor={"#ffffff"}
-                fgColor={"#000000"}
-                level={"L"}
+                bgColor="#ffffff"
+                fgColor="#000000"
+                level="L"
                 includeMargin={false}
-                renderAs={"svg"}
+                renderAs="svg"
                 imageSettings={{
                   src: floatingfileImg,
                   height: 24,

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 const useFormInput = (initialValue: string) => {
   const [value, setValue] = useState<string>(initialValue);
@@ -24,13 +24,13 @@ const useFormInput = (initialValue: string) => {
     setValue("");
   }
   return {
-    value: value,
+    value,
     onChange: handleChange,
-    clear: clear,
-    hasError: hasError,
-    helperText: helperText,
-    setError: setError,
-    clearError: clearError,
+    clear,
+    hasError,
+    helperText,
+    setError,
+    clearError,
   };
 };
 
