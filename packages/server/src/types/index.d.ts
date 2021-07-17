@@ -3,3 +3,9 @@ declare module "http" {
     username?: string;
   }
 }
+
+declare namespace Express {
+  interface Response {
+    zip?: any;
+  }
+}

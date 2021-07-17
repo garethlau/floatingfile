@@ -375,7 +375,7 @@ router.get("/:code/files", async (req, res, done) => {
   }
 });
 
-router.get("/:code/files/zip", async (req, res: any, done) => {
+router.get("/:code/files/zip", async (req, res, done) => {
   const { code } = req.params;
 
   let s3Keys: string[];
@@ -436,6 +436,7 @@ router.get("/:code/files/zip", async (req, res: any, done) => {
         })
     );
     const values = await Promise.all(promises);
+
     // TODO Add zip action to space history
     return res.zip({ files: values, filename: `${folderName}.zip` });
   } catch (error) {
