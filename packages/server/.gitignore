@@ -8,3 +8,4 @@ ecosystem.config.js
 .env
 /out
 /build
+/dist
