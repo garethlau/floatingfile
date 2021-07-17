@@ -1,11 +1,11 @@
-import express from "express";
+import { Router } from "express";
 import spacesRoutes from "./spaces";
 import signedUrls from "./signed-urls";
 import subscriptionsRoutes from "./subscriptions";
 import nickname from "./nickname";
-import { requireKey } from "../../middleware";
+import requireKey from "../../middleware/requireKey";
 
-const router = express.Router();
+const router = Router();
 
 router.use("/spaces", requireKey, spacesRoutes);
 router.use("/signed-urls", requireKey, signedUrls);

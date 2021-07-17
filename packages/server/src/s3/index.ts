@@ -1,5 +1,5 @@
 import AWS from "aws-sdk";
-const { AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY_SECRET } = require("../config");
+import { AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY_SECRET } from "../config";
 
 AWS.config.update({
   accessKeyId: AWS_ACCESS_KEY_ID,

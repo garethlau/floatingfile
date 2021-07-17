@@ -1,7 +1,15 @@
-import { model, Schema, Model, Document } from "mongoose";
+import { Schema, model, Model, Document, models } from "mongoose";
 import { Space } from "@floatingfile/types";
 
-const SpaceSchemaFields: Record<keyof Space, any> = {
+export interface SpaceBaseDocument extends Space, Document {}
+
+export interface SpaceDocument extends SpaceBaseDocument {}
+
+export interface SpacePopulatedDocument extends SpaceBaseDocument {}
+
+export interface SpaceModel extends Model<SpaceDocument> {}
+
+const SpaceSchema = new Schema<SpaceDocument, SpaceModel>({
   code: String,
   files: Array,
   expires: String,
@@ -25,10 +33,6 @@ const SpaceSchemaFields: Record<keyof Space, any> = {
     default: 3,
   },
   createdAt: { type: Date, expires: 24 * 60 * 60, default: Date.now },
-};
+});
 
-interface SpaceDocument extends Space, Document {}
-
-const SpaceSchema: Schema = new Schema(SpaceSchemaFields);
-
-export const SpaceModel = model<SpaceDocument>("Space", SpaceSchema);
+export default model<SpaceDocument, SpaceModel>("Space", SpaceSchema);

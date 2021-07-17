@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 let keys = ["secretdog", "secretcat"];
 
-export function requireKey(req: Request, res: Response, next: NextFunction) {
+export default function requireKey(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   if (req.originalUrl.includes("/api/v4/subscriptions")) {
     return next();
   }

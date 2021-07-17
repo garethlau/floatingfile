@@ -1,12 +1,10 @@
-import express from "express";
-import v4Routes from "./v4";
+import { Router } from "express";
 import v5Routes from "./v5";
-export const router = express.Router();
-const middlewares = require("../middleware");
+
+const router = Router();
 
 let siteAssociation = {
   applinks: {
-    apps: [],
     details: [
       {
         appID: "8VU5ULQ45F.com.alanyan.Floating-File",
@@ -32,5 +30,6 @@ router.get("/apple-app-site-association", (req, res) => {
   res.end(JSON.stringify(siteAssociation));
 });
 
-router.use("/api/v4", middlewares.requireKey, v4Routes);
-router.use("/api/v5", v5Routes);
+router.use("/v5", v5Routes);
+
+export default router;
