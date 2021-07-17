@@ -274,10 +274,6 @@ const Space: React.FC<SpaceProps> = (props) => {
       `${BASE_API_URL}/api/v5/subscriptions/${code}?username=${username}`
     );
 
-    eventSource.onerror = (error) => {
-      console.log(error);
-    };
-
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const { type, clientId } = data;
@@ -303,7 +299,6 @@ const Space: React.FC<SpaceProps> = (props) => {
           }, 3000);
           break;
         default:
-          console.log(`${event} is not handled`);
       }
     };
     return () => {

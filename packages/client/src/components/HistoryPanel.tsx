@@ -79,7 +79,6 @@ function renderIcon(action: string) {
       path = mdiTimerSandEmpty;
       break;
     default:
-      console.log(action);
   }
   return <Icon color={Colors.PRIMARY} path={path} size="24px" />;
 }

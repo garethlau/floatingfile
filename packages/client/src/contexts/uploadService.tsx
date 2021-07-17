@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import axios, { CancelToken, CancelTokenSource } from "axios";
+import Honeybadger from "../lib/honeybadger";
 import { BASE_API_URL } from "../env";
 import { v4 as uuidv4 } from "uuid";
 
@@ -117,10 +118,10 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
         } catch (error) {
           if (axios.isCancel(error)) {
             // Cleanup logic
-            console.log(error.message);
+            Honeybadger.notify(error.messaage);
             sourceRef.current = null;
           } else {
-            console.log(error);
+            Honeybadger.notify(error);
           }
         } finally {
           complete(id);
@@ -218,7 +219,6 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
    * @param id ID of file to cancel upload
    */
   function cancel(id: string): void {
-    console.log("Cancelling upload ", id);
     if (sourceRef.current) {
       sourceRef.current.cancel("Operation cancelled");
     }

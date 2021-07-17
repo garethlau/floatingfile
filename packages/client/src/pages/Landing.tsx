@@ -129,7 +129,6 @@ const Landing: React.FC<void> = () => {
         history.push(`/s/${code}`);
       }, 1500);
     } catch (err) {
-      console.log(err);
       if (err.response.status === 404) {
         enqueueSnackbar("Space does not exist.", {
           variant: "error",
