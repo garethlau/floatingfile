@@ -13,6 +13,8 @@ import SpaceModel from "../../db/models/Space";
 import { broadcast, EventTypes } from "../../services/subscriptionManager";
 import { S3_BUCKET_NAME } from "../../config";
 
+const TMP_DIR = path.join(__dirname, "..", "..", "..", "tmp");
+
 const router = Router();
 
 // Get a space
@@ -183,6 +185,15 @@ router.get("/:code/users", async (req, res, done) => {
   } catch (error) {
     done(error);
   }
+});
+
+router.delete("/:code/files/zip", (req, res) => {
+  const folder = req.query.folder as string;
+  const hash = folder.split(".")[0];
+  setTimeout(() => {
+    deleteFolderRecursive(path.join(TMP_DIR, hash));
+  }, 10000);
+  return res.status(200).send();
 });
 
 router.delete("/:code/files/:key", async (req, res, done) => {
@@ -389,13 +400,15 @@ router.get("/:code/files/zip", async (req, res: any, done) => {
 
     // Create a hash as the folder name
     const currentDate = new Date().valueOf().toString();
-    fs.mkdirSync(path.join(__dirname, "..", "..", "tmp"));
+    if (!fs.existsSync(TMP_DIR)) {
+      fs.mkdirSync(TMP_DIR);
+    }
     const random = Math.random().toString();
     const folderName = crypto
       .createHash("sha1")
       .update(currentDate + random)
       .digest("hex");
-    fs.mkdirSync(path.join(__dirname, "..", "..", "tmp", folderName));
+    fs.mkdirSync(path.join(TMP_DIR, folderName));
 
     // Download each file from s3
     const promises = files.map(
@@ -405,14 +418,7 @@ router.get("/:code/files/zip", async (req, res: any, done) => {
             Key: file.key,
             Bucket: S3_BUCKET_NAME,
           };
-          const filepath = path.join(
-            __dirname,
-            "..",
-            "..",
-            "tmp",
-            folderName,
-            file.name
-          );
+          const filepath = path.join(TMP_DIR, folderName, file.name);
           const fileStream = fs.createWriteStream(filepath);
           const s3Stream = s3.getObject(params).createReadStream();
           s3Stream.on("error", (error) => {
@@ -435,18 +441,6 @@ router.get("/:code/files/zip", async (req, res: any, done) => {
   } catch (error) {
     done(error);
   }
-});
-
-router.delete("/:code/files/zip", (req, res) => {
-  const folder: string | undefined = req.query.folder?.toString();
-  if (!folder) {
-    return res.status(422).send();
-  }
-  const hash = folder.split(".")[0];
-  setTimeout(() => {
-    deleteFolderRecursive(path.join(__dirname, "..", "..", "tmp", hash));
-    return res.status(200).send();
-  }, 10000);
 });
 
 const deleteFolderRecursive = function (path: string) {
