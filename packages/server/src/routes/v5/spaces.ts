@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { File, HistoryRecord } from "@floatingfile/common";
+import { File, HistoryRecord, SpaceEvents } from "@floatingfile/common";
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
@@ -10,7 +10,7 @@ import {
 } from "../../services/previews";
 import s3 from "../../s3";
 import SpaceModel from "../../db/models/Space";
-import { broadcast, EventTypes } from "../../services/subscriptionManager";
+import { broadcast } from "../../services/subscriptionManager";
 import { S3_BUCKET_NAME } from "../../config";
 
 const TMP_DIR = path.join(__dirname, "..", "..", "..", "tmp");
@@ -112,7 +112,7 @@ router.delete("/:code", async (req, res, done) => {
   } catch (error) {
     done(error);
   } finally {
-    broadcast(code, EventTypes.SPACE_DELETED);
+    broadcast(code, SpaceEvents.SPACE_DELETED);
   }
 });
 
@@ -149,7 +149,7 @@ router.patch("/:code/history", async (req, res, done) => {
 
     const updatedSpace = await space.save();
 
-    broadcast(code, EventTypes.HISTORY_UPDATED);
+    broadcast(code, SpaceEvents.HISTORY_UPDATED);
 
     return res
       .status(200)
@@ -236,7 +236,7 @@ router.delete("/:code/files/:key", async (req, res, done) => {
     space.history = [...space.history, historyRecord];
     const updatedSpace = await space.save();
 
-    broadcast(code, EventTypes.FILES_UPDATED);
+    broadcast(code, SpaceEvents.FILES_UPDATED);
 
     return res.status(200).send({ space: updatedSpace });
   } catch (error) {
@@ -295,7 +295,7 @@ router.delete("/:code/files", async (req, res, done) => {
     // Save changes
     const updatedSpace = await space.save();
 
-    broadcast(code, EventTypes.FILES_UPDATED);
+    broadcast(code, SpaceEvents.FILES_UPDATED);
 
     return res
       .status(200)
@@ -341,7 +341,7 @@ router.patch("/:code/files", async (req, res, done) => {
 
     const updatedSpace = await space.save();
 
-    broadcast(code, EventTypes.FILES_UPDATED);
+    broadcast(code, SpaceEvents.FILES_UPDATED);
 
     return res
       .status(200)
