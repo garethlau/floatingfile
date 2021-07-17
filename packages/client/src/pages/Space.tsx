@@ -22,7 +22,7 @@ import {
   USERNAME_STORAGE_KEY,
   LAST_VISIT_STORAGE_KEY,
 } from "../env";
-import { Colors } from "@floatingfile/common";
+import { Colors, SpaceEvents } from "@floatingfile/common";
 import Button from "../components/Button";
 import IntroToast from "../components/IntroToast";
 import UploadQueue from "../components/UploadQueue";
@@ -39,14 +39,6 @@ const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
 const ConnectPanel = React.lazy(() => import("../components/ConnectPanel"));
 const HistoryPanel = React.lazy(() => import("../components/HistoryPanel"));
 const UsersPanel = React.lazy(() => import("../components/UsersPanel"));
-
-enum Events {
-  CONNECTION_ESTABLISHED = "CONNECTION_ESTABLISHED",
-  FILES_UPDATED = "FILES_UPDATED",
-  HISTORY_UPDATED = "HISTORY_UPDATED",
-  USERS_UPDATED = "USERS_UPDATED",
-  SPACE_DELETED = "SPACE_DELETED",
-}
 
 const useStyles = makeStyles((theme) => ({
   rootLarge: {
@@ -301,16 +293,16 @@ const Space: React.FC<SpaceProps> = (props) => {
       console.log(data);
       const { type, clientId } = data;
       switch (type) {
-        case Events.CONNECTION_ESTABLISHED:
+        case SpaceEvents.CONNECTION_ESTABLISHED:
           setMyClientId(clientId);
           refetchSpace();
           break;
-        case Events.FILES_UPDATED:
-        case Events.HISTORY_UPDATED:
-        case Events.USERS_UPDATED:
+        case SpaceEvents.FILES_UPDATED:
+        case SpaceEvents.HISTORY_UPDATED:
+        case SpaceEvents.USERS_UPDATED:
           refetchSpace();
           break;
-        case Events.SPACE_DELETED:
+        case SpaceEvents.SPACE_DELETED:
           enqueueSnackbar(
             "This space has been destroyed. Redirecting you to the home page.",
             { variant: "error" }

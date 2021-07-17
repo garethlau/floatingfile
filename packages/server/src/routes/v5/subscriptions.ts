@@ -3,9 +3,9 @@ import crypto from "crypto";
 import {
   addClient,
   removeClient,
-  EventTypes,
   sendToClient,
 } from "../../services/subscriptionManager";
+import { SpaceEvents } from "@floatingfile/common";
 
 const router = express.Router();
 
@@ -34,7 +34,10 @@ router.get("/:code", async (req: Request, res: Response, done) => {
     };
 
     await addClient(code, client);
-    sendToClient(client, { type: EventTypes.CONNECTION_ESTABLISHED, clientId });
+    sendToClient(client, {
+      type: SpaceEvents.CONNECTION_ESTABLISHED,
+      clientId,
+    });
 
     req.on("close", () => {
       removeClient(code, client);

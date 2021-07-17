@@ -1,14 +1,6 @@
 import { Response } from "express";
-import { SpaceDocument } from "@floatingfile/common";
+import { SpaceDocument, SpaceEvents } from "@floatingfile/common";
 import honeybadger from "../utils/honeybadger";
-
-export enum EventTypes {
-  CONNECTION_ESTABLISHED = "CONNECTION_ESTABLISHED",
-  FILES_UPDATED = "FILES_UPDATED",
-  HISTORY_UPDATED = "HISTORY_UPDATED",
-  USERS_UPDATED = "USERS_UPDATED",
-  SPACE_DELETED = "SPACE_DELETED",
-}
 
 const mongoose = require("mongoose");
 const Space = mongoose.model("Space");
@@ -35,7 +27,7 @@ export async function addClient(code: string, client: Client) {
 
     await space.save();
     spaces[code].push(client);
-    broadcast(code, EventTypes.USERS_UPDATED);
+    broadcast(code, SpaceEvents.USERS_UPDATED);
   } catch (error) {
     honeybadger.notify(error);
   }
@@ -55,7 +47,7 @@ export async function removeClient(code: string, client: Client) {
       return;
     }
     space.users = space.users.filter((user) => user.id !== client.id);
-    broadcast(code, EventTypes.USERS_UPDATED);
+    broadcast(code, SpaceEvents.USERS_UPDATED);
     await space.save();
   } catch (error) {
     honeybadger.notify(error);
@@ -74,7 +66,7 @@ export function sendDataToClients(code: string, data: any) {
   }
 }
 
-export function broadcast(code: string, type: EventTypes) {
+export function broadcast(code: string, type: SpaceEvents) {
   sendDataToClients(code, { type });
 }
 
