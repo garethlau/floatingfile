@@ -136,7 +136,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
         });
         const { data } = response;
         await saveBlob(data, name);
-        await axios.patch(`${BASE_API_URL}/api/v4/spaces/${code}/history`, {
+        await axios.patch(`${BASE_API_URL}/api/v5/spaces/${code}/history`, {
           action: "DOWNLOAD_FILE",
           payload: key,
         });

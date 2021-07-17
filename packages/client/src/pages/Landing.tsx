@@ -121,7 +121,7 @@ const Landing: React.FC<void> = () => {
     }
 
     try {
-      await axios.get(`${BASE_API_URL}/api/v4/spaces/` + code);
+      await axios.get(`${BASE_API_URL}/api/v5/spaces/` + code);
       enqueueSnackbar("Joining space.", {
         variant: "success",
         anchorOrigin,
