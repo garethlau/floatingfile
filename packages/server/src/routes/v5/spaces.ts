@@ -22,7 +22,8 @@ router.get("/:code", async (req: Request, res: Response, done) => {
     return res.status(400).send({ message: "Invalid request." });
   }
   try {
-    const space = await SpaceModel.findOne({ code }).exec();
+    const space = await SpaceModel.findByCode(code);
+    // SpaceModel.findOne({ code }).exec();
 
     if (!space) {
       return res.status(404).send({ message: "Space does not exist." });
@@ -120,7 +121,7 @@ router.patch("/:code/history", async (req, res, done) => {
     typeof req.headers.username === "string" ? req.headers.username : "";
 
   try {
-    const space = await SpaceModel.findOne({ code }).exec();
+    const space = await SpaceModel.findByCode(code);
     if (!space) {
       return res.status(404).send({ message: "Space not found." });
     }
@@ -159,7 +160,7 @@ router.patch("/:code/history", async (req, res, done) => {
 router.get("/:code/history", async (req, res, done) => {
   const { code } = req.params;
   try {
-    const space = await SpaceModel.findOne({ code }).exec();
+    const space = await SpaceModel.findByCode(code);
     if (!space) {
       return res.status(404).send();
     }
@@ -173,7 +174,7 @@ router.get("/:code/history", async (req, res, done) => {
 router.get("/:code/users", async (req, res, done) => {
   const { code } = req.params;
   try {
-    const space = await SpaceModel.findOne({ code }).exec();
+    const space = await SpaceModel.findByCode(code);
     if (!space) {
       return res.status(404).send();
     }
@@ -190,7 +191,8 @@ router.delete("/:code/files/:key", async (req, res, done) => {
 
   try {
     // Find the space
-    const space = await SpaceModel.findOne({ code }).exec();
+    const space = await SpaceModel.findByCode(code);
+
     if (!space) {
       return res.status(404).send();
     }
@@ -246,7 +248,7 @@ router.delete("/:code/files", async (req, res, done) => {
   }
 
   try {
-    const space = await SpaceModel.findOne({ code }).exec();
+    const space = await SpaceModel.findByCode(code);
     if (!space) {
       return res.status(404).send({ message: "Space does not exist." });
     }
@@ -302,7 +304,7 @@ router.patch("/:code/files", async (req, res, done) => {
     return res.status(422).send({ message: "No code supplied." });
   }
   try {
-    const space = await SpaceModel.findOne({ code }).exec();
+    const space = await SpaceModel.findByCode(code);
     if (!space) {
       return res.status(404).send({ message: "Space not found." });
     }
@@ -341,7 +343,7 @@ router.patch("/:code/files", async (req, res, done) => {
 router.get("/:code/files", async (req, res, done) => {
   const { code } = req.params;
   try {
-    const space = await SpaceModel.findOne({ code }).exec();
+    const space = await SpaceModel.findByCode(code);
     if (!space) {
       return res.status(404).send({ message: "Space not found." });
     }
@@ -377,7 +379,7 @@ router.get("/:code/files/zip", async (req, res: any, done) => {
 
   try {
     // Find the space
-    const space = await SpaceModel.findOne({ code }).exec();
+    const space = await SpaceModel.findByCode(code);
     if (!space) {
       return res.status(404).send({ message: "Resource not found." });
     }
