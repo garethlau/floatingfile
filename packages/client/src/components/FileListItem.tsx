@@ -15,7 +15,7 @@ import { useSelectedFiles } from "../contexts/selectedFiles";
 import axios from "axios";
 import { saveBlob } from "../utils";
 import { BASE_API_URL } from "../env";
-import { File } from "@floatingfile/types";
+import { File } from "@floatingfile/common";
 import FileIcon from "./FileIcon";
 
 const useStyles = makeStyles((theme) => ({

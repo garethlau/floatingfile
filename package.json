@@ -9,10 +9,11 @@
     "concurrently": "^6.2.0"
   },
   "scripts": {
-    "dev": "concurrently \"yarn dev:client\" \"yarn dev:server\"",
+    "dev": "concurrently \"yarn dev:client\" \"yarn dev:server\" \"yarn dev:common\"",
     "dev:server": "yarn --cwd packages/server dev",
     "dev:client": "yarn --cwd packages/client dev",
     "dev:landing": "yarn --cwd packages/landing dev",
+    "dev:common": "yarn --cwd packages/common dev",
     "build:server": "yarn --cwd packages/server build",
     "build:client": "yarn --cwd packages/client build",
     "deploy:app": "./scripts/deploy-app.sh",

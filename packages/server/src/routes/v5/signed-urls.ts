@@ -1,7 +1,7 @@
 import { Router } from "express";
 import s3 from "../../s3";
 import { S3_BUCKET_NAME } from "../../config";
-import { File } from "@floatingfile/types";
+import { File } from "@floatingfile/common";
 import { v4 as uuidv4 } from "uuid";
 import SpaceModel from "../../db/models/Space";
 

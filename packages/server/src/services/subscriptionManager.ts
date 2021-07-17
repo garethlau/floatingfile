@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { SpaceDocument, Events } from "@floatingfile/types";
+import { SpaceDocument } from "@floatingfile/common";
 import honeybadger from "../utils/honeybadger";
 
 export enum EventTypes {

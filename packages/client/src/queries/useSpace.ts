@@ -1,7 +1,7 @@
 import { BASE_API_URL } from "../env";
 import { useQuery } from "react-query";
 import axios from "axios";
-import { Space } from "@floatingfile/types";
+import { Space } from "@floatingfile/common";
 
 export default function useSpace(code: string) {
   return useQuery<Space>(

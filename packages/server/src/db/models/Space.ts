@@ -1,5 +1,5 @@
 import { Schema, model, Model, Document, models } from "mongoose";
-import { Space } from "@floatingfile/types";
+import { Space } from "@floatingfile/common";
 
 export interface SpaceBaseDocument extends Space, Document {}
 

@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { File, HistoryRecord } from "@floatingfile/types";
+import { File, HistoryRecord } from "@floatingfile/common";
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
