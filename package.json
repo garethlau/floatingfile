@@ -9,7 +9,7 @@
     "concurrently": "^6.2.0"
   },
   "scripts": {
-    "dev": "concurrently \"yarn dev:client\" \"yarn dev:server\" \"yarn dev:common\"",
+    "dev": "concurrently -n client,server,common \"yarn dev:client\" \"yarn dev:server\" \"yarn dev:common\"",
     "dev:server": "yarn --cwd packages/server dev",
     "dev:client": "yarn --cwd packages/client dev",
     "dev:landing": "yarn --cwd packages/landing dev",
