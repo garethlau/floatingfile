@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Colors } from "@floatingfile/common";
 import QRCode from "qrcode.react";
-import { makeStyles } from "@material-ui/core";
 import MoonLoader from "react-spinners/MoonLoader";
 import { ORIGIN } from "../env";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -9,54 +8,14 @@ import { useSnackbar } from "notistack";
 import useSpace from "../queries/useSpace";
 import { useParams, useHistory } from "react-router-dom";
 import useDeleteSpace from "../mutations/useDeleteSpace";
-import Button from "./Button";
 import floatingfileImg from "../assets/images/floatingfile.png";
-import Grid from "@material-ui/core/Grid";
+import { Flex, Spacer, Box, chakra, Button } from "@chakra-ui/react";
+import Panel from "./panel";
 
 const THIRTY_MINUTES: number = 30 * 60 * 1000;
 const FIVE_MINUTES: number = 5 * 60 * 1000;
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    height: "100%",
-    width: "100%",
-    backgroundColor: Colors.WHITE,
-    flexWrap: "nowrap",
-  },
-  contentContainer: {
-    flexGrow: 1,
-    overflowY: "auto",
-    overflowX: "hidden",
-    textAlign: "center",
-  },
-  content: {
-    margin: "auto",
-  },
-  footer: { textAlign: "center", margin: "20px" },
-  title: {
-    color: Colors.LIGHT_ACCENT,
-    textAlign: "center",
-    [theme.breakpoints.up("sm")]: {
-      textAlign: "left",
-      marginLeft: "20px",
-    },
-  },
-  code: {
-    width: "200px",
-    backgroundColor: Colors.LIGHT_ACCENT,
-    fontSize: "32px",
-    fontWeight: "bold",
-    margin: "10px auto",
-    borderRadius: "5px",
-    color: Colors.WHITE,
-    "&:hover": {
-      cursor: "pointer",
-    },
-  },
-}));
-
-const ConnectPanel: React.FC<{}> = () => {
-  const cls = useStyles();
+const ConnectPanel: React.FC = () => {
   const { code }: { code: string } = useParams();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { data: space } = useSpace(code);
@@ -134,83 +93,86 @@ const ConnectPanel: React.FC<{}> = () => {
   }, [timeLeft]);
 
   return (
-    <Grid direction="column" container className={cls.container}>
-      <Grid item>
-        <h2 className={cls.title}>Connect</h2>
-      </Grid>
-      <Grid
-        justify="center"
-        alignItems="center"
-        item
-        container
-        className={cls.contentContainer}
-      >
-        <Grid item>
-          <div className={cls.content}>
-            <p style={{ opacity: 0.5 }}>Join this space:</p>
-            <CopyToClipboard
-              text={`${ORIGIN}/s/${code}`}
-              onCopy={() => {
-                enqueueSnackbar(`URL copied to clipboard.`, {
-                  variant: "success",
-                });
-                setTimeout(closeSnackbar, 3000);
-              }}
-            >
-              <div className={cls.code}>{code || ""}</div>
-            </CopyToClipboard>
-            <div>
-              <QRCode
-                value={`${ORIGIN}/s/${code}`}
-                size={200}
-                bgColor="#ffffff"
-                fgColor="#000000"
-                level="L"
-                includeMargin={false}
-                renderAs="svg"
-                imageSettings={{
-                  src: floatingfileImg,
-                  height: 24,
-                  width: 24,
-                  excavate: true,
-                }}
-              />
-            </div>
-          </div>
-        </Grid>
-      </Grid>
-      <Grid item className={cls.footer}>
-        <p style={{ opacity: 0.5, margin: 0 }}>Space will be destroyed in:</p>
-        {timeLeft > 0 ? (
-          <h2
-            style={{
-              fontFamily: "monospace",
-              fontSize: "24px",
-              margin: "16px",
-            }}
+    <Panel title="Connect">
+      <Flex direction="column" align="center" h="100%">
+        <Spacer />
+        <chakra.p opacity={0.5} textAlign="center">
+          Join this space:
+        </chakra.p>
+        <CopyToClipboard
+          text={`${ORIGIN}/s/${code}`}
+          onCopy={() => {
+            enqueueSnackbar(`URL copied to clipboard.`, {
+              variant: "success",
+            });
+            setTimeout(closeSnackbar, 3000);
+          }}
+        >
+          <chakra.div
+            w="200px"
+            m="10px auto"
+            borderRadius="md"
+            bg={Colors.LIGHT_ACCENT}
+            _hover={{ cursor: "pointer" }}
           >
-            {new Date(timeLeft * 1000).toISOString().substr(11, 8)}
-          </h2>
-        ) : (
-          <MoonLoader
-            css="margin: auto; padding: 10px"
-            loading
-            color={Colors.MAIN_BRAND}
-            size={32}
+            <chakra.p
+              fontSize="32px"
+              fontWeight="bold"
+              color="white"
+              textAlign="center"
+            >
+              {code || ""}
+            </chakra.p>
+          </chakra.div>
+        </CopyToClipboard>
+        <Flex justify="center">
+          <QRCode
+            value={`${ORIGIN}/s/${code}`}
+            size={200}
+            bgColor="#ffffff"
+            fgColor="#000000"
+            level="L"
+            includeMargin={false}
+            renderAs="svg"
+            imageSettings={{
+              src: floatingfileImg,
+              height: 24,
+              width: 24,
+              excavate: true,
+            }}
           />
-        )}
-        <div>
+        </Flex>
+        <Spacer />
+        <Box textAlign="center">
+          <chakra.p opacity={0.5}>Space will be destroyed in:</chakra.p>
+          {timeLeft > 0 ? (
+            <chakra.p
+              fontWeight="bold"
+              fontFamily="monospace"
+              fontSize="24px"
+              margin="10px"
+            >
+              {new Date(timeLeft * 1000).toISOString().substr(11, 8)}
+            </chakra.p>
+          ) : (
+            <MoonLoader
+              css="margin: auto; padding: 10px"
+              loading
+              color={Colors.MAIN_BRAND}
+              size={32}
+            />
+          )}
           <Button
-            variant="danger"
+            colorScheme="red"
             onClick={close}
             isLoading={isLoading}
             debounce={5}
           >
             Destroy Now
           </Button>
-        </div>
-      </Grid>
-    </Grid>
+        </Box>
+      </Flex>
+    </Panel>
   );
 };
 

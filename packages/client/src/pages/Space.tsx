@@ -17,7 +17,7 @@ import {
 import { Colors, SpaceEvents } from "@floatingfile/common";
 import Button from "../components/Button";
 import IntroToast from "../components/IntroToast";
-import UploadQueue from "../components/UploadQueue";
+import UploadQueue from "../components/upload-queue";
 import useSpace from "../queries/useSpace";
 import useWindowWidth from "../hooks/useWindowWidth";
 import useDocumentTitle from "../hooks/useDocumentTitle";
@@ -28,9 +28,9 @@ import NavBar from "../components/NavBar";
 import FadeIn from "../components/animations/FadeIn";
 
 const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
-const ConnectPanel = React.lazy(() => import("../components/ConnectPanel"));
-const HistoryPanel = React.lazy(() => import("../components/HistoryPanel"));
-const UsersPanel = React.lazy(() => import("../components/UsersPanel"));
+const ConnectPanel = React.lazy(() => import("../components/connect-panel"));
+const HistoryPanel = React.lazy(() => import("../components/history-panel"));
+const UsersPanel = React.lazy(() => import("../components/users-panel"));
 
 const useStyles = makeStyles((theme) => ({
   rootLarge: {
@@ -67,7 +67,6 @@ const useStyles = makeStyles((theme) => ({
   },
   mainContainer: {
     gridArea: "main",
-    zIndex: 10,
   },
 }));
 

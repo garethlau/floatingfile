@@ -20,6 +20,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import theme from "./theme";
 import { SelectedFilesProvider } from "./contexts/selectedFiles";
 import { UploadServiceProvider } from "./contexts/uploadService";
+import { ChakraProvider } from "@chakra-ui/react";
 
 const Space = React.lazy(() => import("./pages/Space"));
 const Landing = React.lazy(() => import("./pages/Landing"));
@@ -100,41 +101,38 @@ const App: React.FC<{}> = () => {
     );
   }
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <div className={classes.root}>
-        <QueryClientProvider client={queryClient}>
-          <SnackbarProvider
-            maxSnack={3}
-            classes={{
-              variantSuccess: classes.success,
-              variantError: classes.error,
-              variantWarning: classes.warning,
-              variantInfo: classes.info,
-            }}
-            anchorOrigin={{
-              vertical: windowWidth > Breakpoints.MD ? "bottom" : "top",
-              horizontal: windowWidth > Breakpoints.MD ? "right" : "center",
-            }}
-          >
-            <UploadServiceProvider>
-              <SelectedFilesProvider>
-                <Router history={history}>
-                  <Suspense fallback={null}>
-                    <Switch>
-                      <Route exact path="/" component={Landing} />
-                      <Route path="/s/:code" component={Space} />
-                      <Route component={NotFound} />
-                    </Switch>
-                  </Suspense>
-                </Router>
-              </SelectedFilesProvider>
-            </UploadServiceProvider>
-          </SnackbarProvider>
-          <ReactQueryDevtools />
-        </QueryClientProvider>
-      </div>
-    </ThemeProvider>
+    <ChakraProvider theme={theme}>
+      <QueryClientProvider client={queryClient}>
+        <SnackbarProvider
+          maxSnack={3}
+          classes={{
+            variantSuccess: classes.success,
+            variantError: classes.error,
+            variantWarning: classes.warning,
+            variantInfo: classes.info,
+          }}
+          anchorOrigin={{
+            vertical: windowWidth > Breakpoints.MD ? "bottom" : "top",
+            horizontal: windowWidth > Breakpoints.MD ? "right" : "center",
+          }}
+        >
+          <UploadServiceProvider>
+            <SelectedFilesProvider>
+              <Router history={history}>
+                <Suspense fallback={null}>
+                  <Switch>
+                    <Route exact path="/" component={Landing} />
+                    <Route path="/s/:code" component={Space} />
+                    <Route component={NotFound} />
+                  </Switch>
+                </Suspense>
+              </Router>
+            </SelectedFilesProvider>
+          </UploadServiceProvider>
+        </SnackbarProvider>
+        {/* <ReactQueryDevtools /> */}
+      </QueryClientProvider>
+    </ChakraProvider>
   );
 };
 

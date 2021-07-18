@@ -1,17 +1,9 @@
-import React, { useEffect, useCallback, useState, useReducer } from "react";
-import FileUploadBtn from "./FileUploadBtn";
-import MoonLoader from "react-spinners/MoonLoader";
+import React, { useEffect, useCallback, useReducer } from "react";
 import { useParams } from "react-router-dom";
-import Grid from "@material-ui/core/Grid";
 import axios from "axios";
 import { BASE_API_URL } from "../env";
-import FolderIcon from "@material-ui/icons/Folder";
-import GIconButton from "./GIconButton";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
-import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
-import DeleteIcon from "@material-ui/icons/Delete";
 import ClearIcon from "@material-ui/icons/Clear";
-import { makeStyles } from "@material-ui/core/styles";
 import { AnimateSharedLayout, AnimatePresence, motion } from "framer-motion";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Button from "./Button";
@@ -24,66 +16,16 @@ import { useSelectedFiles } from "../contexts/selectedFiles";
 import { useSnackbar } from "notistack";
 import useSpace from "../queries/useSpace";
 import useRemoveFiles from "../mutations/useRemoveFiles";
-import FileListItem from "./FileListItem";
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    height: "100%",
-    width: "100%",
-    backgroundColor: Colors.WHITE,
-    [theme.breakpoints.up("md")]: {
-      backgroundColor: Colors.LIGHT_SHADE,
-    },
-    flexWrap: "nowrap",
-  },
-  content: {
-    flexGrow: 1,
-    overflowY: "auto",
-    overflowX: "hidden",
-  },
-  uploadZone: {
-    width: "100%",
-    height: "100%",
-    "&:hover": {
-      cursor: "pointer",
-    },
-    "&:focus": {
-      outline: "none",
-    },
-  },
-
-  centerWrapper: {
-    display: "table",
-    height: "100%",
-    width: "100%",
-  },
-  center: {
-    display: "table-cell",
-    verticalAlign: "middle",
-    textAlign: "center",
-  },
-
-  appBar: {
-    height: "64px",
-    padding: "0px 10px",
-    backgroundColor: Colors.MAIN_BRAND,
-  },
-
-  left: {
-    float: "left",
-    height: "64px",
-    width: "min-content",
-    padding: "0 10px 0 0",
-  },
-  right: {
-    float: "right",
-    height: "64px",
-    width: "min-content",
-    margin: "0 0 0 10px",
-  },
-}));
-
-interface Props {}
+import FileListItem from "./file-list-item";
+import {
+  Stack,
+  Box,
+  Flex,
+  chakra,
+  Spacer,
+  HStack,
+  CircularProgress,
+} from "@chakra-ui/react";
 
 enum actionTypes {
   UPDATE_DOWNLOAD_PROGRESS,
@@ -125,8 +67,7 @@ const initialState: State = {
   isDownloading: false,
 };
 
-const FilesPanel: React.FC<Props> = () => {
-  const classes = useStyles();
+const FilesPanel: React.FC = () => {
   const windowWidth = useWindowWidth();
   const { code }: { code: string } = useParams();
   const { enqueueSnackbar } = useSnackbar();
@@ -246,192 +187,137 @@ const FilesPanel: React.FC<Props> = () => {
   }
 
   const dropZone = (
-    <div {...getRootProps()} className={classes.uploadZone}>
-      <div className={classes.centerWrapper}>
-        <input {...getInputProps()} />
-        <div className={classes.center}>
+    <chakra.div {...getRootProps()} w="100%" h="100%">
+      <input {...getInputProps()} />
+      <Flex align="center" justify="center" w="inherit" h="inherit">
+        <Box textAlign="center">
           {windowWidth > 960 ? (
-            <>
-              <p style={{ opacity: 0.7, margin: 5 }}>Drag and drop files</p>
-              <p style={{ opacity: 0.7, margin: 5 }}>or</p>
-            </>
+            <chakra.p opacity={0.7}>
+              Drag and drop files
+              <br />
+              or
+            </chakra.p>
           ) : (
-            <p style={{ opacity: 0.7, margin: 5 }}>It's pretty empty here...</p>
+            <chakra.p opacity={0.7}>It's pretty empty here...</chakra.p>
           )}
-          <div>
-            <Button variant="success" startIcon={<CloudUploadIcon />}>
-              Upload
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+          <Button colorScheme="green" leftIcon={<CloudUploadIcon />}>
+            Upload
+          </Button>
+        </Box>
+      </Flex>
+    </chakra.div>
   );
 
   const appBar = (
-    <div className={classes.appBar}>
-      <div className={classes.left}>
-        <div className={classes.centerWrapper}>
-          <div className={classes.center}>
-            <div {...getRootProps()}>
-              <input {...getInputProps()} />
-              {windowWidth > 600 ? (
-                <Button
-                  variant="success"
-                  startIcon={<CloudUploadIcon style={{ marginLeft: "5px" }} />}
-                >
-                  Upload
-                </Button>
-              ) : (
-                <GIconButton variant="success">
-                  <CloudUploadIcon />
-                </GIconButton>
-              )}
-            </div>
-          </div>
+    <Flex align="center" p={2} bg="blue.500">
+      <HStack>
+        <div {...getRootProps()}>
+          <input {...getInputProps()} />
+          <Button colorScheme="green" leftIcon={<CloudUploadIcon />}>
+            Upload
+          </Button>
         </div>
-      </div>
-      <div className={classes.left}>
-        <div className={classes.centerWrapper}>
-          <div className={classes.center} style={{ textAlign: "left" }}>
-            {selected.length === files?.length ? (
-              <Button
-                event={{ category: "File", action: "Deselected All Files" }}
-                variant="primary"
-                inverse
-                debounce={0}
-                startIcon={<ClearIcon />}
-                onClick={clearSelectedFiles}
-              >
-                Deselect All
-              </Button>
-            ) : (
-              <Button
-                onClick={() => {
-                  setSelected(files?.map((file) => file.key) || []);
-                }}
-                event={{ category: "File", action: "Selected All Files" }}
-                variant="primary"
-                inverse
-                debounce={0}
-                startIcon={<PlaylistAddCheckIcon />}
-              >
-                Select All
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className={classes.right}>
-        <div className={classes.centerWrapper}>
-          <div className={classes.center}>
-            <Button
-              variant="primary"
-              event={{ category: "File", action: "Zip Selected Files" }}
-              disabled={selected.length === 0}
-              inverse
-              onClick={zipSelected}
-              startIcon={<FolderIcon />}
-            >
-              ZIP
-            </Button>
-          </div>
-        </div>
-      </div>
-      <div className={classes.right}>
-        <div className={classes.centerWrapper}>
-          <div className={classes.center}>
-            <Button
-              variant="primary"
-              event={{ category: "File", action: "Downloaded Selected Files" }}
-              disabled={selected.length === 0 || state.isDownloading}
-              inverse
-              startIcon={<CloudDownloadIcon />}
-              onClick={downloadSelected}
-            >
-              <span style={{ opacity: state.isDownloading ? 0 : 1 }}>
-                Download
-              </span>
-              <span
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                }}
-              >
-                {state.isDownloading &&
-                  `${(state.progress * 100).toFixed()}%` +
-                    ` (${state.current}/${state.total})`}
-              </span>
-            </Button>
-          </div>
-        </div>
-      </div>
-      <div className={classes.right}>
-        <div className={classes.centerWrapper}>
-          <div className={classes.center}>
-            <Button
-              variant="primary"
-              event={{ category: "File", action: "Removed Selected Files" }}
-              disabled={selected.length === 0}
-              inverse
-              startIcon={<DeleteIcon />}
-              onClick={removeSelected}
-            >
-              Remove
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+        {selected.length === files?.length ? (
+          <Button
+            colorSheme="white"
+            leftIcon={<ClearIcon />}
+            onClick={clearSelectedFiles}
+          >
+            Deselect All
+          </Button>
+        ) : (
+          <Button
+            colorScheme="white"
+            onClick={() => {
+              setSelected(files?.map((file) => file.key) || []);
+            }}
+            leftIcon={<PlaylistAddCheckIcon />}
+          >
+            Select All
+          </Button>
+        )}
+      </HStack>
+      <Spacer />
+      <HStack>
+        <Button
+          disabled={selected.length === 0}
+          colorScheme="white"
+          onClick={removeSelected}
+        >
+          Remove
+        </Button>
+        <Button
+          disabled={selected.length === 0}
+          colorScheme="white"
+          onClick={downloadSelected}
+        >
+          <chakra.span style={{ opacity: state.isDownloading ? 0 : 1 }}>
+            Download
+          </chakra.span>
+          <chakra.span
+            pos="absolute"
+            top="50%"
+            left="50%"
+            transform="translate(-50%, -50%)"
+          >
+            {state.isDownloading &&
+              `${(state.progress * 100).toFixed()}%` +
+                ` (${state.current}/${state.total})`}
+          </chakra.span>
+        </Button>
+        <Button
+          colorScheme="white"
+          disabled={selected.length === 0}
+          onClick={zipSelected}
+        >
+          ZIP
+        </Button>
+      </HStack>
+    </Flex>
   );
 
   if (isLoading) {
     return (
-      <Grid
-        container
-        className={classes.container}
-        justify="center"
-        alignItems="center"
-      >
-        <MoonLoader color={Colors.MAIN_BRAND} size={32} />
-      </Grid>
+      <Flex w="100%" h="100%" align="center" justify="center">
+        <CircularProgress isIndeterminate color="blue.300" />
+      </Flex>
     );
   }
   return (
-    <Grid container direction="column" className={classes.container}>
-      {windowWidth > 960 && files && files.length > 0 && (
-        <Grid item>{appBar}</Grid>
-      )}
-
-      <Grid item className={classes.content}>
-        {windowWidth < 960 && files && files.length > 0 && (
-          <div style={{ padding: "10px" }}>
-            <FileUploadBtn handleFiles={onDrop} />
-          </div>
+    <Flex direction="column" bg={Colors.LIGHT_SHADE} h="100%" w="100%">
+      {windowWidth > 960 && appBar}
+      <Box flexGrow={1} overflow="auto">
+        {windowWidth < 960 && (
+          // Upload button for mobile layout scrolls w/ file list
+          <Box maxW="100vw" p={2}>
+            <Button colorScheme="green" isFullWidth>
+              Upload
+            </Button>
+          </Box>
         )}
         {files.length > 0 ? (
           <AnimatePresence>
             <AnimateSharedLayout>
-              {files.map((file) => (
-                <motion.div
-                  layout
-                  key={file.key}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scaleY: 0.5, scaleX: 0.8 }}
-                >
-                  <FileListItem file={file} />
-                </motion.div>
-              ))}
+              <Stack spacing={2} p={2} maxW="100vw">
+                {files.map((file) => (
+                  <motion.div
+                    layout
+                    key={file.key}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scaleY: 0.5, scaleX: 0.8 }}
+                  >
+                    <FileListItem file={file} />
+                  </motion.div>
+                ))}
+              </Stack>
             </AnimateSharedLayout>
           </AnimatePresence>
         ) : (
           dropZone
         )}
-      </Grid>
-    </Grid>
+      </Box>
+    </Flex>
   );
 };
 
