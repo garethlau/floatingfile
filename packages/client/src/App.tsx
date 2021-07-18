@@ -16,7 +16,7 @@ import useWindowWidth from "./hooks/useWindowWidth";
 import axios from "axios";
 import ReactGA from "react-ga";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtoolsPanel } from "react-query/devtools";
+import { ReactQueryDevtools } from "react-query/devtools";
 import theme from "./theme";
 import { SelectedFilesProvider } from "./contexts/selectedFiles";
 import { UploadServiceProvider } from "./contexts/uploadService";
@@ -131,7 +131,7 @@ const App: React.FC<{}> = () => {
               </SelectedFilesProvider>
             </UploadServiceProvider>
           </SnackbarProvider>
-          <ReactQueryDevtoolsPanel />
+          <ReactQueryDevtools />
         </QueryClientProvider>
       </div>
     </ThemeProvider>
