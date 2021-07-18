@@ -1,15 +1,13 @@
 import React from "react";
-import Center from "../components/Center";
+import { Flex, chakra } from "@chakra-ui/react";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 
-const NotFound: React.FC<void> = () => {
+const NotFound: React.FC = () => {
   useDocumentTitle("floatingfile");
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      <Center>
-        <p>This page does not exist.</p>
-      </Center>
-    </div>
+    <Flex justify="center" align="center" h="100vh" w="100vw">
+      <chakra.p>This page does not exist.</chakra.p>
+    </Flex>
   );
 };
 

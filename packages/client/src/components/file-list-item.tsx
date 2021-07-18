@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { File } from "@floatingfile/common";
+import { File, Colors } from "@floatingfile/common";
 import { isMobile } from "react-device-detect";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -72,7 +72,13 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
       shadow="md"
       borderRadius="md"
       align="center"
-      bg={isSelected(key) ? "#DDE8F8" : "white"}
+      bg={
+        windowWidth > 960
+          ? isSelected(key)
+            ? "#DDE8F8"
+            : "white"
+          : Colors.LIGHT_SHADE
+      }
       onClick={() => toggleSelect(key)}
       _hover={{ cursor: "pointer" }}
       transition="background-color ease 0.3s"

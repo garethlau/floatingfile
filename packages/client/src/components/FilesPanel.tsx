@@ -284,10 +284,15 @@ const FilesPanel: React.FC = () => {
     );
   }
   return (
-    <Flex direction="column" bg={Colors.LIGHT_SHADE} h="100%" w="100%">
-      {windowWidth > 960 && appBar}
+    <Flex
+      direction="column"
+      bg={windowWidth > 960 ? Colors.LIGHT_SHADE : "white"}
+      h="100%"
+      w="100%"
+    >
+      {windowWidth > 960 && files.length > 0 && appBar}
       <Box flexGrow={1} overflow="auto">
-        {windowWidth < 960 && (
+        {windowWidth < 960 && files.length > 0 && (
           // Upload button for mobile layout scrolls w/ file list
           <Box maxW="100vw" p={2}>
             <Button colorScheme="green" isFullWidth>

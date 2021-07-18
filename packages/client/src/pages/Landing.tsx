@@ -1,23 +1,25 @@
 import React, { useState } from "react";
 import { Colors } from "@floatingfile/common";
 import axios from "axios";
-import { useSnackbar, SnackbarOrigin } from "notistack";
 import { useHistory } from "react-router-dom";
-import { Flex, Spacer, chakra, Box, Stack } from "@chakra-ui/react";
+import {
+  Flex,
+  Spacer,
+  chakra,
+  Box,
+  Stack,
+  Input,
+  useToast,
+} from "@chakra-ui/react";
 import { BASE_API_URL, VERSION } from "../env";
-import GInput from "../components/GInput";
 import Button from "../components/Button";
 import Seperator from "../components/Seperator";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import useCreateSpace from "../mutations/useCreateSpace";
 import useRandomElement from "../hooks/useRandomElement";
 
-const anchorOrigin: SnackbarOrigin = {
-  vertical: "top",
-  horizontal: "center",
-};
-
 const Landing: React.FC = () => {
+  useDocumentTitle("floatingfile");
   const history = useHistory();
   const [code, setCode] = useState("");
   const { mutateAsync: createSpace, isLoading: creatingSpace } =
@@ -29,21 +31,31 @@ const Landing: React.FC = () => {
     "The best of file transfer and file sharing.",
     "File sharing and file transfer in one.",
   ]);
-  useDocumentTitle("floatingfile");
 
   function handleCodeChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.value.length > 6) return;
     setCode(e.target.value.toUpperCase());
   }
 
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const toast = useToast();
+
+  function handleKeyPress(event: React.KeyboardEvent) {
+    if (event.key === "Enter") {
+      join();
+    }
+  }
 
   async function join() {
     if (code.length !== 6) {
-      enqueueSnackbar("Invalid code length.", {
-        variant: "error",
-        anchorOrigin,
-      });
+      if (!toast.isActive("invalid-code-length-id")) {
+        toast({
+          id: "invalid-code-length-id",
+          title: "Invalid code length.",
+          status: "error",
+          isClosable: true,
+          position: "top",
+        });
+      }
       return;
     }
 
@@ -51,33 +63,44 @@ const Landing: React.FC = () => {
 
     if (format.test(code)) {
       // Contains special characters
-      enqueueSnackbar("Invalid characters.", {
-        variant: "error",
-        anchorOrigin,
-      });
+      if (!toast.isActive("invalid-characters-id")) {
+        toast({
+          id: "invalid-characters-id",
+          title: "Invalid characters.",
+          status: "error",
+          isClosable: true,
+          position: "top",
+        });
+      }
       return;
     }
 
     try {
       await axios.get(`${BASE_API_URL}/api/v5/spaces/${code}`);
-      enqueueSnackbar("Joining space.", {
-        variant: "success",
-        anchorOrigin,
+      toast({
+        title: "Joining space.",
+        status: "success",
+        isClosable: true,
+        position: "top",
       });
       setTimeout(() => {
-        closeSnackbar();
+        toast.closeAll();
         history.push(`/s/${code}`);
       }, 1500);
     } catch (err) {
       if (err.response.status === 404) {
-        enqueueSnackbar("Space does not exist.", {
-          variant: "error",
-          anchorOrigin,
+        toast({
+          title: "Space does not exist.",
+          status: "error",
+          isClosable: true,
+          position: "top",
         });
       } else {
-        enqueueSnackbar("There was an error.", {
-          variant: "error",
-          anchorOrigin,
+        toast({
+          title: "An unexpected error occurred.",
+          status: "error",
+          isClosable: true,
+          position: "top",
         });
       }
     }
@@ -90,9 +113,11 @@ const Landing: React.FC = () => {
         history.push(`/s/${space.code}`);
       }
     } catch {
-      enqueueSnackbar("There was an error.", {
-        variant: "error",
-        anchorOrigin,
+      toast({
+        title: "An unexpected error occured.",
+        status: "error",
+        isClosable: true,
+        position: "top",
       });
     }
   }
@@ -133,15 +158,20 @@ const Landing: React.FC = () => {
 
       <Flex align="center" justify="center" w="100%">
         <Stack spacing={4} w="250px" h="min-content">
-          <GInput
+          <Input
+            placeholder="CODE"
+            isFullWidth
+            spellCheck={false}
             onChange={handleCodeChange}
             value={code}
-            placeholder="CODE"
-            center
-            fullWidth
-            spellCheck={false}
-            style={{ fontWeight: "bold", letterSpacing: "2px" }}
+            variant="outline"
+            textAlign="center"
+            fontWeight="bold"
+            letterSpacing="3px"
+            bg="white"
+            onKeyPress={handleKeyPress}
           />
+
           <Button
             onClick={join}
             id="join-space-btn"

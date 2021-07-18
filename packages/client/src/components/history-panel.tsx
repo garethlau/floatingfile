@@ -80,7 +80,9 @@ const HistoryPanel: React.FC = () => {
             ))}
         </Stack>
       ) : (
-        <chakra.p opacity={0.7}>The history log will show up here.</chakra.p>
+        <chakra.p opacity={0.7} textAlign={{ base: "center", md: "left" }}>
+          The history log will show up here.
+        </chakra.p>
       )}
     </Panel>
   );

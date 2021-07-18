@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useRef, useState, useEffect, Suspense } from "react";
 import {
   useHistory,
   useParams,
@@ -7,7 +7,6 @@ import {
   RouteComponentProps,
 } from "react-router-dom";
 import axios from "axios";
-import { useSnackbar } from "notistack";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   BASE_API_URL,
@@ -16,7 +15,7 @@ import {
 } from "../env";
 import { Colors, SpaceEvents } from "@floatingfile/common";
 import Button from "../components/Button";
-import IntroToast from "../components/IntroToast";
+import IntroToast from "../components/intro-toast";
 import UploadQueue from "../components/upload-queue";
 import useSpace from "../queries/useSpace";
 import useWindowWidth from "../hooks/useWindowWidth";
@@ -24,8 +23,19 @@ import useDocumentTitle from "../hooks/useDocumentTitle";
 import FullPageLoader from "../components/FullPageLoader";
 import SpaceNotFound from "../components/SpaceNotFound";
 import FilesPanel from "../components/FilesPanel";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/nav-bar";
 import FadeIn from "../components/animations/FadeIn";
+import {
+  Box,
+  useToast,
+  Alert,
+  Flex,
+  AlertTitle,
+  AlertDescription,
+  chakra,
+  HStack,
+  Stack,
+} from "@chakra-ui/react";
 
 const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
 const ConnectPanel = React.lazy(() => import("../components/connect-panel"));
@@ -59,14 +69,17 @@ const useStyles = makeStyles((theme) => ({
   },
   navContainer: {
     gridArea: "nav",
+    zIndex: 2,
   },
   panelContainer: {
     gridArea: "panel",
     backgroundColor: Colors.WHITE,
     height: "100%",
+    zIndex: 3,
   },
   mainContainer: {
     gridArea: "main",
+    zIndex: 3,
   },
 }));
 
@@ -77,7 +90,7 @@ const SMLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
   return (
     <div className={classes.rootSmall}>
       <div className={classes.navContainer}>
-        <NavBar size="small" baseUrl={match.url} />
+        <NavBar baseUrl={match.url} orientation="horizontal" />
       </div>
       <div className={classes.mainContainer}>
         <Suspense fallback={panelFallback}>
@@ -85,23 +98,12 @@ const SMLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
             <Route path={`${match.path}/settings`}>
               <SettingsPanel />
             </Route>
-            <Route path={`${match.path}/history`}>
-              <HistoryPanel />
-            </Route>
-
+            <Route path={`${match.path}/history`} component={HistoryPanel} />
             <Route path={`${match.path}/users`}>
               <UsersPanel myClientId={clientId} />
             </Route>
             <Route path={`${match.path}/files`} component={FilesPanel} />
-            <Route path={`${match.path}`}>
-              <div
-                style={{
-                  height: "100%",
-                }}
-              >
-                <ConnectPanel />
-              </div>
-            </Route>
+            <Route path={`${match.path}`} component={ConnectPanel} />
           </Switch>
         </Suspense>
       </div>
@@ -134,21 +136,15 @@ const MDLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
             </Route>
             <Route path={`${match.path}/files`} component={FilesPanel} />
             <Route path={`${match.path}`}>
-              <div
-                style={{
-                  height: "100%",
-                }}
-              >
-                <FadeIn>
-                  <ConnectPanel />
-                </FadeIn>
-              </div>
+              <FadeIn>
+                <ConnectPanel />
+              </FadeIn>
             </Route>
           </Switch>
         </Suspense>
       </div>
       <div className={classes.navContainer}>
-        <NavBar baseUrl={match.url} size="medium" />
+        <NavBar baseUrl={match.url} orientation="horizontal" />
       </div>
     </div>
   );
@@ -159,7 +155,7 @@ const LGLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
   return (
     <div className={classes.rootLarge}>
       <div className={classes.navContainer}>
-        <NavBar baseUrl={match.url} size="large" />
+        <NavBar baseUrl={match.url} orientation="vertical" />
       </div>
       <div className={classes.panelContainer}>
         <Suspense fallback={panelFallback}>
@@ -181,15 +177,9 @@ const LGLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
               </FadeIn>
             </Route>
             <Route path={`${match.path}`}>
-              <div
-                style={{
-                  height: "100%",
-                }}
-              >
-                <FadeIn>
-                  <ConnectPanel />
-                </FadeIn>
-              </div>
+              <FadeIn>
+                <ConnectPanel />
+              </FadeIn>
             </Route>
           </Switch>
         </Suspense>
@@ -218,7 +208,8 @@ const Space: React.FC<SpaceProps> = (props) => {
 
   const { status: spaceStatus, refetch: refetchSpace } = useSpace(code);
 
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const toast = useToast();
+  const introToastRef = useRef<string | number | undefined | null>(null);
 
   const [myClientId, setMyClientId] = useState<string>("");
 
@@ -227,21 +218,26 @@ const Space: React.FC<SpaceProps> = (props) => {
 
   useEffect(() => {
     if (spaceStatus === "error") {
-      enqueueSnackbar(
-        "There was an error loading the space. Please reload the page.",
-        {
-          variant: "error",
-          action: (
+      toast({
+        position: "bottom-right",
+        title: "There was an error loading thet space.",
+        description: "Please reload the page.",
+        isClosable: true,
+        render: () => (
+          <Alert status="error" variant="solid" borderRadius="md">
+            <Box>
+              <AlertTitle>There was an error loading the space.</AlertTitle>
+              <AlertDescription>Please reload the page.</AlertDescription>
+            </Box>
             <Button
-              variant="danger"
-              inverse
+              colorScheme="white"
               onClick={() => window.location.reload()}
             >
               Reload
             </Button>
-          ),
-        }
-      );
+          </Alert>
+        ),
+      });
     }
   }, [spaceStatus]);
 
@@ -251,16 +247,18 @@ const Space: React.FC<SpaceProps> = (props) => {
     weekAgo.setDate(weekAgo.getDate() - 7);
     const lastVisit = localStorage.getItem(LAST_VISIT_STORAGE_KEY || "");
     if (!lastVisit || new Date(lastVisit) < new Date(weekAgo)) {
-      const key = enqueueSnackbar(
-        <IntroToast handleClose={() => closeSnackbar(key)} />,
-        {
-          persist: true,
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-        }
-      );
+      introToastRef.current = toast({
+        position: "top-right",
+        render: () => (
+          <IntroToast
+            handleClose={() => {
+              if (introToastRef.current) {
+                toast.close(introToastRef.current);
+              }
+            }}
+          />
+        ),
+      });
     }
 
     // Set last visit date
@@ -287,13 +285,15 @@ const Space: React.FC<SpaceProps> = (props) => {
           refetchSpace();
           break;
         case SpaceEvents.SPACE_DELETED:
-          enqueueSnackbar(
-            "This space has been destroyed. Redirecting you to the home page.",
-            { variant: "error" }
-          );
+          toast({
+            title: "This space has been destroyed.",
+            description: "Redirecting you to the home page.",
+            status: "info",
+            isClosable: true,
+            position: "bottom-right",
+          });
 
           setTimeout(() => {
-            closeSnackbar();
             history.push("/");
           }, 3000);
           break;
