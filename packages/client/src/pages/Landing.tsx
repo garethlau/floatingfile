@@ -232,9 +232,8 @@ const Landing: React.FC<void> = () => {
             <Button
               onClick={join}
               id="join-space-btn"
-              variant="primary"
-              fullWidth
-              event={{ category: "Space", action: "Joined a space" }}
+              colorScheme="blue"
+              isFullWidth
             >
               Join
             </Button>
@@ -249,9 +248,8 @@ const Landing: React.FC<void> = () => {
               onClick={create}
               isLoading={creatingSpace}
               id="create-space-btn"
-              variant="primary"
-              fullWidth
-              event={{ category: "Space", action: "Created a space" }}
+              isFullWidth
+              colorScheme="blue"
             >
               Create a Space
             </Button>
