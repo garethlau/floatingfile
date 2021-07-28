@@ -1,29 +1,23 @@
-import { createTheme } from "@material-ui/core";
-import { theme as baseTheme } from "@floatingfile/common";
+import { extendTheme } from "@chakra-ui/react";
 
-const theme = createTheme({
-  ...baseTheme,
-  overrides: {
-    MuiCssBaseline: {
-      "@global": {
-        html: {
-          WebkitFontSmoothing: "auto",
-        },
-        "*::-webkit-scrollbar": {
-          width: "7px",
-          height: "7px",
-        },
-        "*::-webkit-scrollbar-track": {
-          "-webkit-box-shadow": "inset 0 0 6px rgba(0, 0, 0, 0.3)",
-          backgroundColor: "#f5f5f5",
-        },
-        "*::-webkit-scrollbar-thumb": {
-          borderRadius: "5px",
-          "-webkit-box-shadow": "inset 0 0 6px rgba(0, 0, 0, 0.3)",
-          backgroundColor: "#4560f6",
-        },
-      },
+const theme = extendTheme({
+  colors: {
+    blue: {
+      "50": "#EAEDFA",
+      "100": "#C5CDF1",
+      "200": "#A0ADE8",
+      "300": "#7C8DDF",
+      "400": "#576DD6",
+      "500": "#324DCD",
+      "600": "#283EA4",
+      "700": "#1E2E7B",
+      "800": "#141F52",
+      "900": "#0A0F29",
     },
+  },
+  fonts: {
+    body: "DM Sans",
+    heading: "DM Sans",
   },
 });
 
