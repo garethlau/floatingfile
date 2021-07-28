@@ -3,6 +3,7 @@ import { File, Colors } from "@floatingfile/common";
 import { isMobile } from "react-device-detect";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useIsMutating } from "react-query";
 import {
   Flex,
   Spacer,
@@ -29,6 +30,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
   const { toggleSelect, isSelected } = useSelectedFiles();
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
+  const isMutating = useIsMutating({ mutationKey: ["space", code] });
 
   async function download(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -108,7 +110,12 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
       <Box>
         {windowWidth > 600 ? (
           <>
-            <Button colorScheme="blue" onClick={remove} mr="5px">
+            <Button
+              colorScheme="blue"
+              isDisabled={isMutating > 0}
+              onClick={remove}
+              mr="5px"
+            >
               Remove
             </Button>
             <Button colorScheme="blue" onClick={download}>

@@ -11,6 +11,7 @@ export default function useRemoveFile(code: string) {
     (key: string) =>
       axios.delete(`${BASE_API_URL}/api/v5/spaces/${code}/files/${key}`),
     {
+      mutationKey: queryKey,
       onMutate: async (key: string) => {
         await queryClient.cancelQueries(queryKey);
         const snapshot = queryClient.getQueryData<Space>(queryKey);
