@@ -220,7 +220,7 @@ const Space: React.FC<SpaceProps> = (props) => {
     if (spaceStatus === "error") {
       toast({
         position: "bottom-right",
-        title: "There was an error loading thet space.",
+        title: "There was an error loading the space.",
         description: "Please reload the page.",
         isClosable: true,
         render: () => (
