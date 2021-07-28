@@ -63,7 +63,7 @@ const Home: React.FC = () => {
             </chakra.h1>
 
             <Stack
-              mt={4}
+              mt={[2, 4, 8]}
               justify="center"
               direction={{ base: "column", sm: "row" }}
               spacing={4}
