@@ -17,7 +17,7 @@ import {
 import { FaMoon, FaSun } from "react-icons/fa";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useViewportScroll } from "framer-motion";
-import { DiGithubBadge } from "react-icons/di";
+import { FaGithub } from "react-icons/fa";
 import SvgLogo from "components/logo";
 
 const LINKS = [
@@ -115,7 +115,7 @@ const NavigationBar: React.FC = () => {
                 href="https://github.com/garethlau/floatingfile"
                 colorScheme="whiteAlpha"
                 color="white"
-                icon={<DiGithubBadge />}
+                icon={<FaGithub />}
                 aria-label="View on Github"
               />
               <IconButton
