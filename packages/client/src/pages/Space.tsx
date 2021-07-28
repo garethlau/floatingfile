@@ -6,14 +6,22 @@ import {
   Route,
   RouteComponentProps,
 } from "react-router-dom";
+import {
+  Box,
+  useToast,
+  Alert,
+  Flex,
+  AlertTitle,
+  AlertDescription,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import axios from "axios";
-import { makeStyles } from "@material-ui/core/styles";
+import { SpaceEvents } from "@floatingfile/common";
 import {
   BASE_API_URL,
   USERNAME_STORAGE_KEY,
   LAST_VISIT_STORAGE_KEY,
 } from "../env";
-import { Colors, SpaceEvents } from "@floatingfile/common";
 import Button from "../components/Button";
 import IntroToast from "../components/intro-toast";
 import UploadQueue from "../components/upload-queue";
@@ -25,171 +33,109 @@ import SpaceNotFound from "../components/SpaceNotFound";
 import FilesPanel from "../components/FilesPanel";
 import NavBar from "../components/nav-bar";
 import FadeIn from "../components/animations/FadeIn";
-import {
-  Box,
-  useToast,
-  Alert,
-  Flex,
-  AlertTitle,
-  AlertDescription,
-  chakra,
-  HStack,
-  Stack,
-} from "@chakra-ui/react";
 
 const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
 const ConnectPanel = React.lazy(() => import("../components/connect-panel"));
 const HistoryPanel = React.lazy(() => import("../components/history-panel"));
 const UsersPanel = React.lazy(() => import("../components/users-panel"));
-
-const useStyles = makeStyles((theme) => ({
-  rootLarge: {
-    width: "100vw",
-    height: "100vh",
-    display: "grid",
-    gridTemplateAreas: "'nav panel main'",
-    gridTemplateRows: "100vh",
-    gridTemplateColumns: "80px 240px auto",
-  },
-  rootMedium: {
-    width: "100vw",
-    height: "100vh",
-    display: "grid",
-    gridTemplateAreas: "'main' 'nav'",
-    gridTemplateRows: "calc(100vh - 64px) 64px",
-    gridTemplateColumns: "auto",
-  },
-  rootSmall: {
-    width: "100vw",
-    height: "100vh",
-    display: "grid",
-    gridTemplateAreas: "'nav' 'main'",
-    gridTemplateRows: "64px auto",
-    gridTemplateColumns: "1fr",
-  },
-  navContainer: {
-    gridArea: "nav",
-    zIndex: 2,
-  },
-  panelContainer: {
-    gridArea: "panel",
-    backgroundColor: Colors.WHITE,
-    height: "100%",
-    zIndex: 3,
-  },
-  mainContainer: {
-    gridArea: "main",
-    zIndex: 3,
-  },
-}));
-
 const panelFallback = null;
 
-const SMLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
-  const classes = useStyles();
-  return (
-    <div className={classes.rootSmall}>
-      <div className={classes.navContainer}>
-        <NavBar baseUrl={match.url} orientation="horizontal" />
-      </div>
-      <div className={classes.mainContainer}>
-        <Suspense fallback={panelFallback}>
-          <Switch>
-            <Route path={`${match.path}/settings`}>
+const SMLayout: React.FC<SpaceProps> = ({ match, clientId }) => (
+  <Flex w="100vw" h="100vh" direction="column">
+    <Box h="64px">
+      <NavBar orientation="horizontal" baseUrl={match.url} />
+    </Box>
+    <Box flex={1}>
+      <Suspense fallback={panelFallback}>
+        <Switch>
+          <Route path={`${match.path}/settings`}>
+            <SettingsPanel />
+          </Route>
+          <Route path={`${match.path}/history`} component={HistoryPanel} />
+          <Route path={`${match.path}/users`}>
+            <UsersPanel myClientId={clientId} />
+          </Route>
+          <Route path={`${match.path}/files`} component={FilesPanel} />
+          <Route path={`${match.path}`} component={ConnectPanel} />
+        </Switch>
+      </Suspense>
+    </Box>
+  </Flex>
+);
+
+const MDLayout: React.FC<SpaceProps> = ({ match, clientId }) => (
+  <Flex w="100vw" h="100vh" direction="column">
+    <Box h="calc(100vh - 64px)">
+      <Suspense fallback={panelFallback}>
+        <Switch>
+          <Route path={`${match.path}/settings`}>
+            <FadeIn>
               <SettingsPanel />
-            </Route>
-            <Route path={`${match.path}/history`} component={HistoryPanel} />
-            <Route path={`${match.path}/users`}>
+            </FadeIn>
+          </Route>
+          <Route path={`${match.path}/history`}>
+            <FadeIn>
+              <HistoryPanel />
+            </FadeIn>
+          </Route>
+
+          <Route path={`${match.path}/users`}>
+            <FadeIn>
               <UsersPanel myClientId={clientId} />
-            </Route>
-            <Route path={`${match.path}/files`} component={FilesPanel} />
-            <Route path={`${match.path}`} component={ConnectPanel} />
-          </Switch>
-        </Suspense>
-      </div>
-    </div>
-  );
-};
+            </FadeIn>
+          </Route>
+          <Route path={`${match.path}/files`} component={FilesPanel} />
+          <Route path={`${match.path}`}>
+            <FadeIn>
+              <ConnectPanel />
+            </FadeIn>
+          </Route>
+        </Switch>
+      </Suspense>
+    </Box>
+    <Box h="64px">
+      <NavBar baseUrl={match.url} orientation="horizontal" />
+    </Box>
+  </Flex>
+);
 
-const MDLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
-  const classes = useStyles();
-  return (
-    <div className={classes.rootMedium}>
-      <div className={classes.mainContainer}>
-        <Suspense fallback={panelFallback}>
-          <Switch>
-            <Route path={`${match.path}/settings`}>
-              <FadeIn>
-                <SettingsPanel />
-              </FadeIn>
-            </Route>
-            <Route path={`${match.path}/history`}>
-              <FadeIn>
-                <HistoryPanel />
-              </FadeIn>
-            </Route>
+const LGLayout: React.FC<SpaceProps> = ({ match, clientId }) => (
+  <Flex w="100vw" h="100vh">
+    <Box w="80px">
+      <NavBar baseUrl={match.url} orientation="vertical" />
+    </Box>
+    <Box w="240px">
+      <Suspense fallback={panelFallback}>
+        <Switch>
+          <Route path={`${match.path}/settings`}>
+            <FadeIn>
+              <SettingsPanel />
+            </FadeIn>
+          </Route>
+          <Route path={`${match.path}/history`}>
+            <FadeIn>
+              <HistoryPanel />
+            </FadeIn>
+          </Route>
 
-            <Route path={`${match.path}/users`}>
-              <FadeIn>
-                <UsersPanel myClientId={clientId} />
-              </FadeIn>
-            </Route>
-            <Route path={`${match.path}/files`} component={FilesPanel} />
-            <Route path={`${match.path}`}>
-              <FadeIn>
-                <ConnectPanel />
-              </FadeIn>
-            </Route>
-          </Switch>
-        </Suspense>
-      </div>
-      <div className={classes.navContainer}>
-        <NavBar baseUrl={match.url} orientation="horizontal" />
-      </div>
-    </div>
-  );
-};
-
-const LGLayout: React.FC<SpaceProps> = ({ match, clientId }) => {
-  const classes = useStyles();
-  return (
-    <div className={classes.rootLarge}>
-      <div className={classes.navContainer}>
-        <NavBar baseUrl={match.url} orientation="vertical" />
-      </div>
-      <div className={classes.panelContainer}>
-        <Suspense fallback={panelFallback}>
-          <Switch>
-            <Route path={`${match.path}/settings`}>
-              <FadeIn>
-                <SettingsPanel />
-              </FadeIn>
-            </Route>
-            <Route path={`${match.path}/history`}>
-              <FadeIn>
-                <HistoryPanel />
-              </FadeIn>
-            </Route>
-
-            <Route path={`${match.path}/users`}>
-              <FadeIn>
-                <UsersPanel myClientId={clientId} />
-              </FadeIn>
-            </Route>
-            <Route path={`${match.path}`}>
-              <FadeIn>
-                <ConnectPanel />
-              </FadeIn>
-            </Route>
-          </Switch>
-        </Suspense>
-      </div>
-      <div className={classes.mainContainer}>
-        <FilesPanel />
-      </div>
-    </div>
-  );
-};
+          <Route path={`${match.path}/users`}>
+            <FadeIn>
+              <UsersPanel myClientId={clientId} />
+            </FadeIn>
+          </Route>
+          <Route path={`${match.path}`}>
+            <FadeIn>
+              <ConnectPanel />
+            </FadeIn>
+          </Route>
+        </Switch>
+      </Suspense>
+    </Box>
+    <Box flex={1}>
+      <FilesPanel />
+    </Box>
+  </Flex>
+);
 
 interface MatchParams {
   code: string;
@@ -203,6 +149,11 @@ const Space: React.FC<SpaceProps> = (props) => {
   const windowWidth = useWindowWidth();
   const history = useHistory();
   const { code }: { code: string } = useParams();
+  const layout = useBreakpointValue({
+    base: "small",
+    sm: "medium",
+    lg: "large",
+  });
 
   useDocumentTitle(`floatingfile | ${code}`);
 
@@ -333,9 +284,9 @@ const Space: React.FC<SpaceProps> = (props) => {
   return (
     <>
       <UploadQueue />
-      {windowWidth > 960 ? (
+      {layout === "large" ? (
         <LGLayout {...props} clientId={myClientId} />
-      ) : windowWidth > 640 ? (
+      ) : layout === "medium" ? (
         <MDLayout {...props} clientId={myClientId} />
       ) : (
         <SMLayout {...props} clientId={myClientId} />
