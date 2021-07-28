@@ -79,7 +79,7 @@ const UploadQueue: React.FC = () => {
       direction="bottom"
       in={open && !isMobile}
       style={{
-        zIndex: 2,
+        zIndex: 4,
         left: "auto",
         right: "30px",
         width: "300px",
