@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Colors } from "@floatingfile/common";
+import { Colors, Logo } from "@floatingfile/common";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import {
@@ -10,6 +10,7 @@ import {
   Stack,
   Input,
   useToast,
+  Link,
 } from "@chakra-ui/react";
 import { BASE_API_URL, VERSION } from "../env";
 import Button from "../components/Button";
@@ -136,7 +137,18 @@ const Landing: React.FC = () => {
         w={[0, 0, "450px", "500px"]}
         p={4}
       >
-        <chakra.p color="white">floatingfile</chakra.p>
+        <Link
+          isExternal
+          href="http://floatingfile.space"
+          _hover={{ textDecoration: "none" }}
+        >
+          <Flex align="center">
+            <Logo fill="white" width="32px" height="32px" />
+            <chakra.p ml="10px" color="white">
+              floatingfile
+            </chakra.p>
+          </Flex>
+        </Link>
         <Spacer />
         <chakra.p
           lineHeight={1}
