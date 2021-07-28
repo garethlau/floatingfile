@@ -11,6 +11,7 @@ import useDeleteSpace from "../mutations/useDeleteSpace";
 import floatingfileImg from "../assets/images/floatingfile.png";
 import { Flex, Spacer, Box, chakra, Button } from "@chakra-ui/react";
 import Panel from "./panel";
+import Honeybadger from "../lib/honeybadger";
 
 const THIRTY_MINUTES: number = 30 * 60 * 1000;
 const FIVE_MINUTES: number = 5 * 60 * 1000;
@@ -28,7 +29,7 @@ const ConnectPanel: React.FC = () => {
       await deleteSpace();
       history.push("/");
     } catch (error) {
-      console.error(error);
+      Honeybadger.notify(error);
     }
   }
 

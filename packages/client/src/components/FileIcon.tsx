@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { BASE_API_URL } from "../env";
-import axios from "axios";
+import React from "react";
 import {
   mdiMicrosoftWord,
   mdiMicrosoftPowerpoint,
@@ -147,6 +145,7 @@ const FileIcon: React.FC<{
   if (previewUrl) {
     return (
       <img
+        alt="File preview"
         src={`${previewUrl}`}
         style={{ width: "80%", marginTop: "5px", borderRadius: "5px" }}
       />

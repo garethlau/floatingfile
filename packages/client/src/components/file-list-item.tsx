@@ -21,6 +21,7 @@ import { useSelectedFiles } from "../contexts/selectedFiles";
 import { saveBlob } from "../utils";
 import { BASE_API_URL } from "../env";
 import FileIcon from "./FileIcon";
+import Honeybadger from "../lib/honeybadger";
 
 const FileListItem: React.FC<{ file: File }> = ({ file }) => {
   const { name, key, ext, size, signedUrl } = file;
@@ -55,7 +56,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
           payload: key,
         });
       } catch (error) {
-        console.error(error);
+        Honeybadger.notify(error);
       } finally {
         setIsDownloading(false);
       }
@@ -69,7 +70,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
     try {
       await removeFile(key);
     } catch (error) {
-      console.error(error);
+      Honeybadger.notify(error);
     }
   }
 

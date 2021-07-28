@@ -26,6 +26,7 @@ import {
   HStack,
   CircularProgress,
 } from "@chakra-ui/react";
+import Honeybadger from "../lib/honeybadger";
 
 enum actionTypes {
   UPDATE_DOWNLOAD_PROGRESS,
@@ -148,7 +149,7 @@ const FilesPanel: React.FC = () => {
         variant: "success",
       });
     } catch (error) {
-      console.error(error);
+      Honeybadger.notify(error);
     }
   }
 
@@ -198,7 +199,7 @@ const FilesPanel: React.FC = () => {
               or
             </chakra.p>
           ) : (
-            <chakra.p opacity={0.7}>It's pretty empty here...</chakra.p>
+            <chakra.p opacity={0.7}>It&apos;s pretty empty here...</chakra.p>
           )}
           <Button colorScheme="green" leftIcon={<CloudUploadIcon />}>
             Upload
