@@ -30,7 +30,10 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
 
-  async function download(): Promise<void> {
+  async function download(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ): Promise<void> {
+    e.stopPropagation();
     if (isMobile) {
       window.open(signedUrl, "_blank");
     } else {
@@ -57,7 +60,10 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
     }
   }
 
-  async function remove(): Promise<void> {
+  async function remove(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ): Promise<void> {
+    e.stopPropagation();
     try {
       await removeFile(key);
     } catch (error) {
