@@ -26,7 +26,6 @@ import Button from "../components/Button";
 import IntroToast from "../components/intro-toast";
 import UploadQueue from "../components/upload-queue";
 import useSpace from "../queries/useSpace";
-import useWindowWidth from "../hooks/useWindowWidth";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import FullPageLoader from "../components/FullPageLoader";
 import SpaceNotFound from "../components/SpaceNotFound";
@@ -146,7 +145,6 @@ interface SpaceProps extends RouteComponentProps<MatchParams> {
 }
 
 const Space: React.FC<SpaceProps> = (props) => {
-  const windowWidth = useWindowWidth();
   const history = useHistory();
   const { code }: { code: string } = useParams();
   const layout = useBreakpointValue({
