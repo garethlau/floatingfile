@@ -9,21 +9,15 @@ import useWindowWidth from "../hooks/useWindowWidth";
 import { useUploadService } from "../contexts/uploadService";
 import useSpace from "../queries/useSpace";
 import FileListItem from "./file-list-item";
-import {
-  Stack,
-  Box,
-  Flex,
-  chakra,
-  CircularProgress,
-} from "@chakra-ui/react";
+import { Stack, Box, Flex, chakra, CircularProgress } from "@chakra-ui/react";
 import useLayout, { Layouts } from "../hooks/useLayout";
-import Toolbar from './toolbar';
+import Toolbar from "./toolbar";
 
 const FilesPanel: React.FC = () => {
   const windowWidth = useWindowWidth();
   const { code }: { code: string } = useParams();
   const { data: space, isLoading } = useSpace(code);
-  const layout = useLayout()
+  const layout = useLayout();
 
   const files = space?.files || [];
 
@@ -41,14 +35,8 @@ const FilesPanel: React.FC = () => {
     onDrop,
   });
 
-
   const dropZone = (
-    <chakra.div
-      {...getRootProps()}
-      flexGrow={1}
-      display="flex"
-      w="100%"
-    >
+    <chakra.div {...getRootProps()} flexGrow={1} display="flex" w="100%">
       <input {...getInputProps()} />
       <Flex align="center" justify="center" w="inherit" h="inherit">
         <Box textAlign="center">
@@ -80,12 +68,12 @@ const FilesPanel: React.FC = () => {
     <Flex
       direction="column"
       bg={layout === Layouts.MOBILE ? "white" : Colors.LIGHT_SHADE}
-
       // bg={windowWidth > 960 ? Colors.LIGHT_SHADE : "white"}
       h="100%"
       w="100%"
     >
-      {(layout === Layouts.TABLET || layout === Layouts.DESKTOP) && files.length > 0 && <Toolbar />}
+      {(layout === Layouts.TABLET || layout === Layouts.DESKTOP) &&
+        files.length > 0 && <Toolbar />}
       {/* {windowWidth > 960 && files.length > 0 && appBar} */}
       <Box flexGrow={1} overflow="auto" display="flex" flexDirection="column">
         {layout === Layouts.MOBILE && files.length > 0 && (
@@ -95,7 +83,6 @@ const FilesPanel: React.FC = () => {
               Upload
             </Button>
           </Box>
-
         )}
         {/* {windowWidth < 960 && files.length > 0 && (
         )} */}

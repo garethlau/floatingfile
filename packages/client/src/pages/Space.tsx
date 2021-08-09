@@ -31,7 +31,7 @@ import SpaceNotFound from "../components/SpaceNotFound";
 import FilesPanel from "../components/FilesPanel";
 import NavBar from "../components/nav-bar";
 import FadeIn from "../components/animations/FadeIn";
-import useLayout, { Layouts } from '../hooks/useLayout';
+import useLayout, { Layouts } from "../hooks/useLayout";
 
 const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
 const ConnectPanel = React.lazy(() => import("../components/connect-panel"));

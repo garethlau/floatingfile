@@ -14,7 +14,7 @@ import {
   Icon,
   Tooltip,
   CircularProgress,
-  CircularProgressLabel
+  CircularProgressLabel,
 } from "@chakra-ui/react";
 import { FaTrash, FaCloudDownloadAlt } from "react-icons/fa";
 import { MdOpenInBrowser } from "react-icons/md";
@@ -35,19 +35,19 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
   const isMutating = useIsMutating({ mutationKey: ["space", code] });
   const layout = useLayout();
-  const ref = useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number>(0);
 
   useEffect(() => {
     function calcWidth() {
       const clientRect = ref.current?.getBoundingClientRect();
       const width = clientRect?.width || 0;
-      setContainerWidth(width)
+      setContainerWidth(width);
     }
     // Calculate initial width of parent container
-    calcWidth()
-    window.addEventListener("resize", calcWidth)
-    return () => window.removeEventListener("resize", calcWidth)
+    calcWidth();
+    window.addEventListener("resize", calcWidth);
+    return () => window.removeEventListener("resize", calcWidth);
   }, []);
 
   async function download(
@@ -76,7 +76,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
         Honeybadger.notify(error);
       } finally {
         setIsDownloading(false);
-        setDownloadProgress(0)
+        setDownloadProgress(0);
       }
     }
   }
@@ -102,11 +102,10 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
       align="center"
       bg={
         layout === Layouts.MOBILE
-          ?
-          Colors.LIGHT_SHADE :
-          isSelected(key)
-            ? "#DDE8F8"
-            : "white"
+          ? Colors.LIGHT_SHADE
+          : isSelected(key)
+          ? "#DDE8F8"
+          : "white"
       }
       onClick={() => toggleSelect(key)}
       _hover={{ cursor: "pointer" }}
@@ -156,7 +155,6 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
         ) : (
           <>
             <Tooltip label="Remove file">
-
               <IconButton
                 colorScheme="blue"
                 onClick={remove}
@@ -166,7 +164,6 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
               />
             </Tooltip>
             <Tooltip label="Download file">
-
               <IconButton
                 colorScheme="blue"
                 onClick={download}
@@ -176,7 +173,12 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
                   <Icon as={isMobile ? MdOpenInBrowser : FaCloudDownloadAlt} />
                 }
                 spinner={
-                  <CircularProgress size="36px" value={downloadProgress * 100} color="green" capIsRound />
+                  <CircularProgress
+                    size="36px"
+                    value={downloadProgress * 100}
+                    color="green"
+                    capIsRound
+                  />
                 }
               />
             </Tooltip>
