@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { File, Colors } from "@floatingfile/common";
 import { isMobile } from "react-device-detect";
 import axios from "axios";
@@ -12,26 +12,43 @@ import {
   Box,
   IconButton,
   Icon,
+  Tooltip,
+  CircularProgress,
+  CircularProgressLabel
 } from "@chakra-ui/react";
 import { FaTrash, FaCloudDownloadAlt } from "react-icons/fa";
 import { MdOpenInBrowser } from "react-icons/md";
-import useWindowWidth from "../hooks/useWindowWidth";
 import useRemoveFile from "../mutations/useRemoveFile";
 import { useSelectedFiles } from "../contexts/selectedFiles";
 import { saveBlob } from "../utils";
 import { BASE_API_URL } from "../env";
 import FileIcon from "./FileIcon";
 import Honeybadger from "../lib/honeybadger";
+import useLayout, { Layouts } from "../hooks/useLayout";
 
 const FileListItem: React.FC<{ file: File }> = ({ file }) => {
   const { name, key, ext, size, signedUrl } = file;
   const { code }: { code: string } = useParams();
-  const windowWidth: number = useWindowWidth();
   const { mutateAsync: removeFile } = useRemoveFile(code);
   const { toggleSelect, isSelected } = useSelectedFiles();
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
   const isMutating = useIsMutating({ mutationKey: ["space", code] });
+  const layout = useLayout();
+  const ref = useRef<HTMLDivElement>(null)
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+
+  useEffect(() => {
+    function calcWidth() {
+      const clientRect = ref.current?.getBoundingClientRect();
+      const width = clientRect?.width || 0;
+      setContainerWidth(width)
+    }
+    // Calculate initial width of parent container
+    calcWidth()
+    window.addEventListener("resize", calcWidth)
+    return () => window.removeEventListener("resize", calcWidth)
+  }, []);
 
   async function download(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -59,6 +76,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
         Honeybadger.notify(error);
       } finally {
         setIsDownloading(false);
+        setDownloadProgress(0)
       }
     }
   }
@@ -76,17 +94,19 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
 
   return (
     <Flex
+      ref={ref}
       p={2}
       w="100%"
       shadow="md"
       borderRadius="md"
       align="center"
       bg={
-        windowWidth > 960
-          ? isSelected(key)
+        layout === Layouts.MOBILE
+          ?
+          Colors.LIGHT_SHADE :
+          isSelected(key)
             ? "#DDE8F8"
             : "white"
-          : Colors.LIGHT_SHADE
       }
       onClick={() => toggleSelect(key)}
       _hover={{ cursor: "pointer" }}
@@ -109,7 +129,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
       </Box>
       <Spacer />
       <Box>
-        {windowWidth > 600 ? (
+        {containerWidth > 540 ? (
           <>
             <Button
               colorScheme="blue"
@@ -135,21 +155,31 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
           </>
         ) : (
           <>
-            <IconButton
-              colorScheme="blue"
-              onClick={remove}
-              aria-label="Remove File"
-              icon={<Icon as={FaTrash} />}
-              mr="5px"
-            />
-            <IconButton
-              colorScheme="blue"
-              onClick={download}
-              aria-label="Download File"
-              icon={
-                <Icon as={isMobile ? MdOpenInBrowser : FaCloudDownloadAlt} />
-              }
-            />
+            <Tooltip label="Remove file">
+
+              <IconButton
+                colorScheme="blue"
+                onClick={remove}
+                aria-label="Remove File"
+                icon={<Icon as={FaTrash} />}
+                mr="5px"
+              />
+            </Tooltip>
+            <Tooltip label="Download file">
+
+              <IconButton
+                colorScheme="blue"
+                onClick={download}
+                aria-label="Download file"
+                isLoading={isDownloading}
+                icon={
+                  <Icon as={isMobile ? MdOpenInBrowser : FaCloudDownloadAlt} />
+                }
+                spinner={
+                  <CircularProgress size="36px" value={downloadProgress * 100} color="green" capIsRound />
+                }
+              />
+            </Tooltip>
           </>
         )}
       </Box>
