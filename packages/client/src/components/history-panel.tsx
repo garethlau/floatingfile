@@ -59,14 +59,14 @@ const HistoryPanel: React.FC = () => {
                 h="52px"
                 p="5px"
               >
-                <Flex align="center" justify="center" w="20%">
+                <Flex align="center" justify="center" w="40px">
                   <Icon
                     color={Colors.PRIMARY}
                     path={getIconPath(action)}
                     size="24px"
                   />
                 </Flex>
-                <Box w="80%">
+                <Box w="calc(100% - 40px)">
                   <chakra.p
                     whiteSpace="nowrap"
                     overflow="hidden"
