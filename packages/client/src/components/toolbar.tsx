@@ -1,16 +1,9 @@
 import React, { useCallback, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { BASE_API_URL } from "../env";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import ClearIcon from "@material-ui/icons/Clear";
-import Button from "./Button";
 import { useDropzone } from "react-dropzone";
-import { saveBlob } from "../utils";
-import { useUploadService } from "../contexts/uploadService";
-import { useSelectedFiles } from "../contexts/selectedFiles";
-import useSpace from "../queries/useSpace";
-import useRemoveFiles from "../mutations/useRemoveFiles";
 import { FaTrash, FaCloudDownloadAlt } from 'react-icons/fa'
 import { GrDocumentZip } from 'react-icons/gr'
 import { MdCloudUpload } from 'react-icons/md'
@@ -27,6 +20,13 @@ import {
     CircularProgressLabel,
     useToast,
 } from "@chakra-ui/react";
+import { saveBlob } from "../utils";
+import { BASE_API_URL } from "../env";
+import Button from "./Button";
+import useSpace from "../queries/useSpace";
+import useRemoveFiles from "../mutations/useRemoveFiles";
+import { useUploadService } from "../contexts/uploadService";
+import { useSelectedFiles } from "../contexts/selectedFiles";
 import Honeybadger from "../lib/honeybadger";
 
 
@@ -43,6 +43,7 @@ interface State {
     isDownloading: boolean;
     current: number;
 }
+
 function reducer(state: State, action: any) {
     switch (action.type) {
         case actionTypes.UPDATE_DOWNLOAD_PROGRESS:
@@ -63,6 +64,7 @@ function reducer(state: State, action: any) {
             throw new Error(`Action of type ${action.type} not handled`);
     }
 }
+
 const initialState: State = {
     current: 0,
     total: 0,
@@ -70,7 +72,7 @@ const initialState: State = {
     isDownloading: false,
 };
 
-const AppBar: React.FC = () => {
+const Toolbar: React.FC = () => {
 
     const [state, dispatch] = useReducer(reducer, initialState);
     const { code }: { code: string } = useParams();
@@ -218,7 +220,6 @@ const AppBar: React.FC = () => {
                             </Button>
                         ) : (
                             <Tooltip label="Deselect all files">
-
                                 <IconButton onClick={clearSelectedFiles} aria-label="Deselect All" icon={<ClearIcon />} />
                             </Tooltip>
                         )}
@@ -326,4 +327,4 @@ const AppBar: React.FC = () => {
     );
 }
 
-export default AppBar;
+export default Toolbar;
