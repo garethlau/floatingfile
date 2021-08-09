@@ -23,6 +23,7 @@ export default function useRemoveFiles(code: string) {
           const remainingFiles = prev.files.filter(
             (file) => !toRemove.includes(file.key)
           );
+          // eslint-disable-next-line
           prev.files = remainingFiles;
           return prev;
         });

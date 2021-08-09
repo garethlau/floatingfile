@@ -18,6 +18,7 @@ export default function useRemoveFile(code: string) {
         queryClient.setQueryData<Space | undefined>(queryKey, (prev) => {
           if (!prev) return prev;
           const newFiles = prev.files.filter((file) => file.key !== key);
+          // eslint-disable-next-line
           prev.files = newFiles;
           return prev;
         });
