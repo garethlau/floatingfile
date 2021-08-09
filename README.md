@@ -4,7 +4,7 @@
 
 [floatingfile](https://floatingfile.space) is a file sharing platform that marries the flexibility of file storage applications with the convenience of file transfer applications.
 
-If you'd like to try out the latest features, try out [beta.floatingfile.space](https://beta.floatingfile.space). Spaces created using the beta application are compatible with the production application.
+~~If you'd like to try out the latest features, try out [beta.floatingfile.space](https://beta.floatingfile.space). Spaces created using the beta application are compatible with the production application.~~
 
 ## Motivation
 
@@ -14,12 +14,16 @@ floatingfile was built to improve the process of moving files from university wo
 
 This respository is a monorepo containing packages that are responsible for the web client application, server, and landing page.
 
-Packages:
+**Please note that the iOS application codebase is not included in this monorepo.**
 
-- client
-- server
-- landing
-- types
+| Package       | Description    | Technologies |
+| ------------- |-------------| --- |
+| [client](/packages/client/)      | Frontend for the floatingfile application. Boostrapped with Create React App.   | react, chakra-ui  |
+| [common](/packages/common) | Shared code (interfaces, enums, components, constants). | |
+| [landing](/packages/landing) | floatingfile marketing/landing site.  |  nextjs, react, chakra-ui |
+| [server](/packages/server) | Backend for the floatingfile application.  |  express, mongoose, aws-sdk   |
+
+
 
 ## Maintainers
 
