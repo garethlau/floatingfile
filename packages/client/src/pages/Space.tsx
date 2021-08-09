@@ -13,7 +13,6 @@ import {
   Flex,
   AlertTitle,
   AlertDescription,
-  useBreakpointValue,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { SpaceEvents } from "@floatingfile/common";
@@ -32,6 +31,7 @@ import SpaceNotFound from "../components/SpaceNotFound";
 import FilesPanel from "../components/FilesPanel";
 import NavBar from "../components/nav-bar";
 import FadeIn from "../components/animations/FadeIn";
+import useLayout, { Layouts } from '../hooks/useLayout';
 
 const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
 const ConnectPanel = React.lazy(() => import("../components/connect-panel"));
@@ -147,11 +147,7 @@ interface SpaceProps extends RouteComponentProps<MatchParams> {
 const Space: React.FC<SpaceProps> = (props) => {
   const history = useHistory();
   const { code }: { code: string } = useParams();
-  const layout = useBreakpointValue({
-    base: "small",
-    sm: "medium",
-    lg: "large",
-  });
+  const layout = useLayout();
 
   useDocumentTitle(`floatingfile | ${code}`);
 
@@ -282,9 +278,9 @@ const Space: React.FC<SpaceProps> = (props) => {
   return (
     <>
       <UploadQueue />
-      {layout === "large" ? (
+      {layout === Layouts.DESKTOP ? (
         <LGLayout {...props} clientId={myClientId} />
-      ) : layout === "medium" ? (
+      ) : layout === Layouts.TABLET ? (
         <MDLayout {...props} clientId={myClientId} />
       ) : (
         <SMLayout {...props} clientId={myClientId} />
