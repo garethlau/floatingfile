@@ -6,7 +6,9 @@
     "plugin:import/typescript"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": [
+    "@typescript-eslint"
+  ],
   "env": {
     "browser": true,
     "commonjs": true,
@@ -42,7 +44,13 @@
     "jsx-a11y/media-has-caption": "off",
     "react/jsx-filename-extension": [
       "warn",
-      { "extensions": [".js", ".jsx", ".tsx"] }
+      {
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".tsx"
+        ]
+      }
     ],
     "max-len": [
       "warn",
@@ -50,7 +58,7 @@
         "code": 80,
         "tabWidth": 2,
         "comments": 80,
-        "ignoreComments": false,
+        "ignoreComments": true,
         "ignoreTrailingComments": true,
         "ignoreUrls": true,
         "ignoreStrings": true,
@@ -69,7 +77,12 @@
       }
     ],
     "no-nested-ternary": "off",
-    "import/no-unresolved": ["warn", { "caseSensitive": false }],
+    "import/no-unresolved": [
+      "warn",
+      {
+        "caseSensitive": false
+      }
+    ],
     "prettier/prettier": [
       "warn",
       {
@@ -80,7 +93,12 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
       }
     }
   }
