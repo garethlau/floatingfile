@@ -188,7 +188,12 @@ const FilesPanel: React.FC = () => {
   }
 
   const dropZone = (
-    <chakra.div {...getRootProps()} w="100%" h="100%">
+    <chakra.div
+      {...getRootProps()}
+      flexGrow={1}
+      display="flex"
+      w="100%"
+    >
       <input {...getInputProps()} />
       <Flex align="center" justify="center" w="inherit" h="inherit">
         <Box textAlign="center">
@@ -263,7 +268,7 @@ const FilesPanel: React.FC = () => {
           >
             {state.isDownloading &&
               `${(state.progress * 100).toFixed()}%` +
-                ` (${state.current}/${state.total})`}
+              ` (${state.current}/${state.total})`}
           </chakra.span>
         </Button>
         <Button
@@ -292,7 +297,7 @@ const FilesPanel: React.FC = () => {
       w="100%"
     >
       {windowWidth > 960 && files.length > 0 && appBar}
-      <Box flexGrow={1} overflow="auto">
+      <Box flexGrow={1} overflow="auto" display="flex" flexDirection="column">
         {windowWidth < 960 && files.length > 0 && (
           // Upload button for mobile layout scrolls w/ file list
           <Box maxW="100vw" p={2}>
