@@ -6,9 +6,7 @@
     "plugin:import/typescript"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": ["@typescript-eslint"],
   "env": {
     "browser": true,
     "commonjs": true,
@@ -45,11 +43,7 @@
     "react/jsx-filename-extension": [
       "warn",
       {
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".tsx"
-        ]
+        "extensions": [".js", ".jsx", ".tsx"]
       }
     ],
     "max-len": [
@@ -93,12 +87,7 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".ts",
-          ".tsx"
-        ]
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
   }
