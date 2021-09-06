@@ -82,7 +82,6 @@ class MyDocument extends Document {
           <meta name="theme-color" content="#ffffff" />
           <meta name="description" content="floatingfile" />
           <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width,initial-scale=1" />
           <meta name="theme-color" content="#000000" />
         </Head>
         <body>
