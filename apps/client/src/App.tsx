@@ -5,7 +5,7 @@ import { Router, Switch, Route } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { SnackbarProvider } from "notistack";
 import { Breakpoints } from "./constants";
-import { Colors } from "@floatingfile/common";
+import { Colors, theme } from "@floatingfile/common";
 import {
   USERNAME_STORAGE_KEY,
   BASE_API_URL,
@@ -17,7 +17,6 @@ import axios from "axios";
 import ReactGA from "react-ga";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
-import theme from "./theme";
 import { SelectedFilesProvider } from "./contexts/selectedFiles";
 import { UploadServiceProvider } from "./contexts/uploadService";
 import { ChakraProvider } from "@chakra-ui/react";

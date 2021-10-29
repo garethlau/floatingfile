@@ -1,25 +1,22 @@
-import { createTheme } from "@material-ui/core/styles";
+import { extendTheme } from "@chakra-ui/react";
 
-export const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#435ee9",
-    },
-    secondary: {
-      main: "#19857b",
-    },
-    error: {
-      main: "#f44336",
-    },
-    success: {
-      main: "#30ba8e",
-    },
-    background: {
-      default: "#f1f3f9",
+export const theme = extendTheme({
+  colors: {
+    blue: {
+      "50": "#EAEDFA",
+      "100": "#C5CDF1",
+      "200": "#A0ADE8",
+      "300": "#7C8DDF",
+      "400": "#576DD6",
+      "500": "#324DCD",
+      "600": "#283EA4",
+      "700": "#1E2E7B",
+      "800": "#141F52",
+      "900": "#0A0F29",
     },
   },
-  typography: {
-    fontFamily: "DM Sans",
-    fontSize: 16,
+  fonts: {
+    body: "DM Sans",
+    heading: "DM Sans",
   },
 });

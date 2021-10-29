@@ -3,7 +3,7 @@ import React from "react";
 import Head from "next/head";
 import { DefaultSeo } from "next-seo";
 import { ChakraProvider } from "@chakra-ui/react";
-import theme from "src/theme";
+import { theme } from "@floatingfile/common";
 
 // This default export is required in a new `pages/_app.js` file.
 const App: React.FC<{ Component: any; pageProps: any }> = ({
@@ -22,44 +22,38 @@ const App: React.FC<{ Component: any; pageProps: any }> = ({
             description: "Simplify your file transfer workflow.",
             images: [
               {
-                url:
-                  "https://floatingfile.space/banners/banner1-white-600x600.jpg",
+                url: "https://floatingfile.space/banners/banner1-white-600x600.jpg",
                 width: 600,
                 height: 600,
                 alt: "Welcome to floatingfile",
               },
               {
-                url:
-                  "https://floatingfile.space/banners/banner1-blue-600x600.jpg",
+                url: "https://floatingfile.space/banners/banner1-blue-600x600.jpg",
                 width: 600,
                 height: 600,
                 alt: "Welcome to floatingfile",
               },
 
               {
-                url:
-                  "https://floatingfile.space/banners/banner2-white-1200x600.jpg",
+                url: "https://floatingfile.space/banners/banner2-white-1200x600.jpg",
                 width: 1200,
                 height: 600,
                 alt: "Welcome to floatingfile",
               },
               {
-                url:
-                  "https://floatingfile.space/banners/banner2-blue-1200x600.jpg",
+                url: "https://floatingfile.space/banners/banner2-blue-1200x600.jpg",
                 width: 1200,
                 height: 600,
                 alt: "Welcome to floatingfile",
               },
               {
-                url:
-                  "https://floatingfile.space/banners/banner3-white-1200x600.jpg",
+                url: "https://floatingfile.space/banners/banner3-white-1200x600.jpg",
                 width: 1200,
                 height: 600,
                 alt: "Welcome to floatingfile",
               },
               {
-                url:
-                  "https://floatingfile.space/banners/banner3-blue-1200x600.jpg",
+                url: "https://floatingfile.space/banners/banner3-blue-1200x600.jpg",
                 width: 1200,
                 height: 600,
                 alt: "Welcome to floatingfile",
