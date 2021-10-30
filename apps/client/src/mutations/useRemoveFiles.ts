@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "react-query";
-import { BASE_API_URL } from "../env";
 import axios from "axios";
 import { Space } from "@floatingfile/common";
 
@@ -10,9 +9,7 @@ export default function useRemoveFiles(code: string) {
   return useMutation(
     (keysToRemove: string[]) =>
       axios.delete(
-        `${BASE_API_URL}/api/v5/spaces/${code}/files?toRemove=${JSON.stringify(
-          keysToRemove
-        )}`
+        `/api/v5/spaces/${code}/files?toRemove=${JSON.stringify(keysToRemove)}`
       ),
     {
       onMutate: async (toRemove: string[]) => {

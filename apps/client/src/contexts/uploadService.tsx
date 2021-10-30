@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import axios, { CancelToken, CancelTokenSource } from "axios";
 import Honeybadger from "../lib/honeybadger";
-import { BASE_API_URL } from "../env";
 import { v4 as uuidv4 } from "uuid";
 
 interface Context {
@@ -71,7 +70,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
             // Generate a signed URL to upload file directly from client
             // The file meta data is provided to ensure that the space has capacity to upload the file
             axios
-              .post(`${BASE_API_URL}/api/v5/signed-urls`, {
+              .post(`/api/v5/signed-urls`, {
                 file,
                 code,
               })
@@ -101,10 +100,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
                     };
                     // Adds a file object to the file array of the space
                     axios
-                      .patch(
-                        `${BASE_API_URL}/api/v5/spaces/${code}/files`,
-                        data
-                      )
+                      .patch(`/api/v5/spaces/${code}/files`, data)
                       .then(resolve)
                       .catch(reject);
                   })

@@ -21,7 +21,6 @@ import { MdOpenInBrowser } from "react-icons/md";
 import useRemoveFile from "../mutations/useRemoveFile";
 import { useSelectedFiles } from "../contexts/selectedFiles";
 import { saveBlob } from "../utils";
-import { BASE_API_URL } from "../env";
 import FileIcon from "./FileIcon";
 import Honeybadger from "../lib/honeybadger";
 import useLayout, { Layouts } from "../hooks/useLayout";
@@ -68,7 +67,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
         });
         const { data } = response;
         await saveBlob(data, name);
-        await axios.patch(`${BASE_API_URL}/api/v5/spaces/${code}/history`, {
+        await axios.patch(`/api/v5/spaces/${code}/history`, {
           action: "DOWNLOAD_FILE",
           payload: key,
         });

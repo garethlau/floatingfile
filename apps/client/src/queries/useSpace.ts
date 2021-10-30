@@ -1,4 +1,3 @@
-import { BASE_API_URL } from "../env";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { Space } from "@floatingfile/common";
@@ -8,7 +7,7 @@ export default function useSpace(code: string) {
     ["space", code],
     () => {
       return axios
-        .get(`${BASE_API_URL}/api/v5/spaces/${code}`)
+        .get(`/api/v5/spaces/${code}`)
         .then((response) => response.data.space);
     },
     {

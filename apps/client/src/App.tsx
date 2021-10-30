@@ -8,7 +8,6 @@ import { Breakpoints } from "./constants";
 import { Colors, theme } from "@floatingfile/common";
 import {
   USERNAME_STORAGE_KEY,
-  BASE_API_URL,
   ENVIRONMENT,
   LAST_VISIT_STORAGE_KEY,
 } from "./env";
@@ -76,7 +75,7 @@ const App: React.FC<{}> = () => {
       new Date(lastVisit) < new Date(threeHoursAgo)
     ) {
       // Generate new username
-      axios.get(`${BASE_API_URL}/api/v5/nickname`).then((res) => {
+      axios.get("/api/v5/nickname").then((res) => {
         localStorage.setItem(USERNAME_STORAGE_KEY, res.data.username);
         axios.defaults.headers.common.username = res.data.username;
         setLoading(false);

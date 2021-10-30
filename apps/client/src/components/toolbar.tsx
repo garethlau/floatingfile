@@ -21,7 +21,6 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { saveBlob } from "../utils";
-import { BASE_API_URL } from "../env";
 import Button from "./Button";
 import useSpace from "../queries/useSpace";
 import useRemoveFiles from "../mutations/useRemoveFiles";
@@ -128,7 +127,7 @@ const Toolbar: React.FC = () => {
       });
       const { data } = response;
       await saveBlob(data, file.name);
-      await axios.patch(`${BASE_API_URL}/api/v5/spaces/${code}/history`, {
+      await axios.patch(`/api/v5/spaces/${code}/history`, {
         action: "DOWNLOAD_FILE",
         payload: file.key,
       });
@@ -161,9 +160,7 @@ const Toolbar: React.FC = () => {
     });
     try {
       const response = await axios.get(
-        `${BASE_API_URL}/api/v5/spaces/${code}/files/zip?keys=${JSON.stringify(
-          selected
-        )}`,
+        `/api/v5/spaces/${code}/files/zip?keys=${JSON.stringify(selected)}`,
         {
           responseType: "blob",
         }
@@ -179,7 +176,7 @@ const Toolbar: React.FC = () => {
         status: "success",
       });
       await axios.delete(
-        `${BASE_API_URL}/api/v5/spaces/${code}/files/zip?folder=${folderName}`
+        `/api/v5/spaces/${code}/files/zip?folder=${folderName}`
       );
     } catch (err) {
       toast({

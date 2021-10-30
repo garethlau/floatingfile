@@ -12,7 +12,7 @@ import {
   useToast,
   Link,
 } from "@chakra-ui/react";
-import { BASE_API_URL, VERSION } from "../env";
+import { VERSION } from "../env";
 import Button from "../components/Button";
 import Seperator from "../components/Seperator";
 import useDocumentTitle from "../hooks/useDocumentTitle";
@@ -77,7 +77,7 @@ const Landing: React.FC = () => {
     }
 
     try {
-      await axios.get(`${BASE_API_URL}/api/v5/spaces/${code}`);
+      await axios.get(`/api/v5/spaces/${code}`);
       toast({
         title: "Joining space.",
         status: "success",

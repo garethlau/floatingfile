@@ -16,11 +16,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { SpaceEvents } from "@floatingfile/common";
-import {
-  BASE_API_URL,
-  USERNAME_STORAGE_KEY,
-  LAST_VISIT_STORAGE_KEY,
-} from "../env";
+import { USERNAME_STORAGE_KEY, LAST_VISIT_STORAGE_KEY } from "../env";
 import Button from "../components/Button";
 import IntroToast from "../components/intro-toast";
 import UploadQueue from "../components/upload-queue";
@@ -213,7 +209,7 @@ const Space: React.FC<SpaceProps> = (props) => {
   useEffect(() => {
     const username = localStorage.getItem(USERNAME_STORAGE_KEY);
     const eventSource = new EventSource(
-      `${BASE_API_URL}/api/v5/subscriptions/${code}?username=${username}`
+      `/api/v5/subscriptions/${code}?username=${username}`
     );
 
     eventSource.onmessage = (event) => {
@@ -253,7 +249,7 @@ const Space: React.FC<SpaceProps> = (props) => {
   useEffect(() => {
     if (code) {
       axios
-        .get(`${BASE_API_URL}/api/v5/spaces/${code}`)
+        .get(`/api/v5/spaces/${code}`)
         .then(() => {
           setExists(true);
         })
