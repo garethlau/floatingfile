@@ -1,5 +1,4 @@
 import express from "express";
-import cors, { CorsOptions } from "cors";
 import bodyParser from "body-parser";
 import routes from "./routes";
 import Honeybadger from "./utils/honeybadger";
@@ -13,27 +12,7 @@ import zip from "express-easy-zip";
 
 const app = express();
 
-const whitelist = [
-  "http://localhost:3000",
-  "https://app.floatingfile.space",
-  "https://staging.floatingfile.space",
-  "https://beta.floatingfile.space",
-];
-
-const corsOptions: CorsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error(`Origin '${origin}' not allowed by cors`));
-    }
-  },
-  credentials: true,
-  exposedHeaders: ["Content-Disposition"],
-};
-
 app.use(Honeybadger.requestHandler);
-app.use(cors(corsOptions));
 
 app.use(
   bodyParser.urlencoded({
