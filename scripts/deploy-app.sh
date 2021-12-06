@@ -22,10 +22,10 @@ echo ">>> building common"
 yarn --cwd ../packages/common build
 
 echo ">>> building frontend"
-yarn --cwd ../packages/client build:$environment
+yarn --cwd ../apps/client build:$environment
 
 echo ">>> building backend"
-yarn --cwd ../packages/server build
+yarn --cwd ../apps/server build
 
 echo ">>> restarting application"
 if [ "$username" = "staging" ];
