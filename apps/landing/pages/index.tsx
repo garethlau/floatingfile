@@ -181,15 +181,15 @@ const Home: React.FC = () => {
           <Text fontSize={["3rem", "4rem"]}>
             To date, floatingfile has helped{" "}
             <chakra.span color="blue.500" fontWeight="bold">
-              500+
+              1000+
             </chakra.span>{" "}
             people transfer{" "}
             <chakra.span color="blue.500" fontWeight="bold">
-              9000+
+              13000+
             </chakra.span>{" "}
             files in{" "}
             <chakra.span color="blue.500" fontWeight="bold">
-              14
+              22
             </chakra.span>{" "}
             months.
           </Text>
