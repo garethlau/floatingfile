@@ -19,13 +19,13 @@ echo ">>> increase memory for build"
 export NODE_OPTIONS="--max-old-space-size=5120" # increase to 5gb
 
 echo ">>> building common"
-yarn --cwd ../packages/common build
+yarn --cwd packages/common build
 
 echo ">>> building frontend"
-yarn --cwd ../apps/client build:$environment
+yarn --cwd apps/client build:$environment
 
 echo ">>> building backend"
-yarn --cwd ../apps/server build
+yarn --cwd apps/server build
 
 echo ">>> restarting application"
 if [ "$username" = "staging" ];
