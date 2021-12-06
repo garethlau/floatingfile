@@ -6,10 +6,11 @@ import {
   sendToClient,
 } from "../../services/subscriptionManager";
 import { SpaceEvents } from "@floatingfile/common";
+import cors from "cors";
 
 const router = express.Router();
 
-router.get("/:code", async (req: Request, res: Response, done) => {
+router.get("/:code", cors(), async (req: Request, res: Response, done) => {
   try {
     const { code } = req.params;
     let username = "";

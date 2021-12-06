@@ -16,7 +16,11 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { SpaceEvents } from "@floatingfile/common";
-import { USERNAME_STORAGE_KEY, LAST_VISIT_STORAGE_KEY } from "../env";
+import {
+  USERNAME_STORAGE_KEY,
+  LAST_VISIT_STORAGE_KEY,
+  BASE_API_URL,
+} from "../env";
 import Button from "../components/Button";
 import IntroToast from "../components/intro-toast";
 import UploadQueue from "../components/upload-queue";
@@ -209,7 +213,7 @@ const Space: React.FC<SpaceProps> = (props) => {
   useEffect(() => {
     const username = localStorage.getItem(USERNAME_STORAGE_KEY);
     const eventSource = new EventSource(
-      `/api/v5/subscriptions/${code}?username=${username}`
+      `${BASE_API_URL}/api/v5/subscriptions/${code}?username=${username}`
     );
 
     eventSource.onmessage = (event) => {
