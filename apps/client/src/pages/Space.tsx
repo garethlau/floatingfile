@@ -20,6 +20,7 @@ import {
   USERNAME_STORAGE_KEY,
   LAST_VISIT_STORAGE_KEY,
   BASE_API_URL,
+  ENVIRONMENT,
 } from "../env";
 import Button from "../components/Button";
 import IntroToast from "../components/intro-toast";
@@ -213,7 +214,8 @@ const Space: React.FC<SpaceProps> = (props) => {
   useEffect(() => {
     const username = localStorage.getItem(USERNAME_STORAGE_KEY);
     const eventSource = new EventSource(
-      `${BASE_API_URL}/api/v5/subscriptions/${code}?username=${username}`
+      (ENVIRONMENT === "development" ? BASE_API_URL : "") +
+        `/api/v5/subscriptions/${code}?username=${username}`
     );
 
     eventSource.onmessage = (event) => {
