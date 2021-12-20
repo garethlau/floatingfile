@@ -18,7 +18,8 @@
     "build:server": "yarn --cwd apps/server build",
     "build:client": "yarn --cwd apps/client build",
     "deploy:app": "./scripts/deploy-app.sh",
-    "deploy:landing": "./scripts/deploy-landing-site.sh"
+    "deploy:landing": "./scripts/deploy-landing-site.sh",
+    "clean": "./scripts/clean.sh"
   },
   "dependencies": {
     "@octokit/core": "^3.3.1"
