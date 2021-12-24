@@ -13,7 +13,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-const DownloadPage: React.FC = () => {
+const IosPage: React.FC = () => {
   return (
     <>
       <NextSeo
@@ -31,7 +31,7 @@ const DownloadPage: React.FC = () => {
       <Container maxW="4xl" mb="240px">
         <Stack spacing={4} align="center">
           <Text>
-            Download floatingfile for a native, feature-rich experience powered
+            Download the floatingfile app for a native, feature-rich experience powered
             by the latest mobile technologies.
           </Text>
           <Image
@@ -49,4 +49,4 @@ const DownloadPage: React.FC = () => {
   );
 };
 
-export default DownloadPage;
+export default IosPage;
