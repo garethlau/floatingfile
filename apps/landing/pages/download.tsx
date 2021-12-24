@@ -4,14 +4,36 @@ import PageTitle from "components/page-title";
 import NavigationBar from "components/navigation-bar";
 import Footer from "components/footer";
 import InstallAppButton from "components/install-app-button";
-
 import {
   Container,
   Image,
-  useBreakpointValue,
-  Stack,
   Text,
+  Box,
+  Grid,
+  Flex,
+  GridItem,
+  Heading,
+  Button,
+  useColorModeValue,
 } from "@chakra-ui/react";
+
+const Card: React.FC = ({ children }) => (
+  <Box
+    bg={useColorModeValue("gray.200", "gray.600")}
+    textAlign="center"
+    borderRadius="md"
+    p={4}
+    h="500px"
+  >
+    {children}
+  </Box>
+);
+
+const CardHeader: React.FC = ({ children }) => (
+  <Heading as="h2" mb={4}>
+    {children}
+  </Heading>
+);
 
 const IosPage: React.FC = () => {
   return (
@@ -26,22 +48,88 @@ const IosPage: React.FC = () => {
         }}
       />
       <NavigationBar />
-      <PageTitle>Get floatingfile for your iOS device</PageTitle>
+      <PageTitle>Download floatingfile</PageTitle>
 
-      <Container maxW="4xl" mb="240px">
-        <Stack spacing={4} align="center">
-          <Text>
-            Download the floatingfile app for a native, feature-rich experience
-            powered by the latest mobile technologies.
-          </Text>
-          <Image
-            src={useBreakpointValue({
-              base: "/images/space-ui-ios.png",
-              md: "/images/ios-app.png",
-            })}
-          />
-          <InstallAppButton store="apple" />
-        </Stack>
+      <Container maxW="container.lg" mb={12}>
+        <Grid
+          gap={4}
+          templateColumns={{ base: "1fr", md: "1fr 1fr" }}
+          templateRows={{
+            base: "repeat(4, auto)",
+            md: "1fr 1fr",
+          }}
+        >
+          <GridItem>
+            <Card>
+              <Flex
+                justify="space-between"
+                direction="column"
+                align="center"
+                h="100%"
+              >
+                <CardHeader>iOS</CardHeader>
+                <Text>
+                  Download the floatingfile app for a native, feature-rich
+                  experience powered by the latest mobile technologies.
+                </Text>
+                <Image
+                  maxH="300px"
+                  borderRadius="md"
+                  src="/images/ios-app.png"
+                />
+                <InstallAppButton store="apple" />
+              </Flex>
+            </Card>
+          </GridItem>
+          <GridItem>
+            <Card>
+              <Flex
+                justify="space-between"
+                direction="column"
+                align="center"
+                h="100%"
+              >
+                <CardHeader>Android</CardHeader>
+                <Text opacity="0.5" size="sm">
+                  Coming soon, hopefully...
+                </Text>
+                <InstallAppButton store="google" disabled />
+              </Flex>
+            </Card>
+          </GridItem>
+          <GridItem>
+            <Card>
+              <Flex
+                justify="space-between"
+                direction="column"
+                align="center"
+                h="100%"
+              >
+                <CardHeader>CLI</CardHeader>
+                <Text>
+                  Interact with floatingfile directly from the command line.
+                  Collaborate with others without ever leaving the terminal.
+                </Text>
+                <Image
+                  maxH="300px"
+                  borderRadius="md"
+                  src="/images/cli-preview.png"
+                />
+                <Button
+                  bg="black"
+                  color="white"
+                  _hover={{}}
+                  _active={{}}
+                  size="lg"
+                  as="a"
+                  href="https://github.com/garethlau/floatingfile-cli"
+                >
+                  View on Github
+                </Button>
+              </Flex>
+            </Card>
+          </GridItem>
+        </Grid>
       </Container>
 
       <Footer />
