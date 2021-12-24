@@ -1,4 +1,6 @@
 import "@fontsource/dm-sans/400.css";
+import "@fontsource/dm-sans/500.css"
+import "@fontsource/dm-sans/700.css"
 import React from "react";
 import Head from "next/head";
 import { DefaultSeo } from "next-seo";
