@@ -328,7 +328,7 @@ router.patch("/:code/files", async (req, res, done) => {
     space.files = [...space.files, newFile];
 
     // Increase used space
-    space.size = space.size + size;
+    space.size = space.size + parseInt(size, 10);
 
     // Record this upload in the history
     const newHistoryRecord: HistoryRecord = {
