@@ -56,7 +56,7 @@ const FaqPage: React.FC = () => {
       />
       <NavigationBar />
 
-      <PageTitle>Fequently Asked Questions</PageTitle>
+      <PageTitle>Frequently Asked Questions</PageTitle>
 
       <Box mb="240px">
         <Container maxW="4xl">
