@@ -5,7 +5,9 @@ ecosystem.config.js
 /files
 /tmp
 *.ecosystem.config.js
-.env
 /out
 /build
 /dist
+
+.env
+.env.prod
