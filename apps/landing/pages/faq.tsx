@@ -9,6 +9,8 @@ import {
   AccordionIcon,
   Box,
   Container,
+  Text,
+  Heading,
 } from "@chakra-ui/react";
 import PageTitle from "components/page-title";
 import NavigationBar from "components/navigation-bar";
@@ -69,12 +71,16 @@ const FaqPage: React.FC = () => {
                 <h2>
                   <AccordionButton>
                     <Box flex="1" textAlign="left">
-                      {q}
+                      <Heading size="sm" as="h2">
+                        {q}
+                      </Heading>
                     </Box>
                     <AccordionIcon />
                   </AccordionButton>
                 </h2>
-                <AccordionPanel pb={4}>{a}</AccordionPanel>
+                <AccordionPanel pb={4}>
+                  <Text>{a}</Text>
+                </AccordionPanel>
               </AccordionItem>
             ))}
           </Accordion>
