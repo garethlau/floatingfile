@@ -119,7 +119,7 @@ const Footer: React.FC = () => (
       justify={{ md: "space-between" }}
       align={{ md: "center" }}
     >
-      <Text>© 2021 floatingfile. All rights reserved</Text>
+      <Text>© 2022 floatingfile. All rights reserved</Text>
     </Container>
   </Box>
 );
