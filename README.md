@@ -16,14 +16,56 @@ This respository is a monorepo containing packages that are responsible for the 
 
 **Please note that the iOS application codebase is not included in this monorepo.**
 
-| Package       | Description    | Technologies |
-| ------------- |-------------| --- |
-| [client](/packages/client/)      | Frontend for the floatingfile application. Boostrapped with Create React App.   | react, chakra-ui  |
-| [common](/packages/common) | Shared code (interfaces, enums, components, constants). | |
-| [landing](/packages/landing) | floatingfile marketing/landing site.  |  nextjs, react, chakra-ui |
-| [server](/packages/server) | Backend for the floatingfile application.  |  express, mongoose, aws-sdk   |
+| Package                      | Description                                                                   | Technologies               |
+| ---------------------------- | ----------------------------------------------------------------------------- | -------------------------- |
+| [client](/packages/client/)  | Frontend for the floatingfile application. Boostrapped with Create React App. | react, chakra-ui           |
+| [common](/packages/common)   | Shared code (interfaces, enums, components, constants).                       |                            |
+| [landing](/packages/landing) | floatingfile marketing/landing site.                                          | nextjs, react, chakra-ui   |
+| [server](/packages/server)   | Backend for the floatingfile application.                                     | express, mongoose, aws-sdk |
 
+## Development
 
+Prequisites:
+
+- Yarn
+- Docker
+
+1. Clone the repository
+
+```
+$ git clone https://github.com/garethlau/floatingfile.git
+$ cd floatingfile
+```
+
+2. Install dependencies
+
+```
+$ yarn install
+```
+
+3. Create `/apps/server/.env` file
+
+```ini
+PORT=5000
+NODE_ENV=development
+USE_LOCAL_DB=Yes
+USE_LOCAL_S3=Yes
+S3_BUCKET_NAME=floatingfile-dev
+```
+
+See [.env.example](/apps/server/.env.example) for more configuration values.
+
+4. Start the mongodb instance and the minio instance
+
+```
+$ yarn start:storage
+```
+
+5. Start the application (in another terminal)
+
+```
+$ yarn dev
+```
 
 ## Maintainers
 
