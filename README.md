@@ -14,14 +14,16 @@ floatingfile was built to improve the process of moving files from university wo
 
 This respository is a monorepo containing packages that are responsible for the web client application, server, and landing page.
 
-**Please note that the iOS application codebase is not included in this monorepo.**
+**Please note that the codebases for the iOS application and CLI are not included in this monorepo.**
 
-| Package                      | Description                                                                   | Technologies               |
-| ---------------------------- | ----------------------------------------------------------------------------- | -------------------------- |
-| [client](/packages/client/)  | Frontend for the floatingfile application. Boostrapped with Create React App. | react, chakra-ui           |
-| [common](/packages/common)   | Shared code (interfaces, enums, components, constants).                       |                            |
-| [landing](/packages/landing) | floatingfile marketing/landing site.                                          | nextjs, react, chakra-ui   |
-| [server](/packages/server)   | Backend for the floatingfile application.                                     | express, mongoose, aws-sdk |
+- [floatingfile CLI Github Repository](https://github.com/garethlau/floatingfile-cli)
+
+| Module                     | Description                                                                   | Technologies               |
+| -------------------------- | ----------------------------------------------------------------------------- | -------------------------- |
+| [client](/apps/client/)    | Frontend for the floatingfile application. Boostrapped with Create React App. | react, chakra-ui           |
+| [landing](/apps/landing)   | floatingfile marketing/landing site.                                          | nextjs, react, chakra-ui   |
+| [server](/apps/server)     | Backend for the floatingfile application.                                     | express, mongoose, aws-sdk |
+| [common](/packages/common) | Shared code (interfaces, enums, components, constants).                       |                            |
 
 ## Development
 
@@ -69,5 +71,5 @@ $ yarn dev
 
 ## Maintainers
 
-- [Gareth Lau](http://garethlau.me/) maintains floatingfile's servers, APIs, and web applications
-- [Alan Yan](https://alanyan.ca) maintains the floatingfile iOS application
+- [Gareth Lau](http://garethlau.me/) maintains floatingfile's servers, APIs, web applications, and CLI.
+- [Alan Yan](https://alanyan.ca) maintains the floatingfile iOS application.
