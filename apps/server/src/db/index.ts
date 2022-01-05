@@ -8,7 +8,7 @@ export default function init(): Promise<null> {
       {
         useUnifiedTopology: true,
         useNewUrlParser: true,
-        useCreateIndex: true
+        useCreateIndex: true,
       },
       (error) => {
         if (error) {
