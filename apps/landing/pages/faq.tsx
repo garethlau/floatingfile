@@ -79,7 +79,7 @@ const FaqPage: React.FC = () => {
                   </AccordionButton>
                 </h2>
                 <AccordionPanel pb={4}>
-                  <Text>{a}</Text>
+                  <Text dangerouslySetInnerHTML={{ __html: a }} />
                 </AccordionPanel>
               </AccordionItem>
             ))}
