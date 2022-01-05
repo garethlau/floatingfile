@@ -79,7 +79,7 @@ const NavigationBar: React.FC = () => {
   return (
     <chakra.header
       ref={ref}
-      shadow={y > height ? "md" : undefined}
+      shadow={y > height ? "xl" : undefined}
       transition="box-shadow 0.2s, background-color 0.2s"
       pos="sticky"
       top="0"
@@ -88,7 +88,7 @@ const NavigationBar: React.FC = () => {
       right="0"
       width="full"
     >
-      <Box boxShadow="lg" bg="blue.500" px={4}>
+      <Box bg="blue.500" px={4}>
         <Container maxW="6xl">
           <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
             <HStack spacing={8} alignItems={"center"}>
