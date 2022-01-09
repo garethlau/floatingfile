@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Colors, Logo } from "@floatingfile/common";
-import axios from "axios";
+import { Colors, Logo } from "@floatingfile/ui";
 import { useHistory } from "react-router-dom";
 import {
   Flex,
@@ -12,19 +11,17 @@ import {
   useToast,
   Link,
 } from "@chakra-ui/react";
-import { VERSION } from "../env";
+import { USERNAME_STORAGE_KEY, VERSION } from "../env";
 import Button from "../components/Button";
 import Seperator from "../components/Seperator";
 import useDocumentTitle from "../hooks/useDocumentTitle";
-import useCreateSpace from "../mutations/useCreateSpace";
 import useRandomElement from "../hooks/useRandomElement";
+import rpc from "../lib/rpc";
 
 const Landing: React.FC = () => {
   useDocumentTitle("floatingfile");
   const history = useHistory();
   const [code, setCode] = useState("");
-  const { mutateAsync: createSpace, isLoading: creatingSpace } =
-    useCreateSpace();
 
   const phrase = useRandomElement([
     "Simplify your file transfer workflow.",
@@ -77,7 +74,16 @@ const Landing: React.FC = () => {
     }
 
     try {
-      await axios.get(`/api/v5/spaces/${code}`);
+      const space = await rpc.invoke("findSpace", { code });
+      if (!space) {
+        toast({
+          title: "Space does not exist.",
+          status: "error",
+          isClosable: true,
+          position: "top",
+        });
+        return;
+      }
       toast({
         title: "Joining space.",
         status: "success",
@@ -88,28 +94,23 @@ const Landing: React.FC = () => {
         toast.closeAll();
         history.push(`/s/${code}`);
       }, 1500);
-    } catch (err) {
-      if (err.response.status === 404) {
-        toast({
-          title: "Space does not exist.",
-          status: "error",
-          isClosable: true,
-          position: "top",
-        });
-      } else {
-        toast({
-          title: "An unexpected error occurred.",
-          status: "error",
-          isClosable: true,
-          position: "top",
-        });
-      }
+    } catch {
+      toast({
+        title: "An unexpected error occurred.",
+        status: "error",
+        isClosable: true,
+        position: "top",
+      });
     }
   }
 
   async function create() {
     try {
-      const space = await createSpace();
+      const space = await rpc.invoke("createSpace", {
+        username: localStorage.getItem(USERNAME_STORAGE_KEY)!,
+      });
+
+      // const space = await createSpace();
       if (space && space.code) {
         history.push(`/s/${space.code}`);
       }
@@ -197,7 +198,7 @@ const Landing: React.FC = () => {
 
           <Button
             onClick={create}
-            isLoading={creatingSpace}
+            isLoading={false} // FIXME:
             id="create-space-btn"
             isFullWidth
             colorScheme="blue"

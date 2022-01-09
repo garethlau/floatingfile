@@ -17,7 +17,7 @@ export function saveBlob(data: any, filename: string): Promise<string> {
     const os = getMobileOperatingSystem();
     if (os === "iOS") {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = () => {
         window.location.href = reader.result?.toString() || "";
       };
 

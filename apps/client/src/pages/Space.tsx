@@ -14,8 +14,7 @@ import {
   AlertTitle,
   AlertDescription,
 } from "@chakra-ui/react";
-import axios from "axios";
-import { SpaceEvents } from "@floatingfile/common";
+import { NotificationTypes } from "@floatingfile/types";
 import {
   USERNAME_STORAGE_KEY,
   LAST_VISIT_STORAGE_KEY,
@@ -23,21 +22,22 @@ import {
   ENVIRONMENT,
 } from "../env";
 import Button from "../components/Button";
-import IntroToast from "../components/intro-toast";
-import UploadQueue from "../components/upload-queue";
-import useSpace from "../queries/useSpace";
+import IntroToast from "../components/IntroToast";
+import UploadQueue from "../components/UploadQueue";
+import useSpace from "../hooks/useSpace";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import FullPageLoader from "../components/FullPageLoader";
 import SpaceNotFound from "../components/SpaceNotFound";
 import FilesPanel from "../components/FilesPanel";
-import NavBar from "../components/nav-bar";
+import NavBar from "../components/NavBar";
 import FadeIn from "../components/animations/FadeIn";
 import useLayout, { Layouts } from "../hooks/useLayout";
+import rpcClient from "../lib/rpc";
 
 const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
-const ConnectPanel = React.lazy(() => import("../components/connect-panel"));
-const HistoryPanel = React.lazy(() => import("../components/history-panel"));
-const UsersPanel = React.lazy(() => import("../components/users-panel"));
+const ConnectPanel = React.lazy(() => import("../components/ConnectPanel"));
+const HistoryPanel = React.lazy(() => import("../components/HistoryPanel"));
+const UsersPanel = React.lazy(() => import("../components/UsersPanel"));
 const panelFallback = null;
 
 const SMLayout: React.FC<SpaceProps> = ({ match, clientId }) => (
@@ -191,7 +191,7 @@ const Space: React.FC<SpaceProps> = (props) => {
     // Show intro modal
     const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);
-    const lastVisit = localStorage.getItem(LAST_VISIT_STORAGE_KEY || "");
+    const lastVisit = localStorage.getItem(LAST_VISIT_STORAGE_KEY);
     if (!lastVisit || new Date(lastVisit) < new Date(weekAgo)) {
       introToastRef.current = toast({
         position: "top-right",
@@ -213,25 +213,24 @@ const Space: React.FC<SpaceProps> = (props) => {
 
   useEffect(() => {
     const username = localStorage.getItem(USERNAME_STORAGE_KEY);
-    const eventSource = new EventSource(
-      (ENVIRONMENT === "development" ? BASE_API_URL : "") +
-        `/api/v5/subscriptions/${code}?username=${username}`
-    );
+    const url = `${
+      ENVIRONMENT === "development" ? BASE_API_URL : ""
+    }/api/notifications/${code}?username=${username}`;
+    const eventSource = new EventSource(url);
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const { type, clientId } = data;
       switch (type) {
-        case SpaceEvents.CONNECTION_ESTABLISHED:
+        case NotificationTypes.CONNECTION_ESTABLISHED:
           setMyClientId(clientId);
           refetchSpace();
           break;
-        case SpaceEvents.FILES_UPDATED:
-        case SpaceEvents.HISTORY_UPDATED:
-        case SpaceEvents.USERS_UPDATED:
+
+        case NotificationTypes.SPACE_UPDATED:
           refetchSpace();
           break;
-        case SpaceEvents.SPACE_DELETED:
+        case NotificationTypes.SPACE_DESTROYED:
           toast({
             title: "This space has been destroyed.",
             description: "Redirecting you to the home page.",
@@ -253,22 +252,14 @@ const Space: React.FC<SpaceProps> = (props) => {
   }, [code]);
 
   useEffect(() => {
-    if (code) {
-      axios
-        .get(`/api/v5/spaces/${code}`)
-        .then(() => {
-          setExists(true);
-        })
-        .catch((err) => {
-          if (err.response?.status === 404) {
-            // Space not found
-            setExists(false);
-          }
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
+    (async () => {
+      if (await rpcClient.invoke("findSpace", { code })) {
+        setExists(true);
+      } else {
+        setExists(false);
+      }
+      setIsLoading(false);
+    })();
   }, []);
 
   if (isLoading) {

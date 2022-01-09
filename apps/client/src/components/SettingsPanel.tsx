@@ -1,8 +1,8 @@
 import React from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { Colors } from "@floatingfile/common";
+import { Colors } from "@floatingfile/ui";
 import { useParams } from "react-router-dom";
-import useSpace from "../queries/useSpace";
+import useSpace from "../hooks/useSpace";
 import { formatFileSize } from "../utils";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Button from "./Button";
@@ -64,8 +64,10 @@ interface SettingsPanelProps {
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ collapsed }) => {
   const cls = useStyles();
   const { code }: { code: string } = useParams();
-  const { data: space } = useSpace(code);
+  const { space } = useSpace(code);
 
+  const size = 200;
+  const capacity = 1000;
   return (
     <div className={cls.root}>
       <h2 className={cls.title}>Settings</h2>
@@ -81,13 +83,12 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ collapsed }) => {
             <>
               <StyledLinearProgress
                 variant="determinate"
-                value={(space.size * 100) / space.capacity}
+                value={(size * 100) / capacity}
               />
               <p>
-                {formatFileSize(space.size)} of {formatFileSize(space.capacity)}{" "}
-                used
+                {formatFileSize(size)} of {formatFileSize(capacity)} used
               </p>
-              <p>{((space.size * 100) / space.capacity).toFixed(1)}%</p>
+              <p>{((size * 100) / capacity).toFixed(1)}%</p>
               <Button variant="primary">Upgrade</Button>
             </>
           )}

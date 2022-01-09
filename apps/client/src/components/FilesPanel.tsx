@@ -1,22 +1,22 @@
-import React, { useEffect, useCallback, useReducer } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { AnimateSharedLayout, AnimatePresence, motion } from "framer-motion";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Button from "./Button";
-import { Colors } from "@floatingfile/common";
+import { Colors } from "@floatingfile/ui";
 import { useDropzone } from "react-dropzone";
 import useWindowWidth from "../hooks/useWindowWidth";
 import { useUploadService } from "../contexts/uploadService";
-import useSpace from "../queries/useSpace";
-import FileListItem from "./file-list-item";
+import useSpace from "../hooks/useSpace";
+import FileListItem from "./FileListItem";
 import { Stack, Box, Flex, chakra, CircularProgress } from "@chakra-ui/react";
 import useLayout, { Layouts } from "../hooks/useLayout";
-import Toolbar from "./toolbar";
+import Toolbar from "./Toolbar";
 
 const FilesPanel: React.FC = () => {
   const windowWidth = useWindowWidth();
   const { code }: { code: string } = useParams();
-  const { data: space, isLoading } = useSpace(code);
+  const { space, isLoading } = useSpace(code);
   const layout = useLayout();
 
   const files = space?.files || [];

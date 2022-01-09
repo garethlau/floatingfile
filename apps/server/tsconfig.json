@@ -19,5 +19,5 @@
       "src/node_modules/@types"
     ] /* List of folders to include type definitions from. */
   },
-  "include": ["src/**/*"]
+  "include": ["src"]
 }
