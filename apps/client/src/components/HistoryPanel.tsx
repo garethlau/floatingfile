@@ -13,7 +13,7 @@ import Icon from "@mdi/react";
 import { useParams } from "react-router-dom";
 import { Stack, Box, Flex, chakra, Tooltip } from "@chakra-ui/react";
 import useSpace from "../hooks/useSpace";
-import Panel from "./Panel";
+import Panel from "./_panel";
 
 function getLabel(args: {
   action: string;

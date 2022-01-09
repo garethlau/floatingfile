@@ -9,7 +9,7 @@ import useSpace from "../hooks/useSpace";
 import { useParams, useHistory } from "react-router-dom";
 import floatingfileImg from "../assets/images/floatingfile.png";
 import { Flex, Spacer, Box, chakra, Button } from "@chakra-ui/react";
-import Panel from "./Panel";
+import Panel from "./_panel";
 import Honeybadger from "../lib/honeybadger";
 import add from "date-fns/add";
 
