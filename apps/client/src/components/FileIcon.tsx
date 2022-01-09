@@ -20,7 +20,6 @@ import {
   mdiLanguageCpp,
   mdiLanguageCsharp,
   mdiLanguageGo,
-  mdiLanguageFortran,
   mdiLanguageHaskell,
   mdiLanguageTypescript,
   mdiLanguageJava,

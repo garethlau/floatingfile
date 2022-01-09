@@ -76,6 +76,7 @@ export default function useSpace(code: string) {
             return prev;
           }
         );
+        return snapshot;
       },
       onError: (_0, _1, context) => {
         queryClient.setQueryData(queryKey, context);
@@ -151,7 +152,7 @@ export default function useSpace(code: string) {
       onPostupload,
       onUploadProgress,
     } = options || {};
-    const { id, ext, file } = wrappedFile;
+    const { ext, file } = wrappedFile;
     const { signedUrl, key } = await rpcClient.invoke("preupload", {
       code,
       size: "",

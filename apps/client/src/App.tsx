@@ -1,6 +1,5 @@
 import React, { useEffect, useState, Suspense } from "react";
-import { makeStyles, ThemeProvider } from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
+import { makeStyles } from "@material-ui/core";
 import { Router, Switch, Route } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { SnackbarProvider } from "notistack";
@@ -15,7 +14,6 @@ import useWindowWidth from "./hooks/useWindowWidth";
 import axios from "axios";
 import ReactGA from "react-ga";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
 import { SelectedFilesProvider } from "./contexts/selectedFiles";
 import { UploadServiceProvider } from "./contexts/uploadService";
 import { ChakraProvider } from "@chakra-ui/react";
@@ -130,7 +128,6 @@ const App: React.FC<{}> = () => {
             </SelectedFilesProvider>
           </UploadServiceProvider>
         </SnackbarProvider>
-        {/* <ReactQueryDevtools /> */}
       </QueryClientProvider>
     </ChakraProvider>
   );

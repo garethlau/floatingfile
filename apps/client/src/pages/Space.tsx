@@ -14,7 +14,6 @@ import {
   AlertTitle,
   AlertDescription,
 } from "@chakra-ui/react";
-import axios from "axios";
 import { NotificationTypes } from "@floatingfile/types";
 import {
   USERNAME_STORAGE_KEY,

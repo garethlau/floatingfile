@@ -25,6 +25,7 @@ interface Context {
   currentUpload: string;
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export const UploadServiceContext = createContext<Context>({
   enqueueMany: (files: File[]) => {},
   peek: () => null,
@@ -38,6 +39,7 @@ export const UploadServiceContext = createContext<Context>({
   setCode: () => {},
   currentUpload: "",
 });
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -174,11 +176,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   }
 
-  /**
-   *
-   * @param id ID of file to cancel upload
-   */
-  function cancel(id: string): void {
+  function cancel(): void {
     if (sourceRef.current) {
       sourceRef.current.cancel("Operation cancelled");
     }

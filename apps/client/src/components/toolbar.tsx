@@ -1,6 +1,5 @@
 import React, { useCallback, useReducer } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import ClearIcon from "@material-ui/icons/Clear";
 import { useDropzone } from "react-dropzone";
@@ -20,7 +19,6 @@ import {
   CircularProgressLabel,
   useToast,
 } from "@chakra-ui/react";
-import { saveBlob } from "../utils";
 import Button from "./Button";
 import useSpace from "../hooks/useSpace";
 import { useUploadService } from "../contexts/uploadService";
