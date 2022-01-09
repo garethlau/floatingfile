@@ -51,6 +51,7 @@ export const endUpload = async (
 };
 export const prepDownload = async (id: string) => {
   const file = await prisma.file.findUnique({ where: { id } });
+  // TODO: Handle file not found
   const key = file.key;
   const params = {
     Key: key,

@@ -15,7 +15,7 @@ import {
   AlertDescription,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { SpaceEvents } from "@floatingfile/common";
+import { NotificationTypes } from "@floatingfile/types";
 import {
   USERNAME_STORAGE_KEY,
   LAST_VISIT_STORAGE_KEY,
@@ -223,19 +223,15 @@ const Space: React.FC<SpaceProps> = (props) => {
       const data = JSON.parse(event.data);
       const { type, clientId } = data;
       switch (type) {
-        case SpaceEvents.CONNECTION_ESTABLISHED:
+        case NotificationTypes.CONNECTION_ESTABLISHED:
           setMyClientId(clientId);
           refetchSpace();
           break;
-        case "SPACE_UPDATED":
+
+        case NotificationTypes.SPACE_UPDATED:
           refetchSpace();
           break;
-        case SpaceEvents.FILES_UPDATED:
-        case SpaceEvents.HISTORY_UPDATED:
-        case SpaceEvents.USERS_UPDATED:
-          refetchSpace();
-          break;
-        case SpaceEvents.SPACE_DELETED:
+        case NotificationTypes.SPACE_DESTROYED:
           toast({
             title: "This space has been destroyed.",
             description: "Redirecting you to the home page.",

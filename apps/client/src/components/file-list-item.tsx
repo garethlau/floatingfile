@@ -29,11 +29,12 @@ const FileListItem: React.FC<{
     name: string;
     key: string;
     ext: string;
-    size: number;
-    previewUrl: string | null;
+    size: string;
+    previewUrl?: string;
   };
 }> = ({ file }) => {
-  const { id, previewUrl, name, key, ext, size } = file;
+  const { id, previewUrl, name, key, ext } = file;
+  const size = parseInt(file.size, 10);
   let signedUrl = ""; // FIXME:
   const { code }: { code: string } = useParams();
   const { removeFile, downloadFile } = useSpace(code);

@@ -1,21 +1,31 @@
 import {
+  PostdownloadFn,
+  PostuploadFn,
+  PredownloadFn,
+  PreuploadFn,
+  RemoveFn,
+  RemoveManyFn,
+  NotificationTypes,
+} from "@floatingfile/types";
+import {
   prepUpload,
   endUpload,
   prepDownload,
   remove as removeFile,
   removeMany as removeFiles,
-  prepZip,
-  endZip,
 } from "../services/files-service";
-import { notifyAll, NotificationTypes } from "../services/notification-service";
+import { notifyAll } from "../services/notification-service";
 import prisma from "../lib/prisma";
 
-export const preupload = async (params: { code: string; size: string }) => {
+export const preupload: PreuploadFn = async (params: {
+  code: string;
+  size: string;
+}) => {
   const { signedUrl, key } = await prepUpload(params.code, params.size);
   return { signedUrl, key };
 };
 
-export const postupload = async (params: {
+export const postupload: PostuploadFn = async (params: {
   code: string;
   username: string;
   file: {
@@ -40,13 +50,13 @@ export const postupload = async (params: {
   return;
 };
 
-export const predownload = async (params: { id: string }) => {
+export const predownload: PredownloadFn = async (params: { id: string }) => {
   const { id } = params;
   const signedUrl = await prepDownload(id);
   return { signedUrl };
 };
 
-export const postdownload = async (params: {
+export const postdownload: PostdownloadFn = async (params: {
   code: string;
   username: string;
   name: string;
@@ -64,7 +74,10 @@ export const postdownload = async (params: {
   return;
 };
 
-export const remove = async (params: { username: string; id: string }) => {
+export const remove: RemoveFn = async (params: {
+  username: string;
+  id: string;
+}) => {
   const { username, id } = params;
   const file = await removeFile(id);
 
@@ -81,7 +94,7 @@ export const remove = async (params: { username: string; id: string }) => {
 };
 
 export const removeSingle = remove;
-export const removeMany = async (params: {
+export const removeMany: RemoveManyFn = async (params: {
   username: string;
   ids: string[];
 }) => {

@@ -17,9 +17,9 @@ import Panel from "./panel";
 
 function getLabel(args: {
   action: string;
-  payload: string | null;
+  payload?: string;
   author: string;
-  createdAt: string | Date;
+  createdAt: string;
 }): string {
   const { action, payload, author, createdAt } = args;
   const time = new Date(createdAt).toLocaleTimeString();

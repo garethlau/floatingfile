@@ -1,3 +1,5 @@
+import { GenerateUsernameFn } from "@floatingfile/types";
+
 const animals = [
   "Aardvark",
   "Albatross",
@@ -210,11 +212,11 @@ const colors = {
   violet: "#ee82ee",
 };
 
-export const generateUsername = () => {
+export const generateUsername: GenerateUsernameFn = () => {
   const animal: string =
     animals[(animals.length * Math.random()) << 0].toLowerCase();
   const colorNames: string[] = Object.keys(colors);
   const color: string = colorNames[(colorNames.length * Math.random()) << 0];
   const username = `${color}-${animal}`;
-  return username;
+  return { username };
 };

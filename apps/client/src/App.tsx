@@ -77,7 +77,9 @@ const App: React.FC<{}> = () => {
         new Date(lastVisit) < new Date(threeHoursAgo)
       ) {
         // Generate new username
-        const newUsername = await rpcClient.invoke("generateUsername");
+        const { username: newUsername } = await rpcClient.invoke(
+          "generateUsername"
+        );
         localStorage.setItem(USERNAME_STORAGE_KEY, newUsername);
       }
       setLoading(false);

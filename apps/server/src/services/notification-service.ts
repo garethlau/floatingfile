@@ -1,4 +1,5 @@
 import { Response } from "express";
+import { NotificationTypes } from "@floatingfile/types";
 import prisma from "../lib/prisma";
 import honeybadger from "../lib/honeybadger";
 
@@ -6,12 +7,6 @@ interface Connection {
   id: string;
   username: string;
   res: Response;
-}
-
-export enum NotificationTypes {
-  CONNECTION_ESTABLISHED = "CONNECTION_ESTABLISHED",
-  SPACE_UPDATED = "SPACE_UPDATED",
-  SPACE_DESTROYED = "SPACE_DESTROYED",
 }
 
 let connections: Connection[] = [];

@@ -1,12 +1,9 @@
 import { Router } from "express";
-
 import {
   createSpace,
   findSpace,
   destroySpace,
 } from "./controllers/space-controller";
-export { createSpace, destroySpace, findSpace };
-
 import {
   preupload,
   postupload,
@@ -15,17 +12,7 @@ import {
   remove,
   removeMany,
 } from "./controllers/files-controller";
-export {
-  preupload,
-  postupload,
-  predownload,
-  postdownload,
-  remove as removeFile,
-  removeMany as removeFiles,
-};
-
 import { generateUsername } from "./controllers/username-controller";
-export { generateUsername };
 
 const router = Router();
 

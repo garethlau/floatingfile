@@ -16,7 +16,7 @@
     "concurrently": "^6.2.0"
   },
   "scripts": {
-    "dev": "concurrently -n client,server,common \"yarn dev:client\" \"yarn dev:server\" \"yarn dev:common\"",
+    "dev": "concurrently -n client,server,packages \"yarn dev:client\" \"yarn dev:server\" \"yarn dev:packages\"",
     "dev:packages": "concurrently \"yarn dev:types\" \"yarn dev:common\"",
     "dev:server": "yarn --cwd apps/server dev",
     "dev:client": "yarn --cwd apps/client dev",

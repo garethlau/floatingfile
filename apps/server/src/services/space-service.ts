@@ -11,10 +11,6 @@ export const create = async () => {
     data: {
       code,
     },
-    include: {
-      files: true,
-      events: true,
-    },
   });
   return space;
 };

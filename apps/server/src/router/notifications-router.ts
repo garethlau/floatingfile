@@ -1,12 +1,13 @@
+import { NotificationTypes } from "@floatingfile/types";
 import express from "express";
 import crypto from "crypto";
 import {
   addClient,
   removeClient,
   sendToClient,
-  NotificationTypes,
   notifyAll,
 } from "../services/notification-service";
+
 import cors from "cors";
 import prisma from "../lib/prisma";
 
