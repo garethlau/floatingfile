@@ -4,7 +4,7 @@ import FaceIcon from "@material-ui/icons/Face";
 import { Box, Stack, chakra, Flex } from "@chakra-ui/react";
 import { Colors } from "@floatingfile/ui";
 import useSpace from "../hooks/useSpace";
-import Panel from "./_panel";
+import Panel from "./Panel";
 
 interface UsersPanelProps {
   myClientId?: string;
