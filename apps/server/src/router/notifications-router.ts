@@ -1,16 +1,18 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import crypto from "crypto";
 import {
   addClient,
   removeClient,
   sendToClient,
-} from "../../services/subscriptionManager";
-import { SpaceEvents } from "@floatingfile/common";
+  NotificationTypes,
+  notifyAll,
+} from "../services/notification-service";
 import cors from "cors";
+import prisma from "../lib/prisma";
 
 const router = express.Router();
 
-router.get("/:code", cors(), async (req: Request, res: Response, done) => {
+router.get("/:code", cors(), async (req, res, done) => {
   try {
     const { code } = req.params;
     let username = "";
@@ -28,20 +30,35 @@ router.get("/:code", cors(), async (req: Request, res: Response, done) => {
     res.writeHead(200, headers);
 
     const clientId = crypto.randomBytes(256).toString("hex");
-    const client = {
+    const connection = {
       id: clientId,
       username: username,
       res,
     };
 
-    await addClient(code, client);
-    sendToClient(client, {
-      type: SpaceEvents.CONNECTION_ESTABLISHED,
+    await addClient(code, connection);
+    await prisma.event.create({
+      data: {
+        author: username,
+        action: "JOIN",
+        belongsTo: code,
+      },
+    });
+    sendToClient(clientId, {
+      type: NotificationTypes.CONNECTION_ESTABLISHED,
       clientId,
     });
 
-    req.on("close", () => {
-      removeClient(code, client);
+    req.on("close", async () => {
+      removeClient(code, connection);
+      await prisma.event.create({
+        data: {
+          author: username,
+          action: "LEAVE",
+          belongsTo: code,
+        },
+      });
+      notifyAll(code, NotificationTypes.SPACE_UPDATED);
     });
   } catch (error) {
     done(error);

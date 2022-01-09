@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import FaceIcon from "@material-ui/icons/Face";
 import { Box, Stack, chakra, Flex } from "@chakra-ui/react";
 import { Colors } from "@floatingfile/common";
-import useSpace from "../queries/useSpace";
+import useSpace from "../hooks/useSpace";
 import Panel from "./panel";
 
 interface UsersPanelProps {
@@ -12,13 +12,13 @@ interface UsersPanelProps {
 
 const UsersPanel: React.FC<UsersPanelProps> = ({ myClientId }) => {
   const { code }: { code: string } = useParams();
-  const { data: space } = useSpace(code);
-  const users = space?.users || [];
+  const { space } = useSpace(code);
+  const clients = space?.clients || [];
 
   return (
     <Panel title="Users">
       <Stack spacing={3}>
-        {users.map(({ username, id }) => (
+        {clients.map(({ username, id }) => (
           <Flex
             key={username}
             bg={Colors.LIGHT_SHADE}

@@ -140,7 +140,7 @@ function getPath(extension: string) {
 
 const FileIcon: React.FC<{
   extension: string;
-  previewUrl?: string;
+  previewUrl: string | null;
 }> = ({ extension, previewUrl }) => {
   if (previewUrl) {
     return (

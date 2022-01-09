@@ -25,7 +25,7 @@ import {
 import Button from "../components/Button";
 import IntroToast from "../components/intro-toast";
 import UploadQueue from "../components/upload-queue";
-import useSpace from "../queries/useSpace";
+import useSpace from "../hooks/useSpace";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import FullPageLoader from "../components/FullPageLoader";
 import SpaceNotFound from "../components/SpaceNotFound";
@@ -33,6 +33,7 @@ import FilesPanel from "../components/FilesPanel";
 import NavBar from "../components/nav-bar";
 import FadeIn from "../components/animations/FadeIn";
 import useLayout, { Layouts } from "../hooks/useLayout";
+import rpcClient from "../lib/rpc";
 
 const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
 const ConnectPanel = React.lazy(() => import("../components/connect-panel"));
@@ -191,7 +192,7 @@ const Space: React.FC<SpaceProps> = (props) => {
     // Show intro modal
     const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);
-    const lastVisit = localStorage.getItem(LAST_VISIT_STORAGE_KEY || "");
+    const lastVisit = localStorage.getItem(LAST_VISIT_STORAGE_KEY);
     if (!lastVisit || new Date(lastVisit) < new Date(weekAgo)) {
       introToastRef.current = toast({
         position: "top-right",
@@ -215,7 +216,7 @@ const Space: React.FC<SpaceProps> = (props) => {
     const username = localStorage.getItem(USERNAME_STORAGE_KEY);
     const eventSource = new EventSource(
       (ENVIRONMENT === "development" ? BASE_API_URL : "") +
-        `/api/v5/subscriptions/${code}?username=${username}`
+        `/api/notifications/${code}?username=${username}`
     );
 
     eventSource.onmessage = (event) => {
@@ -224,6 +225,9 @@ const Space: React.FC<SpaceProps> = (props) => {
       switch (type) {
         case SpaceEvents.CONNECTION_ESTABLISHED:
           setMyClientId(clientId);
+          refetchSpace();
+          break;
+        case "SPACE_UPDATED":
           refetchSpace();
           break;
         case SpaceEvents.FILES_UPDATED:
@@ -253,22 +257,14 @@ const Space: React.FC<SpaceProps> = (props) => {
   }, [code]);
 
   useEffect(() => {
-    if (code) {
-      axios
-        .get(`/api/v5/spaces/${code}`)
-        .then(() => {
-          setExists(true);
-        })
-        .catch((err) => {
-          if (err.response?.status === 404) {
-            // Space not found
-            setExists(false);
-          }
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
+    (async function () {
+      if (await rpcClient.invoke("findSpace", { code })) {
+        setExists(true);
+      } else {
+        setExists(false);
+      }
+      setIsLoading(false);
+    })();
   }, []);
 
   if (isLoading) {

@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
-import { File, Colors } from "@floatingfile/common";
+import { Colors } from "@floatingfile/common";
 import { isMobile } from "react-device-detect";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useIsMutating } from "react-query";
 import {
@@ -18,17 +17,26 @@ import {
 } from "@chakra-ui/react";
 import { FaTrash, FaCloudDownloadAlt } from "react-icons/fa";
 import { MdOpenInBrowser } from "react-icons/md";
-import useRemoveFile from "../mutations/useRemoveFile";
 import { useSelectedFiles } from "../contexts/selectedFiles";
-import { saveBlob } from "../utils";
+import useSpace from "../hooks/useSpace";
 import FileIcon from "./FileIcon";
 import Honeybadger from "../lib/honeybadger";
 import useLayout, { Layouts } from "../hooks/useLayout";
 
-const FileListItem: React.FC<{ file: File }> = ({ file }) => {
-  const { name, key, ext, size, signedUrl } = file;
+const FileListItem: React.FC<{
+  file: {
+    id: string;
+    name: string;
+    key: string;
+    ext: string;
+    size: number;
+    previewUrl: string | null;
+  };
+}> = ({ file }) => {
+  const { id, previewUrl, name, key, ext, size } = file;
+  let signedUrl = ""; // FIXME:
   const { code }: { code: string } = useParams();
-  const { mutateAsync: removeFile } = useRemoveFile(code);
+  const { removeFile, downloadFile } = useSpace(code);
   const { toggleSelect, isSelected } = useSelectedFiles();
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
@@ -54,22 +62,16 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
   ): Promise<void> {
     e.stopPropagation();
     if (isMobile) {
+      // FIXME: File download should work on mobile as well!
       window.open(signedUrl, "_blank");
     } else {
       try {
         setIsDownloading(true);
-        if (!signedUrl) return;
-        const response = await axios.get(signedUrl, {
-          responseType: "blob",
+
+        await downloadFile(id, name, {
           onDownloadProgress: (event) => {
             setDownloadProgress(event.loaded / event.total);
           },
-        });
-        const { data } = response;
-        await saveBlob(data, name);
-        await axios.patch(`/api/v5/spaces/${code}/history`, {
-          action: "DOWNLOAD_FILE",
-          payload: key,
         });
       } catch (error) {
         Honeybadger.notify(error);
@@ -85,7 +87,7 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
   ): Promise<void> {
     e.stopPropagation();
     try {
-      await removeFile(key);
+      await removeFile(id);
     } catch (error) {
       Honeybadger.notify(error);
     }
@@ -102,16 +104,16 @@ const FileListItem: React.FC<{ file: File }> = ({ file }) => {
       bg={
         layout === Layouts.MOBILE
           ? Colors.LIGHT_SHADE
-          : isSelected(key)
+          : isSelected(id)
           ? "#DDE8F8"
           : "white"
       }
-      onClick={() => toggleSelect(key)}
+      onClick={() => toggleSelect(id)}
       _hover={{ cursor: "pointer" }}
       transition="background-color ease 0.3s"
     >
       <Box w="50px" h="50px">
-        <FileIcon extension={ext} previewUrl={file.previewUrl} />
+        <FileIcon extension={ext} previewUrl={previewUrl} />
       </Box>
       <Box w="50%">
         <chakra.p textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">

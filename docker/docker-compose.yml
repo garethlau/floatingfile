@@ -20,16 +20,17 @@ x-minio-common: &minio-common
 # using nginx reverse proxy, load balancing, you can access
 # it through port 9000.
 services:
-  # starts mongodb
-  mongo:
-    image: mongo:4.4.4
-    container_name: mongo
-    restart: always
+  database:
+    image: "postgres" # use latest official postgres version
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=floatingfile_dev
     volumes:
-      - mongo-data:/data/db
+      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
     ports:
-      - 27017:27017
-
+      - 5432:5432
+  
   minio1:
     <<: *minio-common
     hostname: minio1
@@ -83,4 +84,4 @@ volumes:
   data3-2:
   data4-1:
   data4-2:
-  mongo-data:
+  database-data: 

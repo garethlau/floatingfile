@@ -7,12 +7,39 @@ import {
   mdiTimerSandEmpty,
   mdiAccountPlus,
   mdiAccountMinus,
+  mdiDoorOpen,
 } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useParams } from "react-router-dom";
-import { Stack, Box, Flex, chakra } from "@chakra-ui/react";
-import useSpace from "../queries/useSpace";
+import { Stack, Box, Flex, chakra, Tooltip } from "@chakra-ui/react";
+import useSpace from "../hooks/useSpace";
 import Panel from "./panel";
+
+function getLabel(args: {
+  action: string;
+  payload: string | null;
+  author: string;
+  createdAt: string | Date;
+}): string {
+  const { action, payload, author, createdAt } = args;
+  const time = new Date(createdAt).toLocaleTimeString();
+  switch (action) {
+    case "UPLOAD":
+      return `${author} uploaded ${payload} at ${time}`;
+    case "DOWNLOAD":
+      return `${author} downloaded ${payload} at ${time}`;
+    case "REMOVE":
+      return `${author} removed ${payload} at ${time}`;
+    case "LEAVE":
+      return `${author} left at ${time}`;
+    case "JOIN":
+      return `${author} joined at ${time}`;
+    case "CREATE":
+      return `${author} created the space at ${time}`;
+    default:
+      return "";
+  }
+}
 
 function getIconPath(action: string): string {
   switch (action) {
@@ -28,6 +55,8 @@ function getIconPath(action: string): string {
       return mdiAccountPlus;
     case "EXPIRED":
       return mdiTimerSandEmpty;
+    case "CREATE":
+      return mdiDoorOpen;
     default:
       return "";
   }
@@ -35,28 +64,26 @@ function getIconPath(action: string): string {
 
 const HistoryPanel: React.FC = () => {
   const { code }: { code: string } = useParams();
-  const { data: space } = useSpace(code);
-  const history = space?.history || [];
-
+  const { space } = useSpace(code);
+  const events = space?.events || [];
   return (
     <Panel title="History">
-      {history.length > 0 ? (
+      {events.length > 0 ? (
         <Stack spacing={2}>
-          {history
-            .sort((a, b) => {
-              return (
-                new Date(b.timestamp).getTime() -
-                new Date(a.timestamp).getTime()
-              );
-            })
-            .map(({ payload, author, action, timestamp }, index) => (
+          {events.map(({ id, payload, author, action, createdAt }) => (
+            <Tooltip
+              label={getLabel({ action, payload, author, createdAt })}
+              placement="bottom"
+              hasArrow
+              maxW="200px"
+            >
               <Flex
-                key={timestamp}
+                key={id}
                 bg={Colors.LIGHT_SHADE}
                 borderRadius="md"
                 shadow="base"
                 align="center"
-                h="52px"
+                h="70px"
                 p="5px"
               >
                 <Flex align="center" justify="center" w="40px">
@@ -67,17 +94,26 @@ const HistoryPanel: React.FC = () => {
                   />
                 </Flex>
                 <Box w="calc(100% - 40px)">
+                  <chakra.p fontSize="xs" color="gray.500" lineHeight="1">
+                    {new Date(createdAt).toLocaleTimeString()}
+                  </chakra.p>
                   <chakra.p
                     whiteSpace="nowrap"
                     overflow="hidden"
                     textOverflow="ellipsis"
+                    lineHeight="1"
                   >
                     {payload}
                   </chakra.p>
-                  {author && <chakra.p opacity={0.7}>{author}</chakra.p>}
+                  {author && (
+                    <chakra.p lineHeight="1" color="gray.500">
+                      {author}
+                    </chakra.p>
+                  )}
                 </Box>
               </Flex>
-            ))}
+            </Tooltip>
+          ))}
         </Stack>
       ) : (
         <chakra.p opacity={0.7} textAlign={{ base: "center", md: "left" }}>

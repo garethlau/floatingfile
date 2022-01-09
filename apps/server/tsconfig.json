@@ -7,6 +7,7 @@
     "moduleResolution": "node",
     "composite": true,
     "declaration": true,
+    "declarationDir": "dist/types",
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "dist",
@@ -19,5 +20,5 @@
       "src/node_modules/@types"
     ] /* List of folders to include type definitions from. */
   },
-  "include": ["src/**/*"]
+  "include": ["src", "index.d.ts"]
 }

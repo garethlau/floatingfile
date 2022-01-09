@@ -5,13 +5,13 @@ import MoonLoader from "react-spinners/MoonLoader";
 import { ORIGIN } from "../env";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useSnackbar } from "notistack";
-import useSpace from "../queries/useSpace";
+import useSpace from "../hooks/useSpace";
 import { useParams, useHistory } from "react-router-dom";
-import useDeleteSpace from "../mutations/useDeleteSpace";
 import floatingfileImg from "../assets/images/floatingfile.png";
 import { Flex, Spacer, Box, chakra, Button } from "@chakra-ui/react";
 import Panel from "./panel";
 import Honeybadger from "../lib/honeybadger";
+import add from "date-fns/add";
 
 const THIRTY_MINUTES: number = 30 * 60 * 1000;
 const FIVE_MINUTES: number = 5 * 60 * 1000;
@@ -19,66 +19,67 @@ const FIVE_MINUTES: number = 5 * 60 * 1000;
 const ConnectPanel: React.FC = () => {
   const { code }: { code: string } = useParams();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const { data: space } = useSpace(code);
+  const { space, destroy } = useSpace(code);
   const history = useHistory();
-  const { mutateAsync: deleteSpace, isLoading } = useDeleteSpace(code);
+  const [isDestroying, setIsDestroying] = useState(false);
   const [timeLeft, setTimeLeft] = useState<number>(0); // In seconds
 
   async function close() {
     try {
-      await deleteSpace();
+      setIsDestroying(true);
+      await destroy();
       history.push("/");
     } catch (error) {
       Honeybadger.notify(error);
+    } finally {
+      setIsDestroying(false);
     }
   }
 
   useEffect(() => {
+    if (!space) return undefined;
     const timers: any = {};
-    if (space) {
-      const expiryDate = new Date(parseInt(space.expires, 10));
-      const currDate = new Date();
-      const duration = expiryDate.getTime() - currDate.getTime();
-
-      if (duration < 0) {
-        // This space has already expired
-        enqueueSnackbar("This space has expired.", { variant: "error" });
-      }
-
-      if (duration - FIVE_MINUTES > 0) {
-        // Set five minute timeout warning
-        timers.five = setTimeout(() => {
-          enqueueSnackbar("Space will expire in 5 minutes.", {
-            variant: "warning",
-          });
-          setTimeout(() => closeSnackbar(), 5000);
-        }, duration - FIVE_MINUTES);
-      }
-
-      if (duration - THIRTY_MINUTES > 0) {
-        // Set thirty minute timeout warning
-        timers.thirty = setTimeout(() => {
-          enqueueSnackbar("Space will expire in 30 minutes.", {
-            variant: "warning",
-          });
-          setTimeout(() => closeSnackbar(), 5000);
-        }, duration - THIRTY_MINUTES);
-      }
-
-      if (duration > 0) {
-        timers.zero = setTimeout(() => {
-          enqueueSnackbar("Space has expired. Redirecting...", {
-            variant: "warning",
-          });
-          setTimeout(() => {
-            closeSnackbar();
-            history.push("/");
-          });
-        }, duration);
-      }
-
-      setTimeLeft(duration / 1000);
+    const createdAt = new Date(space.createdAt);
+    const expiryDate = add(createdAt, { hours: 12 });
+    const currDate = new Date();
+    const duration = expiryDate.getTime() - currDate.getTime();
+    if (duration < 0) {
+      // This space has already expired
+      enqueueSnackbar("This space has expired.", { variant: "error" });
     }
+    if (duration - FIVE_MINUTES > 0) {
+      // Set five minute timeout warning
+      timers.five = setTimeout(() => {
+        enqueueSnackbar("Space will expire in 5 minutes.", {
+          variant: "warning",
+        });
+        setTimeout(() => closeSnackbar(), 5000);
+      }, duration - FIVE_MINUTES);
+    }
+
+    if (duration - THIRTY_MINUTES > 0) {
+      // Set thirty minute timeout warning
+      timers.thirty = setTimeout(() => {
+        enqueueSnackbar("Space will expire in 30 minutes.", {
+          variant: "warning",
+        });
+        setTimeout(() => closeSnackbar(), 5000);
+      }, duration - THIRTY_MINUTES);
+    }
+
+    if (duration > 0) {
+      timers.zero = setTimeout(() => {
+        enqueueSnackbar("Space has expired. Redirecting...", {
+          variant: "warning",
+        });
+        setTimeout(() => {
+          closeSnackbar();
+          history.push("/");
+        });
+      }, duration);
+    }
+
+    setTimeLeft(duration / 1000);
     return () => {
       // Clear timeouts
       Object.keys(timers).forEach((timerName) => {
@@ -166,7 +167,7 @@ const ConnectPanel: React.FC = () => {
           <Button
             colorScheme="red"
             onClick={close}
-            isLoading={isLoading}
+            isLoading={isDestroying}
             debounce={5}
           >
             Destroy Now

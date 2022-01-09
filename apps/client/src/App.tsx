@@ -19,6 +19,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { SelectedFilesProvider } from "./contexts/selectedFiles";
 import { UploadServiceProvider } from "./contexts/uploadService";
 import { ChakraProvider } from "@chakra-ui/react";
+import rpcClient from "./lib/rpc";
 
 const Space = React.lazy(() => import("./pages/Space"));
 const Landing = React.lazy(() => import("./pages/Landing"));
@@ -65,29 +66,27 @@ const App: React.FC<{}> = () => {
   const queryClient = new QueryClient();
 
   useEffect(() => {
-    const lastVisit = localStorage.getItem(LAST_VISIT_STORAGE_KEY);
-    const threeHoursAgo = new Date();
-    threeHoursAgo.setHours(threeHoursAgo.getHours() - 3);
-    const username = localStorage.getItem(USERNAME_STORAGE_KEY);
-    if (
-      !username ||
-      !lastVisit ||
-      new Date(lastVisit) < new Date(threeHoursAgo)
-    ) {
-      // Generate new username
-      axios.get("/api/v5/nickname").then((res) => {
-        localStorage.setItem(USERNAME_STORAGE_KEY, res.data.username);
-        axios.defaults.headers.common.username = res.data.username;
-        setLoading(false);
-      });
-    } else {
-      // Use previous username
-      axios.defaults.headers.common.username = username;
+    const func = async () => {
+      const lastVisit = localStorage.getItem(LAST_VISIT_STORAGE_KEY);
+      const threeHoursAgo = new Date();
+      threeHoursAgo.setHours(threeHoursAgo.getHours() - 3);
+      const username = localStorage.getItem(USERNAME_STORAGE_KEY);
+      if (
+        !username ||
+        !lastVisit ||
+        new Date(lastVisit) < new Date(threeHoursAgo)
+      ) {
+        // Generate new username
+        const newUsername = await rpcClient.invoke("generateUsername");
+        localStorage.setItem(USERNAME_STORAGE_KEY, newUsername);
+      }
       setLoading(false);
-    }
+    };
+    func();
   }, []);
 
   if (loading) {
+    // FIXME: This component overflows...
     return (
       <div
         style={{
@@ -98,6 +97,7 @@ const App: React.FC<{}> = () => {
       />
     );
   }
+
   return (
     <ChakraProvider theme={theme}>
       <QueryClientProvider client={queryClient}>

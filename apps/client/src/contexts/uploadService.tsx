@@ -8,6 +8,7 @@ import React, {
 import axios, { CancelToken, CancelTokenSource } from "axios";
 import Honeybadger from "../lib/honeybadger";
 import { v4 as uuidv4 } from "uuid";
+import useSpace from "../hooks/useSpace";
 
 interface Context {
   enqueueMany: (files: File[]) => void;
@@ -51,6 +52,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
   const [code, setCode] = useState<string>("");
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [currentUpload, setCurrentUpload] = useState<string>("");
+  const { uploadFile } = useSpace(code);
 
   const sourceRef = useRef<CancelTokenSource | null>(null);
 
@@ -59,58 +61,25 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
     (async function () {
       if (size() > 0) {
         const wrappedFile = peek();
-        const { file, id, ext } = wrappedFile;
 
         if (!sourceRef.current) {
           sourceRef.current = axios.CancelToken.source();
         }
 
         try {
-          await new Promise((resolve, reject) => {
-            // Generate a signed URL to upload file directly from client
-            // The file meta data is provided to ensure that the space has capacity to upload the file
-            axios
-              .post(`/api/v5/signed-urls`, {
-                file,
-                code,
-              })
-              .then((response) => {
-                const { signedUrl, key } = response.data;
-                setCurrentUpload(id);
-
-                // Upload the file using the signed URL. The signed URL generated is for the returned key.
-                axios
-                  .put(signedUrl, file, {
-                    onUploadProgress: (event) => {
-                      // Set upload progress for current file
-                      updateProgress(id, event.loaded, event.total);
-                    },
-                    cancelToken: sourceRef.current?.token,
-                  })
-                  .then(() => {
-                    setCurrentUpload("");
-
-                    // Create data object which is used by the server to create the file object.
-                    const data = {
-                      size: file.size,
-                      name: file.name,
-                      type: file.type,
-                      ext,
-                      key,
-                    };
-                    // Adds a file object to the file array of the space
-                    axios
-                      .patch(`/api/v5/spaces/${code}/files`, data)
-                      .then(resolve)
-                      .catch(reject);
-                  })
-                  .catch((error) => {
-                    reject(error);
-                  });
-              })
-              .catch((error) => {
-                reject(error);
-              });
+          uploadFile(wrappedFile, {
+            cancelToken: sourceRef.current?.token,
+            onPreupload: () => {
+              setCurrentUpload(wrappedFile.id);
+            },
+            onUpload: () => {
+              setCurrentUpload("");
+            },
+            onPostupload: () => {},
+            onUploadProgress: (event) => {
+              // Set upload progress for current file
+              updateProgress(wrappedFile.id, event.loaded, event.total);
+            },
           });
         } catch (error) {
           if (axios.isCancel(error)) {
@@ -121,7 +90,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
             Honeybadger.notify(error);
           }
         } finally {
-          complete(id);
+          complete(wrappedFile.id);
           dequeue();
         }
       }

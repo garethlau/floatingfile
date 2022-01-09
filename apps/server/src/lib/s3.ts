@@ -22,7 +22,7 @@ if (USE_LOCAL_S3) {
       if (err.statusCode === 409) {
         logger.info(`Bucket (${S3_BUCKET_NAME}) already exists`);
       } else {
-        console.log(err);
+        logger.error(err);
       }
     } else {
       logger.info(`Created new bucket ${S3_BUCKET_NAME}`);

@@ -1,9 +1,15 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "apps/*"
+    ],
+    "nohoist": [
+      "**/prisma",
+      "**/prisma/**"
+    ]
+  },
   "version": "0.0.0",
   "name": "floatingfile",
   "devDependencies": {
@@ -11,16 +17,18 @@
   },
   "scripts": {
     "dev": "concurrently -n client,server,common \"yarn dev:client\" \"yarn dev:server\" \"yarn dev:common\"",
+    "dev:packages": "concurrently \"yarn dev:types\" \"yarn dev:common\"",
     "dev:server": "yarn --cwd apps/server dev",
     "dev:client": "yarn --cwd apps/client dev",
     "dev:landing": "yarn --cwd apps/landing dev",
     "dev:common": "yarn --cwd packages/common dev",
+    "dev:types": "yarn --cwd packages/types dev",
     "build:server": "yarn --cwd apps/server build",
     "build:client": "yarn --cwd apps/client build",
     "deploy:app": "./scripts/deploy-app.sh",
     "deploy:landing": "./scripts/deploy-landing-site.sh",
     "clean": "./scripts/clean.sh",
-    "start:storage":"docker-compose -f ./docker/docker-compose.yml up"
+    "start:storage": "docker-compose -f ./docker/docker-compose.yml up"
   },
   "dependencies": {
     "@octokit/core": "^3.3.1"

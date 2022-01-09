@@ -7,7 +7,7 @@ import { Colors } from "@floatingfile/common";
 import { useDropzone } from "react-dropzone";
 import useWindowWidth from "../hooks/useWindowWidth";
 import { useUploadService } from "../contexts/uploadService";
-import useSpace from "../queries/useSpace";
+import useSpace from "../hooks/useSpace";
 import FileListItem from "./file-list-item";
 import { Stack, Box, Flex, chakra, CircularProgress } from "@chakra-ui/react";
 import useLayout, { Layouts } from "../hooks/useLayout";
@@ -16,7 +16,7 @@ import Toolbar from "./toolbar";
 const FilesPanel: React.FC = () => {
   const windowWidth = useWindowWidth();
   const { code }: { code: string } = useParams();
-  const { data: space, isLoading } = useSpace(code);
+  const { space, isLoading } = useSpace(code);
   const layout = useLayout();
 
   const files = space?.files || [];

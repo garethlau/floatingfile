@@ -22,8 +22,7 @@ import {
 } from "@chakra-ui/react";
 import { saveBlob } from "../utils";
 import Button from "./Button";
-import useSpace from "../queries/useSpace";
-import useRemoveFiles from "../mutations/useRemoveFiles";
+import useSpace from "../hooks/useSpace";
 import { useUploadService } from "../contexts/uploadService";
 import { useSelectedFiles } from "../contexts/selectedFiles";
 import Honeybadger from "../lib/honeybadger";
@@ -73,8 +72,7 @@ const initialState: State = {
 const Toolbar: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { code }: { code: string } = useParams();
-  const { data: space } = useSpace(code);
-  const { mutateAsync: removeFiles } = useRemoveFiles(code);
+  const { space, downloadFile, removeFiles, zipFiles } = useSpace(code);
   const isCollapsed = useBreakpointValue({ base: true, lg: false });
   const toast = useToast();
 
@@ -96,6 +94,7 @@ const Toolbar: React.FC = () => {
   });
 
   async function downloadSelected() {
+    // FIXME: Only display toast if privallege is missing
     toast({
       title: "Downloading selected files.",
       description:
@@ -104,7 +103,7 @@ const Toolbar: React.FC = () => {
       status: "info",
     });
 
-    const downloadQueue = files?.filter((file) => isSelected(file.key));
+    const downloadQueue = files?.filter((file) => isSelected(file.id));
 
     // Set the total number of files in the download queue
     dispatch({
@@ -115,21 +114,15 @@ const Toolbar: React.FC = () => {
     while (!!downloadQueue && downloadQueue.length > 0) {
       const file = downloadQueue.shift();
       dispatch({ type: actionTypes.START_DOWNLOAD });
-      if (!file || !file.signedUrl) return;
-      const response = await axios.get(file.signedUrl, {
-        responseType: "blob",
+      if (!file) return;
+
+      await downloadFile(file.id, file.name, {
         onDownloadProgress: (event) => {
           dispatch({
             type: actionTypes.UPDATE_DOWNLOAD_PROGRESS,
             payload: event.loaded / event.total,
           });
         },
-      });
-      const { data } = response;
-      await saveBlob(data, file.name);
-      await axios.patch(`/api/v5/spaces/${code}/history`, {
-        action: "DOWNLOAD_FILE",
-        payload: file.key,
       });
     }
     /* eslint-enable */
@@ -138,8 +131,7 @@ const Toolbar: React.FC = () => {
 
   async function removeSelected(): Promise<void> {
     try {
-      const keysToRemove = selected;
-      await removeFiles(keysToRemove);
+      await removeFiles(selected);
       clearSelectedFiles();
       toast({
         title: "Files have been removed",
@@ -159,25 +151,15 @@ const Toolbar: React.FC = () => {
       status: "info",
     });
     try {
-      const response = await axios.get(
-        `/api/v5/spaces/${code}/files/zip?keys=${JSON.stringify(selected)}`,
-        {
-          responseType: "blob",
-        }
-      );
-      const folderName = response.headers["content-disposition"]
-        .split("=")[1]
-        .replace(/"/g, "");
-      const { data } = response;
-      await saveBlob(data, folderName);
+      await zipFiles(selected);
       toast.closeAll();
       toast({
         title: "Successfully zipped files",
         status: "success",
       });
-      await axios.delete(
-        `/api/v5/spaces/${code}/files/zip?folder=${folderName}`
-      );
+      // await axios.delete(
+      //   `/api/v5/spaces/${code}/files/zip?folder=${folderName}`
+      // );
     } catch (err) {
       toast({
         title: "Error zipping selected files",
@@ -232,7 +214,7 @@ const Toolbar: React.FC = () => {
               <Button
                 colorScheme="white"
                 onClick={() => {
-                  setSelected(files?.map((file) => file.key) || []);
+                  setSelected(files?.map((file) => file.id) || []);
                 }}
                 leftIcon={<PlaylistAddCheckIcon />}
               >
@@ -242,7 +224,7 @@ const Toolbar: React.FC = () => {
               <Tooltip label="Select all files">
                 <IconButton
                   onClick={() => {
-                    setSelected(files?.map((file) => file.key) || []);
+                    setSelected(files?.map((file) => file.id) || []);
                   }}
                   aria-label="Select All"
                   icon={<PlaylistAddCheckIcon />}

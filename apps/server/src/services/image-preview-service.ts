@@ -1,6 +1,6 @@
 import sharp from "sharp";
-import s3 from "../s3";
-import { S3_BUCKET_NAME } from "../config";
+import { S3_BUCKET_NAME, USE_LOCAL_S3 } from "../config";
+import s3 from "../lib/s3";
 
 /**
  * Helper function to create a modified S3 key for file previews.
@@ -84,6 +84,11 @@ export async function createImagePreview(key: string): Promise<string> {
     })
     .promise();
 
-  const previewUrl = `https://${S3_BUCKET_NAME}.s3.us-east-2.amazonaws.com/${previewKey}`;
+  let previewUrl;
+  if (USE_LOCAL_S3) {
+    previewUrl = `http://localhost:9000/${S3_BUCKET_NAME}/${previewKey}`;
+  } else {
+    previewUrl = `https://${S3_BUCKET_NAME}.s3.us-east-2.amazonaws.com/${previewKey}`;
+  }
   return previewUrl;
 }
