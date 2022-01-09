@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Colors } from "@floatingfile/ui";
 import { isMobile } from "react-device-detect";
 import { useParams } from "react-router-dom";
@@ -13,7 +13,6 @@ import {
   Icon,
   Tooltip,
   CircularProgress,
-  CircularProgressLabel,
 } from "@chakra-ui/react";
 import { FaTrash, FaCloudDownloadAlt } from "react-icons/fa";
 import { MdOpenInBrowser } from "react-icons/md";

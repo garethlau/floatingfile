@@ -8,10 +8,10 @@ import { useDropzone } from "react-dropzone";
 import useWindowWidth from "../hooks/useWindowWidth";
 import { useUploadService } from "../contexts/uploadService";
 import useSpace from "../hooks/useSpace";
-import FileListItem from "./file-list-item";
+import FileListItem from "./FileListItem";
 import { Stack, Box, Flex, chakra, CircularProgress } from "@chakra-ui/react";
 import useLayout, { Layouts } from "../hooks/useLayout";
-import Toolbar from "./toolbar";
+import Toolbar from "./Toolbar";
 
 const FilesPanel: React.FC = () => {
   const windowWidth = useWindowWidth();
