@@ -5,10 +5,11 @@ import React, {
   useRef,
   useEffect,
 } from "react";
-import axios, { CancelToken, CancelTokenSource } from "axios";
+import axios, { CancelTokenSource } from "axios";
 import Honeybadger from "../lib/honeybadger";
 import { v4 as uuidv4 } from "uuid";
 import useSpace from "../hooks/useSpace";
+import { WrappedFile } from "../interfaces";
 
 interface Context {
   enqueueMany: (files: File[]) => void;
@@ -22,13 +23,6 @@ interface Context {
   cancel: (key: string) => void;
   setCode: React.Dispatch<React.SetStateAction<string>>;
   currentUpload: string;
-}
-
-export interface WrappedFile {
-  file: File;
-  // ID used soley by the client to keep track of uploads
-  id: string;
-  ext: string;
 }
 
 export const UploadServiceContext = createContext<Context>({

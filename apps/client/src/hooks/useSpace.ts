@@ -1,6 +1,6 @@
 import axios, { CancelToken } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { WrappedFile } from "../contexts/uploadService";
+import { WrappedFile } from "../interfaces";
 import { USERNAME_STORAGE_KEY } from "../env";
 import rpcClient from "../lib/rpc";
 import { saveBlob } from "../utils";
