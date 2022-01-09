@@ -34,7 +34,7 @@ const FileListItem: React.FC<{
 }> = ({ file }) => {
   const { id, previewUrl, name, key, ext } = file;
   const size = parseInt(file.size, 10);
-  let signedUrl = ""; // FIXME:
+  const signedUrl = ""; // FIXME:
   const { code }: { code: string } = useParams();
   const { removeFile, downloadFile } = useSpace(code);
   const { toggleSelect, isSelected } = useSelectedFiles();

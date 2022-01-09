@@ -214,10 +214,10 @@ const Space: React.FC<SpaceProps> = (props) => {
 
   useEffect(() => {
     const username = localStorage.getItem(USERNAME_STORAGE_KEY);
-    const eventSource = new EventSource(
-      (ENVIRONMENT === "development" ? BASE_API_URL : "") +
-        `/api/notifications/${code}?username=${username}`
-    );
+    const url = `${
+      ENVIRONMENT === "development" ? BASE_API_URL : ""
+    }/api/notifications/${code}?username=${username}`;
+    const eventSource = new EventSource(url);
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -253,7 +253,7 @@ const Space: React.FC<SpaceProps> = (props) => {
   }, [code]);
 
   useEffect(() => {
-    (async function () {
+    (async () => {
       if (await rpcClient.invoke("findSpace", { code })) {
         setExists(true);
       } else {

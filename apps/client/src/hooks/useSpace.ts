@@ -35,8 +35,11 @@ export default function useSpace(code: string) {
           queryKey,
           (prev) => {
             if (!prev) return prev;
-            const newFiles = prev.files.filter((file) => file.id !== id);
-            prev.files = newFiles;
+            const updatedSpace = prev;
+            const newFiles = updatedSpace.files.filter(
+              (file) => file.id !== id
+            );
+            updatedSpace.files = newFiles;
             return prev;
           }
         );
@@ -65,10 +68,11 @@ export default function useSpace(code: string) {
           queryKey,
           (prev) => {
             if (!prev) return prev;
-            const newFiles = prev.files.filter(
+            const updatedSpace = prev;
+            const newFiles = updatedSpace.files.filter(
               (file) => !ids.includes(file.id)
             );
-            prev.files = newFiles;
+            updatedSpace.files = newFiles;
             return prev;
           }
         );
@@ -87,7 +91,7 @@ export default function useSpace(code: string) {
   }
 
   async function zipFiles(ids: string[]) {
-    const response = await axios.get("/api/zip?ids=" + JSON.stringify(ids), {
+    const response = await axios.get(`/api/zip?ids=${JSON.stringify(ids)}`, {
       responseType: "blob",
     });
     const folderName = response.headers["content-disposition"]
