@@ -11,7 +11,7 @@ import useSpace from "../hooks/useSpace";
 import FileListItem from "./FileListItem";
 import { Stack, Box, Flex, chakra, CircularProgress } from "@chakra-ui/react";
 import useLayout, { Layouts } from "../hooks/useLayout";
-import Toolbar from "./Toolbar";
+import Toolbar from "./_Toolbar";
 
 const FilesPanel: React.FC = () => {
   const windowWidth = useWindowWidth();
