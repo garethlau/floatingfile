@@ -23,22 +23,22 @@ import {
   ENVIRONMENT,
 } from "../env";
 import Button from "../components/Button";
-import IntroToast from "../components/intro-toast";
-import UploadQueue from "../components/upload-queue";
+import IntroToast from "../components/IntroToast";
+import UploadQueue from "../components/UploadQueue";
 import useSpace from "../hooks/useSpace";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import FullPageLoader from "../components/FullPageLoader";
 import SpaceNotFound from "../components/SpaceNotFound";
 import FilesPanel from "../components/FilesPanel";
-import NavBar from "../components/nav-bar";
+import NavBar from "../components/NavBar";
 import FadeIn from "../components/animations/FadeIn";
 import useLayout, { Layouts } from "../hooks/useLayout";
 import rpcClient from "../lib/rpc";
 
 const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
-const ConnectPanel = React.lazy(() => import("../components/connect-panel"));
-const HistoryPanel = React.lazy(() => import("../components/history-panel"));
-const UsersPanel = React.lazy(() => import("../components/users-panel"));
+const ConnectPanel = React.lazy(() => import("../components/ConnectPanel"));
+const HistoryPanel = React.lazy(() => import("../components/HistoryPanel"));
+const UsersPanel = React.lazy(() => import("../components/UsersPanel"));
 const panelFallback = null;
 
 const SMLayout: React.FC<SpaceProps> = ({ match, clientId }) => (
