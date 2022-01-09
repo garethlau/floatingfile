@@ -1,11 +1,11 @@
 import "@fontsource/dm-sans/400.css";
-import "@fontsource/dm-sans/500.css"
-import "@fontsource/dm-sans/700.css"
+import "@fontsource/dm-sans/500.css";
+import "@fontsource/dm-sans/700.css";
 import React from "react";
 import Head from "next/head";
 import { DefaultSeo } from "next-seo";
 import { ChakraProvider } from "@chakra-ui/react";
-import { theme } from "@floatingfile/common";
+import { theme } from "@floatingfile/ui";
 
 // This default export is required in a new `pages/_app.js` file.
 const App: React.FC<{ Component: any; pageProps: any }> = ({

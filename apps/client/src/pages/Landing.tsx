@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Colors, Logo } from "@floatingfile/common";
+import { Colors, Logo } from "@floatingfile/ui";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import {

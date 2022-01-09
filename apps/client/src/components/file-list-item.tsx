@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
-import { Colors } from "@floatingfile/common";
+import { Colors } from "@floatingfile/ui";
 import { isMobile } from "react-device-detect";
 import { useParams } from "react-router-dom";
 import { useIsMutating } from "react-query";

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Colors } from "@floatingfile/common";
+import { Colors } from "@floatingfile/ui";
 import { FaRegWindowMinimize } from "react-icons/fa";
 import { isMobile } from "react-device-detect";
 import { motion, AnimateSharedLayout } from "framer-motion";

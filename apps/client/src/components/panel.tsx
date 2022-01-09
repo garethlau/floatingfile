@@ -1,6 +1,6 @@
 import React from "react";
 import { Flex, chakra, Box } from "@chakra-ui/react";
-import { Colors } from "@floatingfile/common";
+import { Colors } from "@floatingfile/ui";
 
 export interface PanelProps {
   title: string;

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { AnimateSharedLayout, AnimatePresence, motion } from "framer-motion";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Button from "./Button";
-import { Colors } from "@floatingfile/common";
+import { Colors } from "@floatingfile/ui";
 import { useDropzone } from "react-dropzone";
 import useWindowWidth from "../hooks/useWindowWidth";
 import { useUploadService } from "../contexts/uploadService";

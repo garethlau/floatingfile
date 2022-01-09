@@ -1,5 +1,5 @@
 import React from "react";
-import { Colors } from "@floatingfile/common";
+import { Colors } from "@floatingfile/ui";
 import {
   mdiUpload,
   mdiDownload,

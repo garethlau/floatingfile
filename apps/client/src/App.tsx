@@ -5,7 +5,7 @@ import { Router, Switch, Route } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { SnackbarProvider } from "notistack";
 import { Breakpoints } from "./constants";
-import { Colors, theme } from "@floatingfile/common";
+import { Colors, theme } from "@floatingfile/ui";
 import {
   USERNAME_STORAGE_KEY,
   ENVIRONMENT,

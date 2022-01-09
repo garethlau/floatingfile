@@ -6,7 +6,7 @@
   "types": "dist/types/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc -w --preserveWatchOutput",
+    "watch": "tsc -w --preserveWatchOutput",
     "postinstall": "tsc"
   },
   "devDependencies": {
