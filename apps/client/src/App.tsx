@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Suspense } from "react";
 import { Router, Switch, Route } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { Colors, theme } from "@floatingfile/ui";
+import { theme } from "@floatingfile/ui";
 import axios from "axios";
 import ReactGA from "react-ga";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -59,18 +59,7 @@ const App: React.FC<{}> = () => {
     func();
   }, []);
 
-  if (loading) {
-    // FIXME: This component overflows...
-    return (
-      <div
-        style={{
-          width: "100vw",
-          height: "100vh",
-          backgroundColor: Colors.LIGHT_SHADE,
-        }}
-      />
-    );
-  }
+  if (loading) return null;
 
   return (
     <ChakraProvider theme={theme}>
