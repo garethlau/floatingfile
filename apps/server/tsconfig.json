@@ -14,6 +14,8 @@
     "paths": {
       "*": ["node_modules/*"]
     },
+    "incremental": true,
+    "rootDir": "src",
     "typeRoots": [
       "src/types",
       "src/node_modules/@types"
