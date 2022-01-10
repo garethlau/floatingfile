@@ -22,6 +22,8 @@ const Landing: React.FC = () => {
   useDocumentTitle("floatingfile");
   const history = useHistory();
   const [code, setCode] = useState("");
+  const [isJoining, setIsJoining] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   const phrase = useRandomElement([
     "Simplify your file transfer workflow.",
@@ -73,6 +75,7 @@ const Landing: React.FC = () => {
       return;
     }
 
+    setIsJoining(true);
     try {
       const space = await rpc.invoke("findSpace", { code });
       if (!space) {
@@ -101,10 +104,13 @@ const Landing: React.FC = () => {
         isClosable: true,
         position: "top",
       });
+    } finally {
+      setIsJoining(false);
     }
   }
 
   async function create() {
+    setIsCreating(true);
     try {
       const space = await rpc.invoke("createSpace", {
         username: localStorage.getItem(USERNAME_STORAGE_KEY)!,
@@ -121,6 +127,8 @@ const Landing: React.FC = () => {
         isClosable: true,
         position: "top",
       });
+    } finally {
+      setIsCreating(false);
     }
   }
 
@@ -190,6 +198,7 @@ const Landing: React.FC = () => {
             id="join-space-btn"
             colorScheme="blue"
             isFullWidth
+            isLoading={isJoining}
           >
             Join
           </Button>
@@ -198,7 +207,7 @@ const Landing: React.FC = () => {
 
           <Button
             onClick={create}
-            isLoading={false} // FIXME:
+            isLoading={isCreating}
             id="create-space-btn"
             isFullWidth
             colorScheme="blue"
