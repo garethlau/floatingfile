@@ -53,8 +53,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
   const sourceRef = useRef<CancelTokenSource | null>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line
-    (async function () {
+    (async () => {
       if (size() > 0) {
         const wrappedFile = peek();
 
