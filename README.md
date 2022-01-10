@@ -16,12 +16,15 @@ This respository is a monorepo containing packages that are responsible for the 
 
 **Please note that the iOS application codebase is not included in this monorepo.**
 
-| Package                      | Description                                                                   | Technologies               |
-| ---------------------------- | ----------------------------------------------------------------------------- | -------------------------- |
-| [client](/packages/client/)  | Frontend for the floatingfile application. Boostrapped with Create React App. | react, chakra-ui           |
-| [common](/packages/common)   | Shared code (interfaces, enums, components, constants).                       |                            |
-| [landing](/packages/landing) | floatingfile marketing/landing site.                                          | nextjs, react, chakra-ui   |
-| [server](/packages/server)   | Backend for the floatingfile application.                                     | express, mongoose, aws-sdk |
+| Package                  | Description                                                                   | Technologies               |
+| ------------------------ | ----------------------------------------------------------------------------- | -------------------------- |
+| [client](/apps/client/)  | Frontend for the floatingfile application. Boostrapped with Create React App. | react, chakra-ui           |
+| [ui](/packages/ui)       | Shared UI components and themes.                                              |                            |
+| [landing](/apps/landing) | floatingfile marketing/landing site.                                          | nextjs, react, chakra-ui   |
+| [server](/apps/server)   | Backend for the floatingfile application.                                     | express, mongoose, aws-sdk |
+| [types](/packages/types) | Type defenitions.                                                             |                            |
+
+![](/docs/floatingfile-endpoint-access.svg)
 
 ## Development
 
