@@ -4,11 +4,10 @@ import QRCode from "qrcode.react";
 import MoonLoader from "react-spinners/MoonLoader";
 import { ORIGIN } from "../env";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { useSnackbar } from "notistack";
 import useSpace from "../hooks/useSpace";
 import { useParams, useHistory } from "react-router-dom";
 import floatingfileImg from "../assets/images/floatingfile.png";
-import { Flex, Spacer, Box, chakra, Button } from "@chakra-ui/react";
+import { Flex, Spacer, Box, chakra, Button, useToast } from "@chakra-ui/react";
 import Panel from "./Panel";
 import Honeybadger from "../lib/honeybadger";
 import add from "date-fns/add";
@@ -18,11 +17,11 @@ const FIVE_MINUTES: number = 5 * 60 * 1000;
 
 const ConnectPanel: React.FC = () => {
   const { code }: { code: string } = useParams();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { space, destroy } = useSpace(code);
   const history = useHistory();
   const [isDestroying, setIsDestroying] = useState(false);
   const [timeLeft, setTimeLeft] = useState<number>(0); // In seconds
+  const toast = useToast();
 
   async function close() {
     try {
@@ -45,37 +44,44 @@ const ConnectPanel: React.FC = () => {
     const duration = expiryDate.getTime() - currDate.getTime();
     if (duration < 0) {
       // This space has already expired
-      enqueueSnackbar("This space has expired.", { variant: "error" });
+      toast({
+        title: "This space has expired.",
+        status: "error",
+        isClosable: true,
+      });
     }
     if (duration - FIVE_MINUTES > 0) {
       // Set five minute timeout warning
       timers.five = setTimeout(() => {
-        enqueueSnackbar("Space will expire in 5 minutes.", {
-          variant: "warning",
+        toast({
+          title: "Space will expire in 5 minutes.",
+          status: "warning",
+          isClosable: true,
         });
-        setTimeout(() => closeSnackbar(), 5000);
       }, duration - FIVE_MINUTES);
     }
 
     if (duration - THIRTY_MINUTES > 0) {
       // Set thirty minute timeout warning
       timers.thirty = setTimeout(() => {
-        enqueueSnackbar("Space will expire in 30 minutes.", {
-          variant: "warning",
+        toast({
+          title: "Space will expire in 30 minutes.",
+          status: "warning",
+          isClosable: true,
         });
-        setTimeout(() => closeSnackbar(), 5000);
       }, duration - THIRTY_MINUTES);
     }
 
     if (duration > 0) {
       timers.zero = setTimeout(() => {
-        enqueueSnackbar("Space has expired. Redirecting...", {
-          variant: "warning",
+        toast({
+          title: "Space has expired.",
+          description: "You will be redirected to the home page.",
+          status: "error",
         });
         setTimeout(() => {
-          closeSnackbar();
           history.push("/");
-        });
+        }, 5000);
       }, duration);
     }
 
@@ -104,10 +110,11 @@ const ConnectPanel: React.FC = () => {
         <CopyToClipboard
           text={`${ORIGIN}/s/${code}`}
           onCopy={() => {
-            enqueueSnackbar(`URL copied to clipboard.`, {
-              variant: "success",
+            toast({
+              title: "URL copied to clipboard.",
+              status: "success",
+              isClosable: true,
             });
-            setTimeout(closeSnackbar, 3000);
           }}
         >
           <chakra.div

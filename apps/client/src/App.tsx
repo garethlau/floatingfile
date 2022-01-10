@@ -2,7 +2,6 @@ import React, { useEffect, useState, Suspense } from "react";
 import { makeStyles } from "@material-ui/core";
 import { Router, Switch, Route } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { SnackbarProvider } from "notistack";
 import { Breakpoints } from "./constants";
 import { Colors, theme } from "@floatingfile/ui";
 import {
@@ -101,33 +100,19 @@ const App: React.FC<{}> = () => {
   return (
     <ChakraProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-        <SnackbarProvider
-          maxSnack={3}
-          classes={{
-            variantSuccess: classes.success,
-            variantError: classes.error,
-            variantWarning: classes.warning,
-            variantInfo: classes.info,
-          }}
-          anchorOrigin={{
-            vertical: windowWidth > Breakpoints.MD ? "bottom" : "top",
-            horizontal: windowWidth > Breakpoints.MD ? "right" : "center",
-          }}
-        >
-          <UploadServiceProvider>
-            <SelectedFilesProvider>
-              <Router history={history}>
-                <Suspense fallback={null}>
-                  <Switch>
-                    <Route exact path="/" component={Landing} />
-                    <Route path="/s/:code" component={Space} />
-                    <Route component={NotFound} />
-                  </Switch>
-                </Suspense>
-              </Router>
-            </SelectedFilesProvider>
-          </UploadServiceProvider>
-        </SnackbarProvider>
+        <UploadServiceProvider>
+          <SelectedFilesProvider>
+            <Router history={history}>
+              <Suspense fallback={null}>
+                <Switch>
+                  <Route exact path="/" component={Landing} />
+                  <Route path="/s/:code" component={Space} />
+                  <Route component={NotFound} />
+                </Switch>
+              </Suspense>
+            </Router>
+          </SelectedFilesProvider>
+        </UploadServiceProvider>
       </QueryClientProvider>
     </ChakraProvider>
   );
