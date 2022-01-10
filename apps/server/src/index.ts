@@ -7,14 +7,7 @@ export * from "./rpc";
 
 (async function () {
   if (NODE_ENV === "prod" || NODE_ENV === "staging") {
-    const APP_OUT_DIRECTORY = path.join(
-      __dirname,
-      "..",
-      "..",
-      "..",
-      "client",
-      "out"
-    );
+    const APP_OUT_DIRECTORY = path.join(__dirname, "..", "..", "client", "out");
     const APP_INDEX = path.join(APP_OUT_DIRECTORY, "index.html");
     app.use(express.static(APP_OUT_DIRECTORY));
     app.get("*", (_, res) => {
