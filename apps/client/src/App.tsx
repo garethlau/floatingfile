@@ -1,21 +1,18 @@
 import React, { useEffect, useState, Suspense } from "react";
-import { makeStyles } from "@material-ui/core";
 import { Router, Switch, Route } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { Breakpoints } from "./constants";
 import { Colors, theme } from "@floatingfile/ui";
+import axios from "axios";
+import ReactGA from "react-ga";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ChakraProvider } from "@chakra-ui/react";
 import {
   USERNAME_STORAGE_KEY,
   ENVIRONMENT,
   LAST_VISIT_STORAGE_KEY,
 } from "./env";
-import useWindowWidth from "./hooks/useWindowWidth";
-import axios from "axios";
-import ReactGA from "react-ga";
-import { QueryClient, QueryClientProvider } from "react-query";
 import { SelectedFilesProvider } from "./contexts/selectedFiles";
 import { UploadServiceProvider } from "./contexts/uploadService";
-import { ChakraProvider } from "@chakra-ui/react";
 import rpcClient from "./lib/rpc";
 
 const Space = React.lazy(() => import("./pages/Space"));
@@ -25,26 +22,6 @@ const NotFound = React.lazy(() => import("./pages/NotFound"));
 ReactGA.initialize("UA-159864166-1", { debug: ENVIRONMENT === "development" });
 
 axios.defaults.headers.common["api-key"] = "secretcat";
-
-const useStyles = makeStyles(() => ({
-  root: {
-    maxWidth: "100%",
-    minHeight: "100vh",
-    overflowX: "hidden",
-  },
-  success: {
-    backgroundColor: Colors.SUCCESS,
-  },
-  error: {
-    backgroundColor: Colors.DANGER,
-  },
-  warning: {
-    backgroundColor: Colors.WARNING,
-  },
-  info: {
-    backgroundColor: Colors.DARK_ACCENT,
-  },
-}));
 
 const history = createBrowserHistory();
 
@@ -57,8 +34,6 @@ history.listen((location) => {
 });
 
 const App: React.FC<{}> = () => {
-  const classes = useStyles();
-  const windowWidth = useWindowWidth();
   const [loading, setLoading] = useState<boolean>(true);
   const queryClient = new QueryClient();
 
