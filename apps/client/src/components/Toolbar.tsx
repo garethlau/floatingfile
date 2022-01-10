@@ -92,7 +92,6 @@ const Toolbar: React.FC = () => {
   });
 
   async function downloadSelected() {
-    // FIXME: Only display toast if privallege is missing
     toast({
       title: "Downloading selected files.",
       description:
@@ -152,12 +151,9 @@ const Toolbar: React.FC = () => {
       await zipFiles(selected);
       toast.closeAll();
       toast({
-        title: "Successfully zipped files",
+        title: "Successfully zipped and downloaded files",
         status: "success",
       });
-      // await axios.delete(
-      //   `/api/v5/spaces/${code}/files/zip?folder=${folderName}`
-      // );
     } catch (err) {
       toast({
         title: "Error zipping selected files",
