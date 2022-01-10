@@ -63,7 +63,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         try {
-          uploadFile(wrappedFile, {
+          await uploadFile(wrappedFile, {
             cancelToken: sourceRef.current?.token,
             onPreupload: () => {
               setCurrentUpload(wrappedFile.id);
