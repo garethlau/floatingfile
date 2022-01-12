@@ -25,6 +25,9 @@ export const createSpace: CreateSpaceFn = async (params: {
 
   return {
     code: space.code,
+    files: [],
+    events: [],
+    clients: [],
     createdAt: space.createdAt.toString(),
     updatedAt: space.updatedAt.toString(),
   };
