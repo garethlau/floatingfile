@@ -11,7 +11,14 @@ export type FindSpaceFn = (params: { code: string }) => Promise<
 
 export type CreateSpaceFn = (params: {
   username: string;
-}) => Promise<{ code: string; createdAt: string; updatedAt: string } | null>;
+}) => Promise<{
+  code: string;
+  createdAt: string;
+  files: File[];
+  events: Event[];
+  clients: Client[];
+  updatedAt: string;
+} | null>;
 
 export type DestroySpaceFn = (params: { code: string }) => Promise<void>;
 
