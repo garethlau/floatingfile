@@ -1,0 +1,48 @@
+import {
+  FindSpaceFn,
+  CreateSpaceFn,
+  DestroySpaceFn,
+  PredownloadFn,
+  PostuploadFn,
+  PostdownloadFn,
+  RemoveFn,
+  RemoveManyFn,
+  GenerateUsernameFn,
+  PreuploadFn,
+} from "@floatingfile/types";
+import axios from "axios";
+
+// FIXME: Read API url from env
+const API_URL = "http://127.0.0.1:5000";
+
+type API = {
+  generateUsername: GenerateUsernameFn;
+  createSpace: CreateSpaceFn;
+  destroySpace: DestroySpaceFn;
+  findSpace: FindSpaceFn;
+  preupload: PreuploadFn;
+  postupload: PostuploadFn;
+  predownload: PredownloadFn;
+  postdownload: PostdownloadFn;
+  removeFile: RemoveFn;
+  removeFiles: RemoveManyFn;
+};
+
+const invoke = <Endpoint extends keyof API>(
+  endpoint: Endpoint,
+  ...params: Parameters<API[Endpoint]>
+): ReturnType<API[Endpoint]> => {
+  return axios
+    .post(`${API_URL}/api/rpc`, {
+      endpoint,
+      params,
+    })
+    .then((response) => {
+      return response.data;
+    }) as any;
+};
+
+const rpcClient = {
+  invoke,
+};
+export default rpcClient;
