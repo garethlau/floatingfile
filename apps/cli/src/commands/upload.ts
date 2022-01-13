@@ -81,7 +81,9 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
       );
       files = selections.map((selection) => candidates[selection]);
     } catch (error) {
-      process.stdout.write(chalk.red(`${error.message}\n`));
+      if (error instanceof RangeError || error instanceof TypeError) {
+        process.stdout.write(chalk.red(`${error.message}\n`));
+      } else process.stdout.write(chalk.red(`Unexpected error occured.\n`));
       process.exit();
     }
   }

@@ -63,7 +63,9 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     try {
       selections = await promptNums(query, { min: 0, max: files.length - 1 });
     } catch (error) {
-      process.stdout.write(chalk.red(`${error.message}\n`));
+      if (error instanceof RangeError || error instanceof TypeError) {
+        process.stdout.write(chalk.red(`${error.message}\n`));
+      } else process.stdout.write(chalk.red(`Unexpected error occured.\n`));
       process.exit();
     }
   }
