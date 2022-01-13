@@ -22,6 +22,7 @@ import { notifyAll } from "../services/notification-service";
 import prisma from "../lib/prisma";
 import s3 from "../lib/s3";
 import { S3_BUCKET_NAME } from "../config";
+import Honeybadger from "../lib/honeybadger";
 
 export const initChunkUpload: InitChunkUploadFn = async (params: {
   numChunks: string;
@@ -52,7 +53,7 @@ export const initChunkUpload: InitChunkUploadFn = async (params: {
     const signedUrls = await Promise.all(promises);
     return { signedUrls, key, uploadId };
   } catch (error) {
-    console.log(error);
+    Honeybadger.notify(error);
     throw error;
   }
 };
@@ -82,8 +83,6 @@ export const completeChunkUpload: CompleteChunkUploadFn = async (params: {
 }) => {
   const { uploadId, key, parts } = params;
   try {
-    console.log("COmpleteting multi part upload");
-    console.log(parts);
     await s3
       .completeMultipartUpload({
         Bucket: S3_BUCKET_NAME,
@@ -98,7 +97,7 @@ export const completeChunkUpload: CompleteChunkUploadFn = async (params: {
       })
       .promise();
   } catch (error) {
-    console.log(error);
+    Honeybadger.notify(error);
     throw error;
   }
   return;

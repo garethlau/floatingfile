@@ -43,7 +43,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
 
   files.forEach((file) => {
     const createdAt = new Date(file.createdAt).toLocaleTimeString();
-    console.log(`${file.name} ${file.size} ${createdAt}`);
+    process.stdout.write(`${file.name} ${file.size} ${createdAt}\n`);
   });
 
   process.exit(0);
