@@ -1,10 +1,10 @@
 import React from "react";
 import { Colors } from "@floatingfile/ui";
+import { EventType } from "@floatingfile/types";
 import {
   mdiUpload,
   mdiDownload,
   mdiDelete,
-  mdiTimerSandEmpty,
   mdiAccountPlus,
   mdiAccountMinus,
   mdiDoorOpen,
@@ -24,17 +24,17 @@ function getLabel(args: {
   const { action, payload, author, createdAt } = args;
   const time = new Date(createdAt).toLocaleTimeString();
   switch (action) {
-    case "UPLOAD":
+    case EventType.UPLOAD:
       return `${author} uploaded ${payload} at ${time}`;
-    case "DOWNLOAD":
+    case EventType.DOWNLOAD:
       return `${author} downloaded ${payload} at ${time}`;
-    case "REMOVE":
+    case EventType.REMOVE:
       return `${author} removed ${payload} at ${time}`;
-    case "LEAVE":
+    case EventType.LEAVE:
       return `${author} left at ${time}`;
-    case "JOIN":
+    case EventType.JOIN:
       return `${author} joined at ${time}`;
-    case "CREATE":
+    case EventType.CREATE:
       return `${author} created the space at ${time}`;
     default:
       return "";
@@ -43,19 +43,17 @@ function getLabel(args: {
 
 function getIconPath(action: string): string {
   switch (action) {
-    case "UPLOAD":
+    case EventType.UPLOAD:
       return mdiUpload;
-    case "DOWNLOAD":
+    case EventType.DOWNLOAD:
       return mdiDownload;
-    case "REMOVE":
+    case EventType.REMOVE:
       return mdiDelete;
-    case "LEAVE":
+    case EventType.LEAVE:
       return mdiAccountMinus;
-    case "JOIN":
+    case EventType.JOIN:
       return mdiAccountPlus;
-    case "EXPIRED":
-      return mdiTimerSandEmpty;
-    case "CREATE":
+    case EventType.CREATE:
       return mdiDoorOpen;
     default:
       return "";

@@ -10,6 +10,7 @@ import {
   InitChunkUploadFn,
   AbortChunkUploadFn,
   CompleteChunkUploadFn,
+  EventType,
 } from "@floatingfile/types";
 import {
   prepUpload,
@@ -132,7 +133,7 @@ export const postupload: PostuploadFn = async (params: {
       belongsTo: code,
       author: username,
       payload: file.name,
-      action: "UPLOAD",
+      action: EventType.UPLOAD,
     },
   });
   await notifyAll(code, NotificationTypes.SPACE_UPDATED);
@@ -156,7 +157,7 @@ export const postdownload: PostdownloadFn = async (params: {
       belongsTo: code,
       author: username,
       payload: name,
-      action: "DOWNLOAD",
+      action: EventType.DOWNLOAD,
     },
   });
   await notifyAll(code, NotificationTypes.SPACE_UPDATED);
@@ -175,7 +176,7 @@ export const remove: RemoveFn = async (params: {
       belongsTo: file.belongsTo,
       author: username,
       payload: file.name,
-      action: "REMOVE",
+      action: EventType.REMOVE,
     },
   });
   notifyAll(file.belongsTo, NotificationTypes.SPACE_UPDATED);
@@ -197,7 +198,7 @@ export const removeMany: RemoveManyFn = async (params: {
           belongsTo: file.belongsTo,
           author: username,
           payload: file.name,
-          action: "REMOVE",
+          action: EventType.REMOVE,
         },
       })
     )

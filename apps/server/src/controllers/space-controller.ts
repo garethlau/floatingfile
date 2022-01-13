@@ -3,6 +3,7 @@ import {
   CreateSpaceFn,
   DestroySpaceFn,
   NotificationTypes,
+  EventType,
 } from "@floatingfile/types";
 import { create, find, remove } from "../services/space-service";
 import { notifyAll } from "../services/notification-service";
@@ -19,7 +20,7 @@ export const createSpace: CreateSpaceFn = async (params: {
     data: {
       belongsTo: space.code,
       author: username,
-      action: "CREATE",
+      action: EventType.CREATE,
     },
   });
 

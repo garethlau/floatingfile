@@ -1,4 +1,4 @@
-import { NotificationTypes } from "@floatingfile/types";
+import { EventType, NotificationTypes } from "@floatingfile/types";
 import express from "express";
 import crypto from "crypto";
 import {
@@ -41,7 +41,7 @@ router.get("/:code", cors(), async (req, res, done) => {
     await prisma.event.create({
       data: {
         author: username,
-        action: "JOIN",
+        action: EventType.JOIN,
         belongsTo: code,
       },
     });
@@ -55,7 +55,7 @@ router.get("/:code", cors(), async (req, res, done) => {
       await prisma.event.create({
         data: {
           author: username,
-          action: "LEAVE",
+          action: EventType.LEAVE,
           belongsTo: code,
         },
       });
