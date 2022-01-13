@@ -34,19 +34,24 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
 
   const space = await rpcClient.invoke("findSpace", { code });
   if (!space) {
-    process.stdout.write("Space does not exist.");
+    process.stdout.write("Space does not exist.\n");
     process.exit();
   }
 
   const files = space.files;
   if (files.length === 0) {
-    process.stdout.write("Space has no files.");
+    process.stdout.write("Space has no files.\n");
     process.exit();
   }
 
   let selections = [];
   if (all) {
-    selections = files.map((_, index) => index);
+    const input = await prompt("Do you want to remove all files? (y/n):");
+    if (input === "y" || input === "yes" || input === "Y") {
+      selections = files.map((_, index) => index);
+    } else {
+      process.exit();
+    }
   } else {
     let query = "Which files do you want to remove?\n";
 
