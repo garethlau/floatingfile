@@ -1,3 +1,4 @@
+import { APP_URL } from "../constants";
 import rpcClient from "../lib/rpc";
 import { addCode, fetchConfig } from "../lib/storage";
 
@@ -11,7 +12,7 @@ export const handler = async (): Promise<void> => {
     return;
   }
   addCode(space.code);
-  const message = `Your newly created space can be accessed here:\n\nhttps://app.floatingfile.space/s/${space.code}\n\nThe code has been saved and will be used for following commands.\nIf you wish to override this code, you cna do so via the --code flag.\n`;
+  const message = `Your newly created space can be accessed here:\n\n${APP_URL}/s/${space.code}\n\nThe code has been saved and will be used for following commands.\nIf you wish to override this code, you cna do so via the --code flag.\n`;
   process.stdout.write(message);
   process.exit();
 };

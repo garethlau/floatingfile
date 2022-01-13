@@ -14,9 +14,7 @@ import {
   AbortChunkUploadFn,
 } from "@floatingfile/types";
 import axios from "axios";
-
-// FIXME: Read API url from env
-const API_URL = "https://staging.floatingfile.space";
+import { API_URL } from "../constants";
 
 type API = {
   generateUsername: GenerateUsernameFn;

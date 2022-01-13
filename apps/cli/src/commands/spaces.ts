@@ -2,6 +2,7 @@ import type { Arguments, CommandBuilder } from "yargs";
 import chalk from "chalk";
 import { fetchCodes, saveCodes } from "../lib/storage";
 import { prompt } from "../lib/readline";
+import { APP_URL } from "../constants";
 
 type Options = {
   def: boolean | undefined;
@@ -23,7 +24,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     // Set new default
     let query = "Which space do you want to set as the default?\n";
     codes.forEach((code, index) => {
-      const url = `https://app.floatingfile.space/s/${code}`;
+      const url = `${APP_URL}/s/${code}`;
       if (index === 0) {
         query += chalk.green(`(default) ${code} ${url}\n`);
       } else {
@@ -55,7 +56,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
       process.exit();
     }
     codes.forEach((code, index) => {
-      const url = `https://app.floatingfile.space/s/${code}`;
+      const url = `${APP_URL}/s/${code}`;
       if (index === 0) {
         process.stdout.write(chalk.green(`(default) ${code} ${url}\n`));
       } else {
