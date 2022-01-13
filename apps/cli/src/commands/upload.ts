@@ -87,51 +87,47 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
   });
 
   const promises = files.map(async (file) => {
-    try {
-      const filePath = path.join(dir, file);
-      const stream = fs.createReadStream(filePath);
-      const { size } = fs.statSync(filePath);
-      const bar = multibar.create(100, 0, {
-        filename: file,
-        transferred: 0,
-        length: size,
-      });
-      const { signedUrl, key } = await rpcClient.invoke("preupload", {
-        code: code,
+    const filePath = path.join(dir, file);
+    const stream = fs.createReadStream(filePath);
+    const { size } = fs.statSync(filePath);
+    const bar = multibar.create(100, 0, {
+      filename: file,
+      transferred: 0,
+      length: size,
+    });
+    const { signedUrl, key } = await rpcClient.invoke("preupload", {
+      code: code,
+      size: size.toString(),
+    });
+
+    await new Promise((resolve, reject) => {
+      stream
+        .pipe(
+          progressStream({ length: size }).on("progress", (progress) => {
+            bar.update(progress.percentage, {
+              filename: file,
+              transferred: progress.transferred,
+              length: progress.length,
+            });
+          })
+        )
+        .pipe(request.put(signedUrl))
+        .on("response", resolve)
+        .on("error", reject);
+    });
+
+    await rpcClient.invoke("postupload", {
+      code: code,
+      username: "",
+      file: {
         size: size.toString(),
-      });
-
-      await new Promise((resolve, reject) => {
-        stream
-          .pipe(
-            progressStream({ length: size }).on("progress", (progress) => {
-              bar.update(progress.percentage, {
-                filename: file,
-                transferred: progress.transferred,
-                length: progress.length,
-              });
-            })
-          )
-          .pipe(request.put(signedUrl))
-          .on("response", resolve)
-          .on("error", reject);
-      });
-
-      await rpcClient.invoke("postupload", {
-        code: code,
-        username: "",
-        file: {
-          size: size.toString(),
-          name: file,
-          type: mime.lookup(file) || "application/octet-stream",
-          ext: path.extname(file),
-          key,
-        },
-      });
-      return path.join(process.cwd(), dir, file);
-    } catch (error) {
-      console.log(error);
-    }
+        name: file,
+        type: mime.lookup(file) || "application/octet-stream",
+        ext: path.extname(file),
+        key,
+      },
+    });
+    return path.join(process.cwd(), dir, file);
   });
   const paths = await Promise.all(promises);
   multibar.stop();
