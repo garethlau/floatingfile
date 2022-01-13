@@ -25,7 +25,7 @@ export type DestroySpaceFn = (params: { code: string }) => Promise<void>;
 export type PreuploadFn = (params: {
   code: string;
   size: string;
-}) => Promise<{ signedUrl: string; key: string }>;
+}) => Promise<{ signedUrl: string; key: string } | null>;
 
 export type PostuploadFn = (params: {
   code: string;
@@ -60,3 +60,23 @@ export type RemoveManyFn = (params: {
 }) => Promise<void>;
 
 export type GenerateUsernameFn = () => { username: string };
+
+export type InitChunkUploadFn = (params: { numChunks: string }) => Promise<{
+  uploadId: string;
+  key: string;
+  signedUrls: string[];
+}>;
+
+export type AbortChunkUploadFn = (params: {
+  key: string;
+  uploadId: string;
+}) => Promise<void>;
+
+export type CompleteChunkUploadFn = (params: {
+  uploadId: string;
+  key: string;
+  parts: {
+    eTag: string;
+    number: string;
+  }[];
+}) => Promise<void>;

@@ -10,6 +10,7 @@ import Honeybadger from "../lib/honeybadger";
 import { v4 as uuidv4 } from "uuid";
 import useSpace from "../hooks/useSpace";
 import { WrappedFile } from "../interfaces";
+import { useToast } from "@chakra-ui/react";
 
 interface Context {
   enqueueMany: (files: File[]) => void;
@@ -49,6 +50,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [currentUpload, setCurrentUpload] = useState<string>("");
   const { uploadFile } = useSpace(code);
+  const toast = useToast();
 
   const sourceRef = useRef<CancelTokenSource | null>(null);
 
@@ -81,6 +83,12 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
             // Cleanup logic
             Honeybadger.notify(error.messaage);
             sourceRef.current = null;
+          } else if (error instanceof Error) {
+            toast({
+              title: "File not uploaded.",
+              description: "This space has run out of available storage.",
+              status: "error",
+            });
           } else {
             Honeybadger.notify(error);
           }

@@ -16,6 +16,7 @@ export const create = async () => {
 };
 
 export const find = async (code: string) => {
+  if (!code) return null;
   const space = await prisma.space.findUnique({
     where: { code },
     include: {

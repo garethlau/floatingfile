@@ -10,13 +10,34 @@ import {
 } from "./image-preview-service";
 import prisma from "../lib/prisma";
 import s3 from "../lib/s3";
+import { SPACE_MAX_CAPACITY } from "../constants";
 
 // Directory where ZIP files are stored
 const TMP_DIR = path.join(__dirname, "..", "..", "..", "tmp");
 
-export const prepUpload = async (code: string, size: string) => {
-  // TODO: Check if the space is max capacity
+export const prepUpload = async (
+  code: string,
+  size: string
+): Promise<{ signedUrl: string; key: string } | null> => {
   const key = uuidv4();
+
+  const files = await prisma.file.findMany({
+    where: {
+      belongsTo: code,
+    },
+    select: {
+      size: true,
+    },
+  });
+
+  const used = files.reduce((acc, file) => {
+    return (acc += file.size);
+  }, 0);
+
+  if (used + parseInt(size) > SPACE_MAX_CAPACITY) {
+    // The new file will exceed the capacity, do not allow
+    return null;
+  }
 
   const params = {
     Key: key,
@@ -25,6 +46,7 @@ export const prepUpload = async (code: string, size: string) => {
   const signedUrl = s3.getSignedUrl("putObject", params);
   return { signedUrl, key };
 };
+
 export const endUpload = async (
   code: string,
   file: {

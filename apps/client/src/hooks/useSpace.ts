@@ -153,10 +153,15 @@ export default function useSpace(code: string) {
       onUploadProgress,
     } = options || {};
     const { ext, file } = wrappedFile;
-    const { signedUrl, key } = await rpcClient.invoke("preupload", {
+    const response = await rpcClient.invoke("preupload", {
       code,
-      size: "",
+      size: file.size.toString(),
     });
+    if (!response) {
+      throw new Error("Storage capacity exceeded.");
+    }
+
+    const { signedUrl, key } = response;
     if (typeof onPreupload === "function") onPreupload();
     await axios.put(signedUrl, file, {
       cancelToken,
