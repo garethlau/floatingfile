@@ -6,6 +6,9 @@ import axios from "axios";
 import { fetchCodes, fetchConfig } from "../lib/storage";
 import rl, { prompt } from "../lib/readline";
 import chalk from "chalk";
+import request from "request";
+import progressStream from "progress-stream";
+import cliProgress from "cli-progress";
 
 type Options = {
   code: string | undefined;
@@ -89,40 +92,57 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     });
   }
 
-  const promises = selections.map(
-    (selection) =>
-      new Promise(async (resolve, reject) => {
-        const file = files[selection];
-        const writer = fs.createWriteStream(path.join(dir, file.name));
+  const multibar = new cliProgress.MultiBar({
+    clearOnComplete: false,
+    hideCursor: true,
+    format: "[{bar}] {percentage}% | {downloaded}/{length} bytes | {filename}",
+  });
 
-        try {
-          const { signedUrl } = await rpcClient.invoke("predownload", {
-            id: file.id,
-          });
+  const promises = selections.map(async (selection) => {
+    const file = files[selection];
 
-          const response = await axios.get(signedUrl, {
-            responseType: "stream",
-            onDownloadProgress: (event) => {
-              console.log(event);
-            },
-          });
-          await saveFile(writer, response.data);
+    const bar = multibar.create(100, 0, {
+      filename: file.name,
+      transferred: 0,
+      length: parseInt(file.size),
+    });
 
-          await rpcClient.invoke("postdownload", {
-            code,
-            username,
-            name: file.name,
-          });
-          resolve(path.join(process.cwd(), dir, file.name).toString());
-        } catch (error) {
-          reject(error);
-        }
-      })
-  );
+    const { signedUrl } = await rpcClient.invoke("predownload", {
+      id: file.id,
+    });
+
+    await new Promise((resolve, reject) => {
+      request
+        .get(signedUrl)
+        .pipe(
+          progressStream({
+            length: parseInt(file.size),
+          }).on("progress", (progress) => {
+            bar.update(progress.percentage, {
+              filename: file.name,
+              downloaded: progress.transferred,
+              length: progress.length,
+            });
+          })
+        )
+        .pipe(fs.createWriteStream(path.join(dir, file.name)))
+        .on("finish", resolve)
+        .on("error", reject);
+    });
+
+    await rpcClient.invoke("postdownload", {
+      code,
+      username,
+      name: file.name,
+    });
+
+    return path.join(process.cwd(), dir, file.name).toString();
+  });
 
   const filePaths = await Promise.all(promises);
+  multibar.stop();
 
-  process.stdout.write("Successfully downloaded:\n");
+  process.stdout.write("\nSuccessfully downloaded:\n");
   filePaths.forEach((p) => {
     process.stdout.write(`${p}\n`);
   });
