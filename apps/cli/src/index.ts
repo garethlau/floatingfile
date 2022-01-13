@@ -11,6 +11,7 @@ import { init } from "./lib/storage";
   yargs(hideBin(process.argv))
     // Use the commands directory to scaffold.
     .commandDir(path.join(__dirname, "commands"))
+    .demandCommand()
     // Enable strict mode.
     .strict()
     // Useful aliases.
