@@ -7,7 +7,7 @@ import progressStream from "progress-stream";
 import cliProgress from "cli-progress";
 import rpcClient from "../lib/rpc";
 import { fetchCodes, fetchConfig } from "../lib/storage";
-import rl, { prompt } from "../lib/readline";
+import rl, { promptNums, promptYesNo } from "../lib/readline";
 
 type Options = {
   code: string | undefined;
@@ -54,6 +54,10 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
 
   let selections = [];
   if (all) {
+    const confirm = await promptYesNo(
+      `Are you sure you want to download all ${files.length} files? (y/n)`
+    );
+    if (!confirm) process.exit();
     selections = files.map((_, index) => index);
   } else {
     let question = "Which files do you want to download?\n";
@@ -62,20 +66,15 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
       question += `(${index}) ${file.name} ${uploadedAt}\n`;
     });
 
-    const input = await prompt(question);
-
-    selections = input.split(/[ ,]+/).map((s) => {
-      let parsed = parseInt(s, 10);
-      if (isNaN(parsed)) {
-        process.stdout.write(chalk.red(`Invalid input: ${s}\n`));
-        process.exit();
-      }
-      if (parsed < 0 || parsed > files.length - 1) {
-        process.stdout.write(chalk.red(`Out of range: ${s}\n`));
-        process.exit();
-      }
-      return parseInt(s, 10);
-    });
+    try {
+      selections = await promptNums(question, {
+        min: 0,
+        max: files.length - 1,
+      });
+    } catch (error) {
+      process.stdout.write(chalk.red(`${error.message}\n`));
+      process.exit();
+    }
   }
 
   // create container for progress bars

@@ -8,7 +8,7 @@ import axios from "axios";
 import { doesSpaceExist } from "../utils";
 import rpcClient from "../lib/rpc";
 import { fetchCodes } from "../lib/storage";
-import rl, { prompt } from "../lib/readline";
+import rl, { promptNums, promptYesNo } from "../lib/readline";
 import { fetchConfig } from "../lib/storage";
 
 type Options = {
@@ -54,30 +54,35 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
   const candidates = fs
     .readdirSync(dir)
     .filter((name) => fs.lstatSync(path.join(dir, name)).isFile());
-  candidates.forEach((file, index) => {
-    process.stdout.write(`(${index}) ${file}\n`);
-  });
 
   let files = [];
 
   if (all) {
     // Upload all files
+    const confirm = await promptYesNo(
+      `Are you sure you want to upload all ${candidates.length} files? (y/n):`
+    );
+    if (!confirm) {
+      process.exit();
+    }
     files = candidates;
   } else {
-    const input = await prompt("Which files do you want to upload?");
-    const selections = input.split(/[ ,]+/).map((s) => {
-      let parsed = parseInt(s, 10);
-      if (isNaN(parsed)) {
-        process.stdout.write(chalk.red(`Invalid input: ${s}\n`));
-        process.exit();
-      }
-      if (parsed < 0 || parsed > candidates.length - 1) {
-        process.stdout.write(chalk.red(`Out of range: ${s}\n`));
-        process.exit();
-      }
-      return parseInt(s, 10);
-    });
-    files = selections.map((selection) => candidates[selection]);
+    try {
+      candidates.forEach((file, index) => {
+        process.stdout.write(`(${index}) ${file}\n`);
+      });
+      const selections = await promptNums(
+        "Which files do you want to upload?",
+        {
+          min: 0,
+          max: candidates.length - 1,
+        }
+      );
+      files = selections.map((selection) => candidates[selection]);
+    } catch (error) {
+      process.stdout.write(chalk.red(`${error.message}\n`));
+      process.exit();
+    }
   }
 
   // create container for progress bars

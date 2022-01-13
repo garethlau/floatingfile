@@ -1,7 +1,7 @@
 import type { Arguments, CommandBuilder } from "yargs";
 import rpcClient from "../lib/rpc";
 import { fetchCodes, fetchConfig } from "../lib/storage";
-import rl, { prompt } from "../lib/readline";
+import rl, { promptNums, promptYesNo } from "../lib/readline";
 import chalk from "chalk";
 
 type Options = {
@@ -46,12 +46,11 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
 
   let selections = [];
   if (all) {
-    const input = await prompt("Do you want to remove all files? (y/n):");
-    if (input === "y" || input === "yes" || input === "Y") {
-      selections = files.map((_, index) => index);
-    } else {
-      process.exit();
-    }
+    const confirm = await promptYesNo(
+      `Are you sure you want to remove all ${files.length} files? (y/n)`
+    );
+    if (!confirm) process.exit();
+    selections = files.map((_, index) => index);
   } else {
     let query = "Which files do you want to remove?\n";
 
@@ -60,19 +59,12 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
       query += `(${index}) ${file.name} ${uploadedAt}\n`;
     });
 
-    const input = await prompt(query);
-    selections = input.split(/[ ,]+/).map((s) => {
-      let parsed = parseInt(s, 10);
-      if (isNaN(parsed)) {
-        process.stdout.write(chalk.red(`Invalid input: ${s}\n`));
-        process.exit();
-      }
-      if (parsed < 0 || parsed > files.length - 1) {
-        process.stdout.write(chalk.red(`Out of range: ${s}\n`));
-        process.exit();
-      }
-      return parseInt(s, 10);
-    });
+    try {
+      selections = await promptNums(query, { min: 0, max: files.length - 1 });
+    } catch (error) {
+      process.stdout.write(chalk.red(`${error.message}\n`));
+      process.exit();
+    }
   }
 
   const ids = selections.map((selection) => files[selection].id);
