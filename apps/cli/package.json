@@ -3,14 +3,23 @@
   "version": "0.0.1",
   "description": "The official floatingfile CLI",
   "private": true,
-  "main": "dist/index.js",
+  "main": "build/index.js",
   "bin": {
-    "floatingfile": "dist/index.js"
+    "floatingfile": "build/index.js"
   },
   "scripts": {
     "dev": "tsc -p . -w",
-    "start": "yarn build && node ./dist/index.js",
-    "build": "tsc -p ."
+    "start": "yarn build && node ./build/index.js",
+    "build": "tsc -p .",
+    "package": "pkg ."
+  },
+  "pkg": {
+    "scripts": "build/**/*.js",
+    "outputPath": "dist",
+    "targets": [
+      "node14-macos-x64",
+      "node14-win-x64"
+    ]
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +29,7 @@
     "@types/progress-stream": "^2.0.2",
     "@types/readline-sync": "^1.4.4",
     "@types/yargs": "^17.0.8",
+    "pkg": "^5.5.1",
     "typescript": "^4.5.4"
   },
   "dependencies": {
