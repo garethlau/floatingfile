@@ -32,6 +32,7 @@ export const createSpace: CreateSpaceFn = async (params: {
 
 export const findSpace: FindSpaceFn = async (params: { code: string }) => {
   const { code } = params;
+  if (!code) return null;
   const space = await find(code);
   if (!space) return null;
 
