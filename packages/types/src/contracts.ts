@@ -18,7 +18,7 @@ export type DestroySpaceFn = (params: { code: string }) => Promise<void>;
 export type PreuploadFn = (params: {
   code: string;
   size: string;
-}) => Promise<{ signedUrl: string; key: string }>;
+}) => Promise<{ signedUrl: string; key: string } | null>;
 
 export type PostuploadFn = (params: {
   code: string;

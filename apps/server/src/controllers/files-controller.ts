@@ -108,7 +108,10 @@ export const preupload: PreuploadFn = async (params: {
   code: string;
   size: string;
 }) => {
-  const { signedUrl, key } = await prepUpload(params.code, params.size);
+  const data = await prepUpload(params.code, params.size);
+  if (!data) return null;
+
+  const { signedUrl, key } = data;
   return { signedUrl, key };
 };
 
