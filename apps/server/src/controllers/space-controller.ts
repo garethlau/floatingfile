@@ -84,11 +84,11 @@ export const destroySpace: DestroySpaceFn = async (params: {
   code: string;
 }) => {
   const { code } = params;
+  await notifyAll(code, NotificationTypes.SPACE_DESTROYED);
   try {
     await remove(code);
   } catch (error) {
     Honeybadger.notify(error);
   }
-  await notifyAll(code, NotificationTypes.SPACE_DESTROYED);
   return;
 };
