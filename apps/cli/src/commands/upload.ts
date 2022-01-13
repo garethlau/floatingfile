@@ -39,6 +39,10 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
   } else {
     code = inputCode;
   }
+  if (!code) {
+    process.stdout.write(chalk.red("Missing required code.\n"));
+    process.exit();
+  }
 
   if (!(await doesSpaceExist(code))) {
     process.stdout.write(chalk.red("Space does not exist.\n"));
