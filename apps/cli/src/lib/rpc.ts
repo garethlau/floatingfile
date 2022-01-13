@@ -13,7 +13,7 @@ import {
 import axios from "axios";
 
 // FIXME: Read API url from env
-const API_URL = "http://127.0.0.1:5000";
+const API_URL = "https://staging.floatingfile.space";
 
 type API = {
   generateUsername: GenerateUsernameFn;
