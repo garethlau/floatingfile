@@ -1,13 +1,15 @@
 import type { Arguments, CommandBuilder } from "yargs";
+import chalk from "chalk";
+import request from "request";
+import progressStream from "progress-stream";
+import cliProgress from "cli-progress";
 import path from "path";
 import fs from "fs";
 import rpcClient from "../lib/rpc";
-import axios from "axios";
 import mime from "mime-types";
 import { fetchCodes } from "../lib/storage";
 import { doesSpaceExist } from "../utils";
 import rl, { prompt } from "../lib/readline";
-import chalk from "chalk";
 
 type Options = {
   code: string | undefined;
@@ -78,39 +80,62 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     files = selections.map((selection) => candidates[selection]);
   }
 
-  const promises = files.map(
-    (file) =>
-      new Promise(async (resolve, reject) => {
-        try {
-          const filePath = path.join(dir, file);
-          const buf = fs.readFileSync(filePath);
-          const size = buf.length.toString();
-          const { signedUrl, key } = await rpcClient.invoke("preupload", {
-            code: code,
-            size: size,
-          });
+  const multibar = new cliProgress.MultiBar({
+    clearOnComplete: false,
+    hideCursor: true,
+    format: "[{bar}] {percentage}% | {transferred}/{length} bytes | {filename}",
+  });
 
-          await axios.put(signedUrl, buf);
+  const promises = files.map(async (file) => {
+    try {
+      const filePath = path.join(dir, file);
+      const stream = fs.createReadStream(filePath);
+      const { size } = fs.statSync(filePath);
+      const bar = multibar.create(100, 0, {
+        filename: file,
+        transferred: 0,
+        length: size,
+      });
+      const { signedUrl, key } = await rpcClient.invoke("preupload", {
+        code: code,
+        size: size.toString(),
+      });
 
-          await rpcClient.invoke("postupload", {
-            code: code,
-            username: "",
-            file: {
-              size: size,
-              name: file,
-              type: mime.lookup(file) || "application/octet-stream",
-              ext: path.extname(file),
-              key,
-            },
-          });
-          resolve(path.join(process.cwd(), dir, file));
-        } catch (error) {
-          reject(error);
-        }
-      })
-  );
+      await new Promise((resolve, reject) => {
+        stream
+          .pipe(
+            progressStream({ length: size }).on("progress", (progress) => {
+              bar.update(progress.percentage, {
+                filename: file,
+                transferred: progress.transferred,
+                length: progress.length,
+              });
+            })
+          )
+          .pipe(request.put(signedUrl))
+          .on("response", resolve)
+          .on("error", reject);
+      });
+
+      await rpcClient.invoke("postupload", {
+        code: code,
+        username: "",
+        file: {
+          size: size.toString(),
+          name: file,
+          type: mime.lookup(file) || "application/octet-stream",
+          ext: path.extname(file),
+          key,
+        },
+      });
+      return path.join(process.cwd(), dir, file);
+    } catch (error) {
+      console.log(error);
+    }
+  });
   const paths = await Promise.all(promises);
-  process.stdout.write("Successfully uploaded:\n");
+  multibar.stop();
+  process.stdout.write("\nSuccessfully uploaded:\n");
   paths.forEach((p) => {
     process.stdout.write(`${p}\n`);
   });
