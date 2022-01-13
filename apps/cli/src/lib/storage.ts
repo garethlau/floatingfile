@@ -3,6 +3,10 @@ import os from "os";
 import path from "path";
 import rpcClient from "./rpc";
 
+function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+  return value !== null && value !== undefined;
+}
+
 const defaultConfig = {
   username: "CLI",
   download_to: "Downloads",
@@ -38,15 +42,19 @@ export const fetchCodes = async () => {
   const c = await Promise.all(
     codes.map(
       (code) =>
-        new Promise<string>(async (resolve, reject) => {
-          if (await rpcClient.invoke("findSpace", { code })) {
+        new Promise<string | null>(async (resolve, reject) => {
+          if (!code) resolve(null);
+          const space = await rpcClient.invoke("findSpace", { code });
+          if (space) {
             resolve(code);
+          } else {
+            removeCode(code);
+            resolve(null);
           }
-          reject(null);
         })
     )
   );
-  const validCodes = c.filter((c) => !!c);
+  const validCodes = c.filter(notEmpty);
   return validCodes;
 };
 
