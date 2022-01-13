@@ -9,11 +9,15 @@ import {
   RemoveManyFn,
   GenerateUsernameFn,
   PreuploadFn,
+  InitChunkUploadFn,
+  CompleteChunkUploadFn,
+  AbortChunkUploadFn,
 } from "@floatingfile/types";
 import axios from "axios";
 
 // FIXME: Read API url from env
-const API_URL = "https://staging.floatingfile.space";
+// const API_URL = "https://staging.floatingfile.space";
+const API_URL = "http://127.0.0.1:5000";
 
 type API = {
   generateUsername: GenerateUsernameFn;
@@ -26,6 +30,9 @@ type API = {
   postdownload: PostdownloadFn;
   removeFile: RemoveFn;
   removeFiles: RemoveManyFn;
+  initChunkUpload: InitChunkUploadFn;
+  abortChunkUpload: AbortChunkUploadFn;
+  completeChunkUpload: CompleteChunkUploadFn;
 };
 
 const invoke = <Endpoint extends keyof API>(

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import {
   PostdownloadFn,
   PostuploadFn,
@@ -6,6 +7,9 @@ import {
   RemoveFn,
   RemoveManyFn,
   NotificationTypes,
+  InitChunkUploadFn,
+  AbortChunkUploadFn,
+  CompleteChunkUploadFn,
 } from "@floatingfile/types";
 import {
   prepUpload,
@@ -16,6 +20,89 @@ import {
 } from "../services/files-service";
 import { notifyAll } from "../services/notification-service";
 import prisma from "../lib/prisma";
+import s3 from "../lib/s3";
+import { S3_BUCKET_NAME } from "../config";
+
+export const initChunkUpload: InitChunkUploadFn = async (params: {
+  numChunks: string;
+}) => {
+  try {
+    const { numChunks } = params;
+    const key = uuidv4();
+    const response = await s3
+      .createMultipartUpload({
+        Bucket: S3_BUCKET_NAME,
+        Key: key,
+      })
+      .promise();
+    const uploadId = response.UploadId;
+
+    const promises = [];
+    for (let i = 0; i < parseInt(numChunks); i++) {
+      promises.push(
+        s3.getSignedUrlPromise("uploadPart", {
+          Bucket: S3_BUCKET_NAME,
+          Key: key,
+          UploadId: uploadId,
+          PartNumber: i + 1,
+        })
+      );
+    }
+
+    const signedUrls = await Promise.all(promises);
+    return { signedUrls, key, uploadId };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const abortChunkUpload: AbortChunkUploadFn = async (params: {
+  key: string;
+  uploadId: string;
+}) => {
+  const { uploadId, key } = params;
+  await s3
+    .abortMultipartUpload({
+      Bucket: S3_BUCKET_NAME,
+      Key: key,
+      UploadId: uploadId,
+    })
+    .promise();
+  return;
+};
+
+export const completeChunkUpload: CompleteChunkUploadFn = async (params: {
+  uploadId: string;
+  key: string;
+  parts: {
+    eTag: string;
+    number: string;
+  }[];
+}) => {
+  const { uploadId, key, parts } = params;
+  try {
+    console.log("COmpleteting multi part upload");
+    console.log(parts);
+    await s3
+      .completeMultipartUpload({
+        Bucket: S3_BUCKET_NAME,
+        Key: key,
+        UploadId: uploadId,
+        MultipartUpload: {
+          Parts: parts.map(({ eTag, number }) => ({
+            ETag: eTag,
+            PartNumber: parseInt(number),
+          })),
+        },
+      })
+      .promise();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+  return;
+};
 
 export const preupload: PreuploadFn = async (params: {
   code: string;

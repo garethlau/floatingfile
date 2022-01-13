@@ -1,15 +1,15 @@
 import type { Arguments, CommandBuilder } from "yargs";
 import chalk from "chalk";
-import request from "request";
-import progressStream from "progress-stream";
 import cliProgress from "cli-progress";
 import path from "path";
 import fs from "fs";
 import mime from "mime-types";
+import axios from "axios";
+import { doesSpaceExist } from "../utils";
 import rpcClient from "../lib/rpc";
 import { fetchCodes } from "../lib/storage";
-import { doesSpaceExist } from "../utils";
 import rl, { prompt } from "../lib/readline";
+import { fetchConfig } from "../lib/storage";
 
 type Options = {
   code: string | undefined;
@@ -98,33 +98,67 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
       length: size,
     });
 
-    const { signedUrl, key } = await rpcClient.invoke("preupload", {
-      code: code,
-      size: size.toString(),
-    });
+    const CHUNK_SIZE = 5 * 1024 * 1024;
+    const total = Math.ceil(size / CHUNK_SIZE);
+    const { signedUrls, key, uploadId } = await rpcClient.invoke(
+      "initChunkUpload",
+      {
+        numChunks: total.toString(),
+      }
+    );
+
+    let chunkNumber = 0;
+    let transferred = 0;
+    const parts: { eTag: string; number: string }[] = [];
 
     await new Promise((resolve, reject) => {
-      fs.createReadStream(filePath)
-        .pipe(
-          // pipe to progress stream
-          progressStream({ length: size }).on("progress", (progress) => {
-            // update the progress bar
-            bar.update(progress.percentage, {
-              filename: file,
-              transferred: progress.transferred,
-              length: progress.length,
-            });
-          })
-        )
-        // pipe to request to upload file
-        .pipe(request.put(signedUrl))
-        .on("response", resolve)
+      const readStream = fs.createReadStream(filePath, {
+        highWaterMark: CHUNK_SIZE,
+      });
+
+      readStream
+        .on("data", async (chunk) => {
+          // retreive the signed url for the chunk
+          const signedUrl = signedUrls[chunkNumber];
+
+          // pause the stream while uploading
+          readStream.pause();
+          const response = await axios.put(signedUrl, chunk);
+
+          // save the eTag and chunk number, needed to complete the upload
+          const eTag = response.headers.etag;
+          const number = (chunkNumber + 1).toString();
+          parts.push({ eTag, number });
+
+          chunkNumber++;
+          transferred += chunk.length;
+
+          // update the progress bar
+          bar.update((transferred / size) * 100, {
+            filename: file,
+            transferred: transferred,
+            length: size,
+          });
+
+          // resume the stream to upload the next chunk
+          readStream.resume();
+        })
+        .on("end", () => {
+          resolve(null);
+        })
         .on("error", reject);
+    });
+
+    // complete the chunk upload
+    await rpcClient.invoke("completeChunkUpload", {
+      uploadId,
+      key,
+      parts,
     });
 
     await rpcClient.invoke("postupload", {
       code: code,
-      username: "",
+      username: fetchConfig("username"),
       file: {
         size: size.toString(),
         name: file,

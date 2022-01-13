@@ -11,6 +11,9 @@ import {
   postdownload,
   remove,
   removeMany,
+  initChunkUpload,
+  abortChunkUpload,
+  completeChunkUpload,
 } from "./controllers/files-controller";
 import { generateUsername } from "./controllers/username-controller";
 
@@ -67,6 +70,18 @@ router.post("/", async (req, res) => {
     case "removeFiles": {
       await removeMany(params);
       return reply();
+    }
+    case "initChunkUpload": {
+      const result = await initChunkUpload(params);
+      return reply(result);
+    }
+    case "abortChunkUpload": {
+      const result = await abortChunkUpload(params);
+      return reply(result);
+    }
+    case "completeChunkUpload": {
+      const result = await completeChunkUpload(params);
+      return reply(result);
     }
     default: {
       return res.status(404).send();
