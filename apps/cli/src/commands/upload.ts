@@ -7,7 +7,7 @@ import mime from "mime-types";
 import axios from "axios";
 import { doesSpaceExist } from "../utils";
 import rpcClient from "../lib/rpc";
-import { fetchCodes } from "../lib/storage";
+import { addCode, fetchCodes } from "../lib/storage";
 import rl, { promptNums, promptYesNo } from "../lib/readline";
 import { fetchConfig } from "../lib/storage";
 
@@ -40,6 +40,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     code = codes[0];
   } else {
     code = inputCode;
+    addCode(code);
   }
   if (!code) {
     process.stdout.write(chalk.red("Missing required code.\n"));

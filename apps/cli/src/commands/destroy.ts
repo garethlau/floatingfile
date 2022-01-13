@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import type { Arguments, CommandBuilder } from "yargs";
 import rpcClient from "../lib/rpc";
-import { fetchCodes, removeCode } from "../lib/storage";
+import { addCode, fetchCodes, removeCode } from "../lib/storage";
 import { doesSpaceExist } from "../utils";
 
 type Options = {
@@ -24,6 +24,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
   let code = "";
   if (inputCode) {
     code = inputCode;
+    addCode(code);
   } else {
     const codes = await fetchCodes();
     code = codes[0];
