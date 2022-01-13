@@ -50,6 +50,10 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
 
     saveCodes(updatedCodes);
   } else {
+    if (codes.length === 0) {
+      process.stdout.write("There are no spaces.\n");
+      process.exit();
+    }
     codes.forEach((code, index) => {
       const url = `https://app.floatingfile.space/s/${code}`;
       if (index === 0) {
