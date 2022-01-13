@@ -70,7 +70,11 @@ export const addCode = (code: string) => {
   let update = data;
   const codes = data.codes || [];
   if (Array.isArray(codes)) {
-    update.codes = [code, ...codes];
+    if (codes.includes(code)) {
+      return;
+    } else {
+      update.codes = [code, ...codes];
+    }
   }
   write(update);
   return;
