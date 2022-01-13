@@ -5,8 +5,8 @@ import progressStream from "progress-stream";
 import cliProgress from "cli-progress";
 import path from "path";
 import fs from "fs";
-import rpcClient from "../lib/rpc";
 import mime from "mime-types";
+import rpcClient from "../lib/rpc";
 import { fetchCodes } from "../lib/storage";
 import { doesSpaceExist } from "../utils";
 import rl, { prompt } from "../lib/readline";
@@ -80,6 +80,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     files = selections.map((selection) => candidates[selection]);
   }
 
+  // create container for progress bars
   const multibar = new cliProgress.MultiBar({
     clearOnComplete: false,
     hideCursor: true,
@@ -88,22 +89,26 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
 
   const promises = files.map(async (file) => {
     const filePath = path.join(dir, file);
-    const stream = fs.createReadStream(filePath);
     const { size } = fs.statSync(filePath);
+
+    // create an upload progress bar for this file
     const bar = multibar.create(100, 0, {
       filename: file,
       transferred: 0,
       length: size,
     });
+
     const { signedUrl, key } = await rpcClient.invoke("preupload", {
       code: code,
       size: size.toString(),
     });
 
     await new Promise((resolve, reject) => {
-      stream
+      fs.createReadStream(filePath)
         .pipe(
+          // pipe to progress stream
           progressStream({ length: size }).on("progress", (progress) => {
+            // update the progress bar
             bar.update(progress.percentage, {
               filename: file,
               transferred: progress.transferred,
@@ -111,6 +116,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
             });
           })
         )
+        // pipe to request to upload file
         .pipe(request.put(signedUrl))
         .on("response", resolve)
         .on("error", reject);
@@ -127,11 +133,15 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
         key,
       },
     });
+    // return the path of the uploaded file
     return path.join(process.cwd(), dir, file);
   });
+
   const paths = await Promise.all(promises);
   multibar.stop();
+
   process.stdout.write("\nSuccessfully uploaded:\n");
+
   paths.forEach((p) => {
     process.stdout.write(`${p}\n`);
   });

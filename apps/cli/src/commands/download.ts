@@ -1,14 +1,13 @@
 import type { Arguments, CommandBuilder } from "yargs";
 import path from "path";
 import fs from "fs";
-import rpcClient from "../lib/rpc";
-import axios from "axios";
-import { fetchCodes, fetchConfig } from "../lib/storage";
-import rl, { prompt } from "../lib/readline";
 import chalk from "chalk";
 import request from "request";
 import progressStream from "progress-stream";
 import cliProgress from "cli-progress";
+import rpcClient from "../lib/rpc";
+import { fetchCodes, fetchConfig } from "../lib/storage";
+import rl, { prompt } from "../lib/readline";
 
 type Options = {
   code: string | undefined;
@@ -29,19 +28,6 @@ export const builder: CommandBuilder<Options, Options> = (yargs) =>
     .default("dir", "./")
     .positional("dir", { type: "string", demandOption: false })
     .alias("a", "all");
-
-async function saveFile(writer: fs.WriteStream, data: any) {
-  return new Promise((resolve, reject) => {
-    data.pipe(writer);
-    writer.on("error", (err) => {
-      writer.close();
-      reject(err);
-    });
-    writer.on("close", () => {
-      resolve(true);
-    });
-  });
-}
 
 export const handler = async (argv: Arguments<Options>): Promise<void> => {
   const username: string = fetchConfig("username");
@@ -92,6 +78,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     });
   }
 
+  // create container for progress bars
   const multibar = new cliProgress.MultiBar({
     clearOnComplete: false,
     hideCursor: true,
@@ -101,12 +88,14 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
   const promises = selections.map(async (selection) => {
     const file = files[selection];
 
+    // create a progress bar for this file download
     const bar = multibar.create(100, 0, {
       filename: file.name,
       transferred: 0,
       length: parseInt(file.size),
     });
 
+    // get the signed url
     const { signedUrl } = await rpcClient.invoke("predownload", {
       id: file.id,
     });
@@ -115,9 +104,11 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
       request
         .get(signedUrl)
         .pipe(
+          // pipe data to progress stream
           progressStream({
             length: parseInt(file.size),
           }).on("progress", (progress) => {
+            // update the progress bar
             bar.update(progress.percentage, {
               filename: file.name,
               downloaded: progress.transferred,
@@ -125,6 +116,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
             });
           })
         )
+        // pipe data to write stream to save the file
         .pipe(fs.createWriteStream(path.join(dir, file.name)))
         .on("finish", resolve)
         .on("error", reject);
@@ -136,6 +128,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
       name: file.name,
     });
 
+    // return the save location
     return path.join(process.cwd(), dir, file.name).toString();
   });
 
