@@ -1,8 +1,7 @@
-import React, { useCallback, useReducer } from "react";
+import React, { useReducer } from "react";
 import { useParams } from "react-router-dom";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import ClearIcon from "@material-ui/icons/Clear";
-import { useDropzone } from "react-dropzone";
 import { FaTrash, FaCloudDownloadAlt } from "react-icons/fa";
 import { GrDocumentZip } from "react-icons/gr";
 import { MdCloudUpload } from "react-icons/md";
@@ -21,9 +20,9 @@ import {
 } from "@chakra-ui/react";
 import Button from "./Button";
 import useSpace from "../hooks/useSpace";
-import { useUploadService } from "../contexts/uploadService";
 import { useSelectedFiles } from "../contexts/selectedFiles";
 import Honeybadger from "../lib/honeybadger";
+import FileDrop from "./FileDrop";
 
 enum actionTypes {
   UPDATE_DOWNLOAD_PROGRESS,
@@ -82,14 +81,6 @@ const Toolbar: React.FC = () => {
     clear: clearSelectedFiles,
     setSelected,
   } = useSelectedFiles();
-  const uploadService = useUploadService();
-  const onDrop = useCallback(async (droppedFiles: File[]) => {
-    uploadService.enqueueMany(droppedFiles);
-  }, []);
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-  });
 
   async function downloadSelected() {
     toast({
@@ -166,8 +157,7 @@ const Toolbar: React.FC = () => {
   return (
     <Flex align="center" p={2} bg="blue.500">
       <HStack>
-        <div {...getRootProps()}>
-          <input {...getInputProps()} />
+        <FileDrop>
           {!isCollapsed ? (
             <Button colorScheme="green" leftIcon={<Icon as={MdCloudUpload} />}>
               Upload
@@ -181,7 +171,7 @@ const Toolbar: React.FC = () => {
               />
             </Tooltip>
           )}
-        </div>
+        </FileDrop>
         {selected.length === files?.length ? (
           <>
             {!isCollapsed ? (

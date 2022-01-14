@@ -16,7 +16,9 @@ const FileUploadBtn: React.FC<{ handleFiles: any }> = ({ handleFiles }) => {
 
   function handleChange(event: Event<HTMLInputElement>) {
     const uploadedFiles = event.target?.files || [];
-    handleFiles(Array.from(uploadedFiles));
+    console.log(uploadedFiles);
+
+    // handleFiles(Array.from(uploadedFiles));
   }
 
   return (

@@ -1,17 +1,16 @@
-import React, { useEffect, useCallback } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import { AnimateSharedLayout, AnimatePresence, motion } from "framer-motion";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Button from "./Button";
 import { Colors } from "@floatingfile/ui";
-import { useDropzone } from "react-dropzone";
 import useWindowWidth from "../hooks/useWindowWidth";
-import { useUploadService } from "../contexts/uploadService";
 import useSpace from "../hooks/useSpace";
 import FileListItem from "./FileListItem";
 import { Stack, Box, Flex, chakra, CircularProgress } from "@chakra-ui/react";
 import useLayout, { Layouts } from "../hooks/useLayout";
 import Toolbar from "./Toolbar";
+import FileDrop from "./FileDrop";
 
 const FilesPanel: React.FC = () => {
   const windowWidth = useWindowWidth();
@@ -20,42 +19,6 @@ const FilesPanel: React.FC = () => {
   const layout = useLayout();
 
   const files = space?.files || [];
-
-  const uploadService = useUploadService();
-
-  useEffect(() => {
-    uploadService.setCode(code);
-  }, [code]);
-
-  const onDrop = useCallback(async (droppedFiles: File[]) => {
-    uploadService.enqueueMany(droppedFiles);
-  }, []);
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-  });
-
-  const dropZone = (
-    <chakra.div {...getRootProps()} flexGrow={1} display="flex" w="100%">
-      <input {...getInputProps()} />
-      <Flex align="center" justify="center" w="inherit" h="inherit">
-        <Box textAlign="center">
-          {windowWidth > 960 ? (
-            <chakra.p opacity={0.7}>
-              Drag and drop files
-              <br />
-              or
-            </chakra.p>
-          ) : (
-            <chakra.p opacity={0.7}>It&apos;s pretty empty here...</chakra.p>
-          )}
-          <Button colorScheme="green" leftIcon={<CloudUploadIcon />}>
-            Upload
-          </Button>
-        </Box>
-      </Flex>
-    </chakra.div>
-  );
 
   if (isLoading) {
     return (
@@ -105,7 +68,26 @@ const FilesPanel: React.FC = () => {
             </AnimateSharedLayout>
           </AnimatePresence>
         ) : (
-          dropZone
+          <FileDrop isFullHeight>
+            <Flex align="center" justify="center" w="inherit" h="inherit">
+              <Box textAlign="center">
+                {windowWidth > 960 ? (
+                  <chakra.p opacity={0.7}>
+                    Drag and drop files
+                    <br />
+                    or
+                  </chakra.p>
+                ) : (
+                  <chakra.p opacity={0.7}>
+                    It&apos;s pretty empty here...
+                  </chakra.p>
+                )}
+                <Button colorScheme="green" leftIcon={<CloudUploadIcon />}>
+                  Upload
+                </Button>
+              </Box>
+            </Flex>
+          </FileDrop>
         )}
       </Box>
     </Flex>
