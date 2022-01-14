@@ -18,8 +18,7 @@ import { NotificationTypes } from "@floatingfile/types";
 import {
   USERNAME_STORAGE_KEY,
   LAST_VISIT_STORAGE_KEY,
-  BASE_API_URL,
-  ENVIRONMENT,
+  EVENT_SOURCE,
 } from "../env";
 import Button from "../components/Button";
 import IntroToast from "../components/IntroToast";
@@ -214,9 +213,8 @@ const Space: React.FC<SpaceProps> = (props) => {
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
     const username = localStorage.getItem(USERNAME_STORAGE_KEY);
-    const url = `${
-      ENVIRONMENT === "development" ? BASE_API_URL : ""
-    }/api/notifications/${code}?username=${username}`;
+
+    const url = `${EVENT_SOURCE}/${code}?username=${username}`;
     const eventSource = new EventSource(url);
 
     eventSource.onmessage = (event) => {
