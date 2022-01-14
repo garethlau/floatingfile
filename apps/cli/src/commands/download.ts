@@ -43,9 +43,17 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
 
   let downloadDir = "";
   if (!inputDir) {
-    downloadDir = path.join(os.homedir(), fetchConfig("download_to"));
+    const groupBySpace = fetchConfig("group_by_space");
+    if (groupBySpace) {
+      downloadDir = path.join(os.homedir(), fetchConfig("download_to"), code);
+    } else {
+      downloadDir = path.join(os.homedir(), fetchConfig("download_to"));
+    }
   } else {
     downloadDir = path.join(process.cwd(), inputDir);
+  }
+  if (!fs.existsSync(downloadDir)) {
+    fs.mkdirSync(downloadDir, { recursive: true });
   }
 
   const space = await rpcClient.invoke("findSpace", { code });
