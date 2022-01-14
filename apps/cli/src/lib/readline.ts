@@ -10,7 +10,9 @@ export const rl = readline.createInterface({
 });
 
 export const prompt = (query: string): Promise<string> =>
-  new Promise((resolve) => rl.question(`${query}\n`, (val) => resolve(val)));
+  new Promise((resolve) =>
+    rl.question(`${query}\n`, (val) => resolve(val.trim()))
+  );
 
 export const promptYesNo = async (query: string): Promise<boolean> => {
   const input = await prompt(query);
