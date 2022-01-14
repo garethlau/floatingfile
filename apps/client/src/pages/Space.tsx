@@ -212,6 +212,7 @@ const Space: React.FC<SpaceProps> = (props) => {
   }, []);
 
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
     const username = localStorage.getItem(USERNAME_STORAGE_KEY);
     const url = `${
       ENVIRONMENT === "development" ? BASE_API_URL : ""
@@ -239,7 +240,7 @@ const Space: React.FC<SpaceProps> = (props) => {
             position: "bottom-right",
           });
 
-          setTimeout(() => {
+          timer = setTimeout(() => {
             history.push("/");
           }, 3000);
           break;
@@ -247,7 +248,9 @@ const Space: React.FC<SpaceProps> = (props) => {
       }
     };
     return () => {
+      clearTimeout(timer);
       eventSource.close();
+      toast.closeAll();
     };
   }, [code]);
 
