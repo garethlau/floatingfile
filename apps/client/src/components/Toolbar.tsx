@@ -234,6 +234,7 @@ const Toolbar: React.FC = () => {
               disabled={selected.length === 0}
               aria-label="Remove Selected Files"
               icon={<Icon as={FaTrash} />}
+              onClick={removeSelected}
             />
           </Tooltip>
         )}
