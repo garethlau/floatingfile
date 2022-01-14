@@ -17,7 +17,7 @@ type Options = {
   dir: string | undefined;
 };
 
-export const command: string = "upload [dir]";
+export const command: string[] = ["upload [dir]", "ul [dir]"];
 export const desc: string = "Upload files to space";
 
 export const builder: CommandBuilder<Options, Options> = (yargs) =>

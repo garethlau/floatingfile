@@ -9,7 +9,7 @@ type Options = {
   all: boolean | undefined;
 };
 
-export const command: string = "remove";
+export const command: string[] = ["remove", "rm"];
 export const desc: string = "Remove files from a space";
 
 export const builder: CommandBuilder<Options, Options> = (yargs) =>

@@ -16,7 +16,7 @@ type Options = {
   dir: string | undefined;
 };
 
-export const command: string = "download [dir]";
+export const command: string[] = ["download [dir]", "dl [dir]"];
 export const desc: string = "Download files from a space";
 
 export const builder: CommandBuilder<Options, Options> = (yargs) =>

@@ -8,7 +8,7 @@ type Options = {
   code: string | undefined;
 };
 
-export const command: string = "destroy";
+export const command: string[] = ["destroy"];
 export const desc: string = "Destroy space with <code>";
 
 export const builder: CommandBuilder<Options, Options> = (yargs) =>
