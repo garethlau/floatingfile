@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { Colors } from "@floatingfile/ui";
 import { isMobile } from "react-device-detect";
 import { useParams } from "react-router-dom";
-import { useIsMutating } from "react-query";
 import {
   Flex,
   Spacer,
@@ -13,9 +12,11 @@ import {
   Icon,
   Tooltip,
   CircularProgress,
+  Progress,
 } from "@chakra-ui/react";
 import { FaTrash, FaCloudDownloadAlt } from "react-icons/fa";
-import { MdOpenInBrowser } from "react-icons/md";
+import { MdOpenInBrowser, MdStop } from "react-icons/md";
+import axios, { CancelTokenSource } from "axios";
 import { useSelectedFiles } from "../contexts/selectedFiles";
 import useSpace from "../hooks/useSpace";
 import FileIcon from "./FileIcon";
@@ -41,10 +42,10 @@ const FileListItem: React.FC<{
   const { toggleSelect, isSelected } = useSelectedFiles();
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
-  const isMutating = useIsMutating({ mutationKey: ["space", code] });
   const layout = useLayout();
   const ref = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number>(0);
+  const sourceRef = useRef<CancelTokenSource | null>(null);
 
   useEffect(() => {
     function calcWidth() {
@@ -58,6 +59,12 @@ const FileListItem: React.FC<{
     return () => window.removeEventListener("resize", calcWidth);
   }, []);
 
+  function cancel(e: React.SyntheticEvent) {
+    e.stopPropagation();
+    if (sourceRef.current) {
+      sourceRef.current.cancel("Operation cancelled");
+    }
+  }
   async function download(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ): Promise<void> {
@@ -69,13 +76,22 @@ const FileListItem: React.FC<{
       try {
         setIsDownloading(true);
 
+        if (!sourceRef.current) {
+          sourceRef.current = axios.CancelToken.source();
+        }
+
         await downloadFile(id, name, {
+          cancelToken: sourceRef.current?.token,
           onDownloadProgress: (event) => {
             setDownloadProgress(event.loaded / event.total);
           },
         });
       } catch (error) {
-        Honeybadger.notify(error);
+        if (axios.isCancel(error)) {
+          sourceRef.current = null;
+        } else {
+          Honeybadger.notify(error);
+        }
       } finally {
         setIsDownloading(false);
         setDownloadProgress(0);
@@ -126,15 +142,13 @@ const FileListItem: React.FC<{
       <Box>
         {containerWidth > 540 ? (
           <>
-            <Button
-              colorScheme="blue"
-              isDisabled={isMutating > 0}
-              onClick={remove}
-              mr="5px"
-            >
+            <Button colorScheme="blue" onClick={remove} mr="5px">
               Remove
             </Button>
-            <Button colorScheme="blue" onClick={download}>
+            <Button
+              colorScheme="blue"
+              onClick={!isDownloading ? download : cancel}
+            >
               <chakra.span opacity={isDownloading ? 0 : 1}>
                 Download
               </chakra.span>
@@ -144,8 +158,25 @@ const FileListItem: React.FC<{
                 left="50%"
                 transform="translate(-50%, -50%)"
               >
-                {isDownloading && `${(downloadProgress * 100).toFixed(1)}%`}
+                {isDownloading && "Cancel"}
               </chakra.span>
+              <chakra.div
+                pos="absolute"
+                bottom="0"
+                left="50%"
+                transform="translate(-50%, 0)"
+                w="100%"
+              >
+                {isDownloading && (
+                  <Progress
+                    size="xs"
+                    colorScheme="green"
+                    bg="blue.500"
+                    value={downloadProgress * 100}
+                    borderRadius="md"
+                  />
+                )}
+              </chakra.div>
             </Button>
           </>
         ) : (
@@ -159,24 +190,44 @@ const FileListItem: React.FC<{
                 mr="5px"
               />
             </Tooltip>
-            <Tooltip label="Download file">
-              <IconButton
+            <Tooltip
+              label={!isDownloading ? "Download file" : "Cancel download"}
+            >
+              <Button
+                w="40px"
+                h="40px"
                 colorScheme="blue"
-                onClick={download}
+                onClick={!isDownloading ? download : cancel}
                 aria-label="Download file"
-                isLoading={isDownloading}
-                icon={
-                  <Icon as={isMobile ? MdOpenInBrowser : FaCloudDownloadAlt} />
-                }
-                spinner={
-                  <CircularProgress
-                    size="36px"
-                    value={downloadProgress * 100}
-                    color="green"
-                    capIsRound
-                  />
-                }
-              />
+              >
+                <Icon
+                  opacity={isDownloading ? 0 : 1}
+                  as={isMobile ? MdOpenInBrowser : FaCloudDownloadAlt}
+                />
+                <chakra.span
+                  pos="absolute"
+                  top="50%"
+                  left="50%"
+                  transform="translate(-50%, -50%)"
+                >
+                  {isDownloading && <Icon as={MdStop} />}
+                </chakra.span>
+                <chakra.div
+                  pos="absolute"
+                  top="50%"
+                  left="50%"
+                  transform="translate(-50%, -50%)"
+                >
+                  {isDownloading && (
+                    <CircularProgress
+                      size="36px"
+                      value={downloadProgress * 100}
+                      color="green"
+                      capIsRound
+                    />
+                  )}
+                </chakra.div>
+              </Button>
             </Tooltip>
           </>
         )}

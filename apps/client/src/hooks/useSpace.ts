@@ -106,14 +106,20 @@ export default function useSpace(code: string) {
     id: string,
     filename: string,
     options?: {
+      cancelToken?: CancelToken;
       onPredownload?: () => void;
       onDownload?: () => void;
       onPostdownload?: () => void;
       onDownloadProgress?: ((progressEvent: any) => void) | undefined;
     }
   ) {
-    const { onPredownload, onDownload, onPostdownload, onDownloadProgress } =
-      options || {};
+    const {
+      cancelToken,
+      onPredownload,
+      onDownload,
+      onPostdownload,
+      onDownloadProgress,
+    } = options || {};
 
     const { signedUrl } = await rpcClient.invoke("predownload", { id });
     if (typeof onPredownload === "function") onPredownload();
@@ -121,6 +127,7 @@ export default function useSpace(code: string) {
     const response = await axios.get(signedUrl, {
       responseType: "blob",
       onDownloadProgress,
+      cancelToken,
     });
 
     const { data } = response;
