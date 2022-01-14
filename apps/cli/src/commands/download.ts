@@ -100,7 +100,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     // create a progress bar for this file download
     const bar = multibar.create(100, 0, {
       filename: file.name,
-      transferred: 0,
+      downloaded: 0,
       length: parseInt(file.size),
     });
 
