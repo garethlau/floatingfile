@@ -5,8 +5,6 @@ import { addCode, fetchCodes } from "../lib/storage";
 
 type Options = {
   code: string | undefined;
-  all: boolean | undefined;
-  dir: string | undefined;
 };
 
 export const command: string = "files";

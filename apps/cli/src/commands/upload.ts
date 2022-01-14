@@ -22,10 +22,16 @@ export const desc: string = "Upload files to space";
 
 export const builder: CommandBuilder<Options, Options> = (yargs) =>
   yargs
-    .option("code", {
-      type: "string",
-      description:
-        "Code of the space to upload files to. Will fallback to the most recently accessed space.",
+    .options({
+      code: {
+        type: "string",
+        description:
+          "Code of the space to upload files to. Will fallback to the most recently accessed space.",
+      },
+      all: {
+        type: "boolean",
+        description: "Upload all files within the directory.",
+      },
     })
     .default("dir", "./")
     .positional("dir", { type: "string", demandOption: false })
