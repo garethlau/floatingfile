@@ -4,6 +4,7 @@ import fs from "fs";
 import chalk from "chalk";
 import request from "request";
 import progressStream from "progress-stream";
+import os from "os";
 import cliProgress from "cli-progress";
 import rpcClient from "../lib/rpc";
 import { addCode, fetchCodes, fetchConfig } from "../lib/storage";
@@ -24,15 +25,13 @@ export const builder: CommandBuilder<Options, Options> = (yargs) =>
       code: { type: "string" },
       all: { type: "boolean", description: "download all" },
     })
-
-    .default("dir", "./")
     .positional("dir", { type: "string", demandOption: false })
     .alias("a", "all");
 
 export const handler = async (argv: Arguments<Options>): Promise<void> => {
   const username: string = fetchConfig("username");
   let code = "";
-  const { code: inputCode, dir = "./", all } = argv;
+  const { code: inputCode, dir: inputDir, all } = argv;
 
   if (!inputCode) {
     const codes = await fetchCodes();
@@ -41,6 +40,14 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     code = inputCode;
     addCode(code);
   }
+
+  let downloadDir = "";
+  if (!inputDir) {
+    downloadDir = path.join(os.homedir(), fetchConfig("download_to"));
+  } else {
+    downloadDir = path.join(process.cwd(), inputDir);
+  }
+
   const space = await rpcClient.invoke("findSpace", { code });
 
   if (!space) {
@@ -119,7 +126,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
           })
         )
         // pipe data to write stream to save the file
-        .pipe(fs.createWriteStream(path.join(dir, file.name)))
+        .pipe(fs.createWriteStream(path.join(downloadDir, file.name)))
         .on("finish", resolve)
         .on("error", reject);
     });
@@ -131,7 +138,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     });
 
     // return the save location
-    return path.join(process.cwd(), dir, file.name).toString();
+    return path.join(downloadDir, file.name).toString();
   });
 
   const filePaths = await Promise.all(promises);
