@@ -182,7 +182,11 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
       },
     });
     // return the path of the uploaded file
-    return path.join(process.cwd(), dir, file);
+    if (path.isAbsolute(dir)) {
+      return path.join(dir, file);
+    } else {
+      return path.join(process.cwd(), dir, file);
+    }
   });
 
   const paths = await Promise.all(promises);
