@@ -33,7 +33,6 @@ import FadeIn from "../components/animations/FadeIn";
 import useLayout, { Layouts } from "../hooks/useLayout";
 import rpcClient from "../lib/rpc";
 
-const SettingsPanel = React.lazy(() => import("../components/SettingsPanel"));
 const ConnectPanel = React.lazy(() => import("../components/ConnectPanel"));
 const HistoryPanel = React.lazy(() => import("../components/HistoryPanel"));
 const UsersPanel = React.lazy(() => import("../components/UsersPanel"));
@@ -47,9 +46,6 @@ const SMLayout: React.FC<SpaceProps> = ({ match, clientId }) => (
     <Box flex={1}>
       <Suspense fallback={panelFallback}>
         <Switch>
-          <Route path={`${match.path}/settings`}>
-            <SettingsPanel />
-          </Route>
           <Route path={`${match.path}/history`} component={HistoryPanel} />
           <Route path={`${match.path}/users`}>
             <UsersPanel myClientId={clientId} />
@@ -67,11 +63,6 @@ const MDLayout: React.FC<SpaceProps> = ({ match, clientId }) => (
     <Box h="calc(100vh - 64px)">
       <Suspense fallback={panelFallback}>
         <Switch>
-          <Route path={`${match.path}/settings`}>
-            <FadeIn>
-              <SettingsPanel />
-            </FadeIn>
-          </Route>
           <Route path={`${match.path}/history`}>
             <FadeIn>
               <HistoryPanel />
@@ -106,11 +97,6 @@ const LGLayout: React.FC<SpaceProps> = ({ match, clientId }) => (
     <Box w="240px">
       <Suspense fallback={panelFallback}>
         <Switch>
-          <Route path={`${match.path}/settings`}>
-            <FadeIn>
-              <SettingsPanel />
-            </FadeIn>
-          </Route>
           <Route path={`${match.path}/history`}>
             <FadeIn>
               <HistoryPanel />

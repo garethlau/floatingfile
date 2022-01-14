@@ -21,6 +21,7 @@ import useSpace from "../hooks/useSpace";
 import FileIcon from "./FileIcon";
 import Honeybadger from "../lib/honeybadger";
 import useLayout, { Layouts } from "../hooks/useLayout";
+import { formatBytes } from "../utils";
 
 const FileListItem: React.FC<{
   file: {
@@ -119,13 +120,7 @@ const FileListItem: React.FC<{
         <chakra.p textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
           {name}
         </chakra.p>
-        <chakra.p opacity={0.7}>
-          {!Number.isNaN(size / 1000)
-            ? size > 1000000
-              ? `${(size / (1024 * 1024)).toFixed(1)} MB`
-              : `${(size / 1024).toFixed(1)} KB`
-            : ""}
-        </chakra.p>
+        <chakra.p opacity={0.7}>{formatBytes(size)}</chakra.p>
       </Box>
       <Spacer />
       <Box>

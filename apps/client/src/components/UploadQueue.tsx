@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useUploadService } from "../contexts/uploadService";
 import { WrappedFile } from "../interfaces";
-import { formatFileSize } from "../utils";
+import { formatBytes } from "../utils";
 import Button from "./Button";
 
 interface FileCardProps {
@@ -45,7 +45,7 @@ const FileCard: React.FC<FileCardProps> = ({
         >
           {name}
         </chakra.p>
-        <chakra.p opacity={0.7}>{formatFileSize(size)}</chakra.p>
+        <chakra.p opacity={0.7}>{formatBytes(size)}</chakra.p>
       </Box>
       <Spacer />
       {isActive && (

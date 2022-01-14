@@ -53,13 +53,21 @@ export function saveBlob(data: any, filename: string): Promise<string> {
   });
 }
 
-export function formatFileSize(size: number): string {
-  if (Number.isNaN(size)) return "";
-  if (size >= 1024 ** 3) {
-    return `${(size / 1024 ** 3).toFixed(1)} GB`;
-  }
-  if (size >= 1024 ** 2) {
-    return `${(size / 1024 ** 2).toFixed(1)} MB`;
-  }
-  return `${(size / 1024 ** 1).toFixed(1)} KB`;
+export function formatBytes(bytes: string | number, decimals = 2) {
+  let _bytes: number;
+  if (typeof bytes === "number") {
+    _bytes = bytes;
+  } else if (typeof bytes === "string") {
+    _bytes = parseInt(bytes, 10);
+  } else throw new TypeError();
+
+  if (_bytes === 0) return "0 Bytes";
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+  const i = Math.floor(Math.log(_bytes) / Math.log(k));
+
+  return parseFloat((_bytes / k ** i).toFixed(dm)) + " " + sizes[i];
 }
