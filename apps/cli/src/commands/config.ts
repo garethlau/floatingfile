@@ -8,7 +8,7 @@ type Options = {
 };
 
 export const command: string = "config [<key>] [value]";
-export const desc: string = "floatingfile";
+export const desc: string = "Retreive or set configuration";
 
 export const builder: CommandBuilder<Options, Options> = (yargs) =>
   yargs

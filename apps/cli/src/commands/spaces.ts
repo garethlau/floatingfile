@@ -9,7 +9,7 @@ type Options = {
 };
 
 export const command: string = "spaces";
-export const desc: string = "Get list of recently accessed (and alive) spaces.";
+export const desc: string = "Get list of recently accessed (and alive) spaces";
 
 export const builder: CommandBuilder<Options, Options> = (yargs) =>
   yargs.options({

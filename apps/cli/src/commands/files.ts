@@ -8,7 +8,7 @@ type Options = {
 };
 
 export const command: string[] = ["files", "f"];
-export const desc: string = "Fetch files in the space.";
+export const desc: string = "Fetch files in the space";
 
 export const builder: CommandBuilder<Options, Options> = (yargs) =>
   yargs.options({
