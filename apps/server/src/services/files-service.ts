@@ -80,7 +80,7 @@ export const prepDownload = async (id: string) => {
     Bucket: S3_BUCKET_NAME,
   };
   const signedUrl = s3.getSignedUrl("getObject", params);
-  return signedUrl;
+  return { signedUrl };
 };
 
 export const endDownload = async () =>

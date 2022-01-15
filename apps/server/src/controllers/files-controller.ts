@@ -142,7 +142,7 @@ export const postupload: PostuploadFn = async (params: {
 
 export const predownload: PredownloadFn = async (params: { id: string }) => {
   const { id } = params;
-  const signedUrl = await prepDownload(id);
+  const { signedUrl } = await prepDownload(id);
   return { signedUrl };
 };
 
