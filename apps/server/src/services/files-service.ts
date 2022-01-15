@@ -169,6 +169,7 @@ export const remove = async (id: string) => {
   return file;
 };
 export const removeMany = async (ids: string[]) => {
+  if (ids.length === 0) return;
   const files = await prisma.file.findMany({
     where: {
       id: {
