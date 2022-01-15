@@ -1,21 +1,14 @@
 import { NextSeo } from "next-seo";
 import Footer from "components/footer";
-import EnterInView from "../src/wrappers/EnterInView";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import marked from "marked";
 import NavigationBar from "components/navigation-bar";
 import PageTitle from "components/page-title";
-import {
-  Box,
-  Container,
-  Text,
-  chakra,
-  Divider,
-  useBreakpointValue,
-} from "@chakra-ui/react";
+import { Box, Container, Text, Divider } from "@chakra-ui/react";
 import Markdown from "components/Markdown";
+import React from "react";
 
 interface ChangelogRecord {
   version: string;
@@ -42,7 +35,7 @@ const ChangelogPage: React.FC<{ changelog: ChangelogRecord[] }> = ({
 
       <Container maxW="3xl">
         {changelog.map(({ version, data, htmlString }) => (
-          <EnterInView key={version}>
+          <React.Fragment key={version}>
             <Box id={version}>
               <Text as="i">
                 {version} - {data.date}
@@ -50,7 +43,7 @@ const ChangelogPage: React.FC<{ changelog: ChangelogRecord[] }> = ({
               <Markdown htmlString={htmlString} />
             </Box>
             <Divider my={10} />
-          </EnterInView>
+          </React.Fragment>
         ))}
       </Container>
 
