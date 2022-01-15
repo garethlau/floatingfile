@@ -1,6 +1,3 @@
-import { isMobile } from "react-device-detect";
-import { saveAs } from "file-saver";
-
 export function getMobileOperatingSystem(): string {
   // let userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
@@ -27,5 +24,5 @@ export function formatBytes(bytes: string | number, decimals = 2) {
 
   const i = Math.floor(Math.log(_bytes) / Math.log(k));
 
-  return parseFloat((_bytes / k ** i).toFixed(dm)) + " " + sizes[i];
+  return `${parseFloat((_bytes / k ** 1).toFixed(dm))} ${sizes[i]}`;
 }
