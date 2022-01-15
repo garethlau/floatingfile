@@ -26,7 +26,6 @@ echo ">>> building frontend"
 yarn --cwd apps/client build:$environment
 
 echo ">>> building backend"
-rm apps/server/tsconfig.tsbuildinfo
 yarn --cwd apps/server build
 
 echo ">>> restarting application"
