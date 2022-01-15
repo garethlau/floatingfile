@@ -2,7 +2,6 @@ import React from "react";
 import {
   chakra,
   useBreakpointValue,
-  useColorModePreference,
   useColorModeValue,
 } from "@chakra-ui/react";
 
@@ -56,7 +55,7 @@ const Markdown: React.FC<MarkdownProps> = ({ htmlString }) => {
           padding: "5px",
         },
         tr: {
-          "&:nth-child(even)": {
+          "&:nth-of-type(even)": {
             backgroundColor: useColorModeValue("blue.50", "gray.700"),
           },
         },
