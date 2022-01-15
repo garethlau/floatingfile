@@ -42,9 +42,11 @@ const FilesPanel: React.FC = () => {
         {layout === Layouts.MOBILE && files.length > 0 && (
           // Upload button for mobile layout scrolls w/ file list
           <Box maxW="100vw" p={2}>
-            <Button colorScheme="green" isFullWidth>
-              Upload
-            </Button>
+            <FileDrop>
+              <Button colorScheme="green" isFullWidth>
+                Upload
+              </Button>
+            </FileDrop>
           </Box>
         )}
         {/* {windowWidth < 960 && files.length > 0 && (
