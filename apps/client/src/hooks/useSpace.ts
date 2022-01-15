@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { WrappedFile } from "../interfaces";
 import { USERNAME_STORAGE_KEY } from "../env";
 import rpcClient from "../lib/rpc";
-import { saveBlob } from "../utils";
+import { saveAs } from "file-saver";
 
 export default function useSpace(code: string) {
   const queryClient = useQueryClient();
@@ -99,7 +99,8 @@ export default function useSpace(code: string) {
       .split("=")[1]
       .replace(/"/g, "");
     const { data } = response;
-    await saveBlob(data, folderName);
+    const blob = new Blob([data], { type: data.type });
+    saveAs(blob, folderName);
   }
 
   async function downloadFile(
@@ -131,7 +132,12 @@ export default function useSpace(code: string) {
     });
 
     const { data } = response;
-    await saveBlob(data, filename);
+    const blob = new Blob([data], { type: data.type });
+    // macos: chrome, safari
+    // android: chrome
+    // ios: safari
+    saveAs(blob, filename);
+
     if (typeof onDownload === "function") onDownload();
 
     await rpcClient.invoke("postdownload", {

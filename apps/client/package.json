@@ -24,6 +24,7 @@
     "axios": "^0.21.2",
     "bluebird": "^3.7.2",
     "env-cmd": "^10.1.0",
+    "file-saver": "^2.0.5",
     "framer-motion": "^4",
     "http-proxy-middleware": "^0.20.0",
     "prop-types": "^15.7.2",
@@ -70,6 +71,7 @@
     ]
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.5",
     "@types/qrcode.react": "^1.0.1",
     "@types/react-copy-to-clipboard": "^5.0.0",
     "@types/react-router-dom": "^5.1.7",

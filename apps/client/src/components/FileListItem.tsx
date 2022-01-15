@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Colors } from "@floatingfile/ui";
-import { isMobile } from "react-device-detect";
 import { useParams } from "react-router-dom";
 import {
   Flex,
@@ -15,7 +14,7 @@ import {
   Progress,
 } from "@chakra-ui/react";
 import { FaTrash, FaCloudDownloadAlt } from "react-icons/fa";
-import { MdOpenInBrowser, MdStop } from "react-icons/md";
+import { MdStop } from "react-icons/md";
 import axios, { CancelTokenSource } from "axios";
 import { useSelectedFiles } from "../contexts/selectedFiles";
 import useSpace from "../hooks/useSpace";
@@ -36,7 +35,6 @@ const FileListItem: React.FC<{
 }> = ({ file }) => {
   const { id, previewUrl, name, ext } = file;
   const size = parseInt(file.size, 10);
-  const signedUrl = ""; // FIXME:
   const { code }: { code: string } = useParams();
   const { removeFile, downloadFile } = useSpace(code);
   const { toggleSelect, isSelected } = useSelectedFiles();
@@ -69,33 +67,28 @@ const FileListItem: React.FC<{
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ): Promise<void> {
     e.stopPropagation();
-    if (isMobile) {
-      // FIXME: File download should work on mobile as well!
-      window.open(signedUrl, "_blank");
-    } else {
-      try {
-        setIsDownloading(true);
+    try {
+      setIsDownloading(true);
 
-        if (!sourceRef.current) {
-          sourceRef.current = axios.CancelToken.source();
-        }
-
-        await downloadFile(id, name, {
-          cancelToken: sourceRef.current?.token,
-          onDownloadProgress: (event) => {
-            setDownloadProgress(event.loaded / event.total);
-          },
-        });
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          sourceRef.current = null;
-        } else {
-          Honeybadger.notify(error);
-        }
-      } finally {
-        setIsDownloading(false);
-        setDownloadProgress(0);
+      if (!sourceRef.current) {
+        sourceRef.current = axios.CancelToken.source();
       }
+
+      await downloadFile(id, name, {
+        cancelToken: sourceRef.current?.token,
+        onDownloadProgress: (event) => {
+          setDownloadProgress(event.loaded / event.total);
+        },
+      });
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        sourceRef.current = null;
+      } else {
+        Honeybadger.notify(error);
+      }
+    } finally {
+      setIsDownloading(false);
+      setDownloadProgress(0);
     }
   }
 
@@ -200,10 +193,7 @@ const FileListItem: React.FC<{
                 onClick={!isDownloading ? download : cancel}
                 aria-label="Download file"
               >
-                <Icon
-                  opacity={isDownloading ? 0 : 1}
-                  as={isMobile ? MdOpenInBrowser : FaCloudDownloadAlt}
-                />
+                <Icon opacity={isDownloading ? 0 : 1} as={FaCloudDownloadAlt} />
                 <chakra.span
                   pos="absolute"
                   top="50%"
