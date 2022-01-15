@@ -1,6 +1,7 @@
 import sharp from "sharp";
 import { S3_BUCKET_NAME, USE_LOCAL_S3 } from "../config";
 import convert from "heic-convert";
+import { isHeic } from "../utils/image-utils";
 import Honeybadger from "../lib/honeybadger";
 import s3 from "../lib/s3";
 
@@ -72,51 +73,43 @@ export async function createImagePreview(key: string): Promise<string> {
   const bodyBuffer = obj.Body as Buffer;
 
   let buffer: Buffer;
-
-  try {
-    // try to convert the bufer to jpeg format
+  if (isHeic(bodyBuffer)) {
+    // convert HEIC to JPEG
     const outputBuffer = await convert({
       buffer: bodyBuffer, // the HEIC file buffer
       format: "JPEG", // output format
       quality: 1, // the jpeg compression quality, between 0 and 1
     });
     buffer = outputBuffer;
-  } catch (error) {
-    if (error instanceof TypeError) {
-      // the buffer is not an heic buffer, pass the body buffer from s3 directly to sharp
-      buffer = bodyBuffer;
-    } else {
-      Honeybadger.notify(error);
-    }
+  } else {
+    buffer = bodyBuffer;
   }
-
-  let resizedBuffer: Buffer;
   try {
-    resizedBuffer = await sharp(buffer)
+    const resizedBuffer = await sharp(buffer)
       .jpeg({
         quality: 75,
       })
       .resize(64, 64, { fit: "cover" })
       .toBuffer();
+
+    const previewKey = createPreviewKey(key);
+    await s3
+      .putObject({
+        Key: previewKey,
+        Bucket: S3_BUCKET_NAME,
+        Body: resizedBuffer,
+        ACL: "public-read",
+      })
+      .promise();
+
+    let previewUrl;
+    if (USE_LOCAL_S3) {
+      previewUrl = `http://localhost:9000/${S3_BUCKET_NAME}/${previewKey}`;
+    } else {
+      previewUrl = `https://${S3_BUCKET_NAME}.s3.us-east-2.amazonaws.com/${previewKey}`;
+    }
+    return previewUrl;
   } catch (error) {
     Honeybadger.notify(error);
   }
-
-  const previewKey = createPreviewKey(key);
-  await s3
-    .putObject({
-      Key: previewKey,
-      Bucket: S3_BUCKET_NAME,
-      Body: resizedBuffer,
-      ACL: "public-read",
-    })
-    .promise();
-
-  let previewUrl;
-  if (USE_LOCAL_S3) {
-    previewUrl = `http://localhost:9000/${S3_BUCKET_NAME}/${previewKey}`;
-  } else {
-    previewUrl = `https://${S3_BUCKET_NAME}.s3.us-east-2.amazonaws.com/${previewKey}`;
-  }
-  return previewUrl;
 }
