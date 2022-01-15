@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Colors } from "@floatingfile/ui";
 import { FaRegWindowMinimize } from "react-icons/fa";
-import { isMobile } from "react-device-detect";
 import { motion, AnimateSharedLayout } from "framer-motion";
 import {
   Icon,
@@ -78,7 +77,7 @@ const UploadQueue: React.FC = () => {
   return (
     <Slide
       direction="bottom"
-      in={open && !isMobile}
+      in={open}
       style={{
         zIndex: 4,
         left: "auto",
