@@ -42,7 +42,7 @@ const ChangelogPage: React.FC<{ changelog: ChangelogRecord[] }> = ({
       <Container maxW="3xl">
         {changelog.map(({ version, data, htmlString }) => (
           <EnterInView key={version}>
-            <Box>
+            <Box id={version}>
               <Text as="i">
                 {version} - {data.date}
               </Text>
@@ -63,6 +63,35 @@ const ChangelogPage: React.FC<{ changelog: ChangelogRecord[] }> = ({
                     fontWeight: "bold",
                     mt: 4,
                   },
+                  a: {
+                    color: "blue.400",
+                    transition: "color ease 0.3s",
+                  },
+                  "a:hover": {
+                    color: "blue.600",
+                  },
+                  table: {
+                    border: "1px solid #ddd",
+                    margin: "10px auto",
+                    tableLayout: "fixed",
+                    overflow: "auto",
+                    borderCollapse: "collapse",
+                    width: "100%",
+                    display: "inline-table",
+                  },
+                  th: {
+                    backgroundColor: "blue.200",
+                    padding: "5px",
+                    minWidth: "50px",
+                  },
+                  td: {
+                    padding: "5px",
+                  },
+                  tr: {
+                    "&:nth-child(even)": {
+                      backgroundColor: "blue.50",
+                    },
+                  },
                   img: {
                     width: useBreakpointValue({ base: "100%", md: "80%" }),
                     mx: "auto",
@@ -74,6 +103,18 @@ const ChangelogPage: React.FC<{ changelog: ChangelogRecord[] }> = ({
                     pl: "20px",
                   },
                   p: { textAlign: "justify" },
+                  blockquote: {
+                    my: "10px",
+                    pl: "10px",
+                    fontStyle: "italic",
+                    borderLeftColor: "blue.300",
+                    borderLeftStyle: "solid",
+                    borderLeftWidth: "5px",
+                  },
+                  code: {
+                    bg: "gray.100",
+                    px: "3px",
+                  },
                 }}
                 dangerouslySetInnerHTML={{ __html: htmlString }}
               />
