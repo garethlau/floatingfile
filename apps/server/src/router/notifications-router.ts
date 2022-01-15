@@ -7,7 +7,6 @@ import {
   sendToClient,
   notifyAll,
 } from "../services/notification-service";
-
 import cors from "cors";
 import prisma from "../lib/prisma";
 
@@ -19,6 +18,11 @@ router.get("/:code", cors(), async (req, res, done) => {
     let username = "";
     if (typeof req.query.username === "string") {
       username = req.query.username;
+    }
+
+    const space = await prisma.space.findUnique({ where: { code } });
+    if (!space) {
+      return res.status(404).send();
     }
 
     // Haders and http status to keep connection open
@@ -33,7 +37,7 @@ router.get("/:code", cors(), async (req, res, done) => {
     const clientId = crypto.randomBytes(256).toString("hex");
     const connection = {
       id: clientId,
-      username: username,
+      username,
       res,
     };
 
@@ -45,6 +49,7 @@ router.get("/:code", cors(), async (req, res, done) => {
         belongsTo: code,
       },
     });
+
     sendToClient(clientId, {
       type: NotificationTypes.CONNECTION_ESTABLISHED,
       clientId,
