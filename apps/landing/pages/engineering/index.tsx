@@ -37,7 +37,7 @@ const EngineeringPage: NextPage<{ articles: Article[] }> = ({ articles }) => {
 
         <Stack spacing={6}>
           {articles.map((article) => (
-            <Link href={`/engineering/${article.slug}`}>
+            <Link href={`/engineering/${article.slug}`} key={article.slug}>
               <Box
                 bg={useColorModeValue("blue.50", "blue.700")}
                 as="article"
@@ -72,7 +72,6 @@ const EngineeringPage: NextPage<{ articles: Article[] }> = ({ articles }) => {
 const FOLDER_PATH = path.join("src", "content", "engineering");
 export async function getStaticProps() {
   const paths = await getPaths(FOLDER_PATH);
-  console.log(paths);
 
   const articles = paths.map((p) => {
     const filePath = path.join(FOLDER_PATH, `${p.params.slug}.md`);
@@ -85,8 +84,6 @@ export async function getStaticProps() {
       readTime,
     };
   });
-
-  console.log(articles);
 
   return {
     props: {
