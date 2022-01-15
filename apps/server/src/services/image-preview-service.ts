@@ -1,5 +1,7 @@
 import sharp from "sharp";
 import { S3_BUCKET_NAME, USE_LOCAL_S3 } from "../config";
+import convert from "heic-convert";
+import Honeybadger from "../lib/honeybadger";
 import s3 from "../lib/s3";
 
 /**
@@ -67,13 +69,39 @@ export async function createImagePreview(key: string): Promise<string> {
   const obj = await s3
     .getObject({ Key: key, Bucket: S3_BUCKET_NAME })
     .promise();
-  const buffer = obj.Body as Buffer;
-  const resizedBuffer = await sharp(buffer)
-    .jpeg({
-      quality: 75,
-    })
-    .resize(64, 64, { fit: "cover" })
-    .toBuffer();
+  const bodyBuffer = obj.Body as Buffer;
+
+  let buffer: Buffer;
+
+  try {
+    // try to convert the bufer to jpeg format
+    const outputBuffer = await convert({
+      buffer: bodyBuffer, // the HEIC file buffer
+      format: "JPEG", // output format
+      quality: 1, // the jpeg compression quality, between 0 and 1
+    });
+    buffer = outputBuffer;
+  } catch (error) {
+    if (error instanceof TypeError) {
+      // the buffer is not an heic buffer, pass the body buffer from s3 directly to sharp
+      buffer = bodyBuffer;
+    } else {
+      Honeybadger.notify(error);
+    }
+  }
+
+  let resizedBuffer: Buffer;
+  try {
+    resizedBuffer = await sharp(buffer)
+      .jpeg({
+        quality: 75,
+      })
+      .resize(64, 64, { fit: "cover" })
+      .toBuffer();
+  } catch (error) {
+    Honeybadger.notify(error);
+  }
+
   const previewKey = createPreviewKey(key);
   await s3
     .putObject({

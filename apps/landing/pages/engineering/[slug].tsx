@@ -1,13 +1,11 @@
-import fs from "fs";
 import path from "path";
 import { NextSeo } from "next-seo";
-import matter from "gray-matter";
-import marked from "marked";
 import React from "react";
 import { Box, Text, Heading, useColorModeValue } from "@chakra-ui/react";
 import Footer from "components/footer";
 import NavigationBar from "components/navigation-bar";
 import Markdown from "components/Markdown";
+import "highlight.js/styles/github.css";
 import { getPaths, parseMd } from "src/utils/markdown";
 
 const Post: React.FC<{
@@ -40,7 +38,8 @@ const Post: React.FC<{
             shadow="lg"
           >
             <Heading>{data.title}</Heading>
-            <Text mb={4}>Last Updated: {data.lastUpdated}</Text>
+            <Text>Posted: {data.createdAt}</Text>
+            <Text mb={4}>Updated: {data.updatedAt}</Text>
             <Markdown htmlString={htmlString} />
           </Box>
         </Box>
@@ -51,10 +50,11 @@ const Post: React.FC<{
   );
 };
 
-const FOLDER_PATH = path.join("src", "content", "posts");
+const FOLDER_PATH = path.join("src", "content", "engineering");
 
 export async function getStaticPaths() {
   const paths = await getPaths(FOLDER_PATH);
+
   return {
     paths,
     fallback: false,
@@ -63,7 +63,6 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params: { slug } }) {
   const filePath = path.join(FOLDER_PATH, `${slug}.md`);
-
   const { data, htmlString } = parseMd(filePath);
 
   return {
