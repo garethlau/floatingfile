@@ -20,8 +20,7 @@ router.get("/:code", cors(), async (req, res, done) => {
       username = req.query.username;
     }
 
-    const space = await prisma.space.findUnique({ where: { code } });
-    if (!space) {
+    if (!(await prisma.space.findUnique({ where: { code } }))) {
       return res.status(404).send();
     }
 
@@ -56,15 +55,17 @@ router.get("/:code", cors(), async (req, res, done) => {
     });
 
     req.on("close", async () => {
-      removeClient(code, connection);
-      await prisma.event.create({
-        data: {
-          author: username,
-          action: EventType.LEAVE,
-          belongsTo: code,
-        },
-      });
-      notifyAll(code, NotificationTypes.SPACE_UPDATED);
+      if (await prisma.space.findUnique({ where: { code } })) {
+        removeClient(code, connection);
+        await prisma.event.create({
+          data: {
+            author: username,
+            action: EventType.LEAVE,
+            belongsTo: code,
+          },
+        });
+        notifyAll(code, NotificationTypes.SPACE_UPDATED);
+      }
     });
   } catch (error) {
     done(error);
