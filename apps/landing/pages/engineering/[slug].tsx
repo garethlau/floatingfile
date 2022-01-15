@@ -1,15 +1,12 @@
-import fs from "fs";
 import path from "path";
 import { NextSeo } from "next-seo";
-import matter from "gray-matter";
-import marked from "marked";
 import React from "react";
 import { Box, Text, Heading, useColorModeValue } from "@chakra-ui/react";
 import Footer from "components/footer";
 import NavigationBar from "components/navigation-bar";
 import Markdown from "components/Markdown";
-import hljs from "highlight.js";
 import "highlight.js/styles/github.css";
+import { getPaths, parseMd } from "src/utils/markdown";
 
 const Post: React.FC<{
   data: any;
@@ -53,11 +50,11 @@ const Post: React.FC<{
   );
 };
 
+const FOLDER_PATH = path.join("src", "content", "engineering");
+
 export async function getStaticPaths() {
-  const filenames = fs.readdirSync(path.join("src", "content", "engineering"));
-  const paths = filenames.map((filename) => ({
-    params: { slug: filename.replace(".md", "") },
-  }));
+  const paths = await getPaths(FOLDER_PATH);
+
   return {
     paths,
     fallback: false,
@@ -65,31 +62,12 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params: { slug } }) {
-  const rawMd = fs.readFileSync(
-    path.join("src", "content", "engineering", slug + ".md")
-  );
-  const parsedMd = matter(rawMd);
-
-  marked.setOptions({
-    renderer: new marked.Renderer(),
-    highlight: function (code, language) {
-      const validLanguage = hljs.getLanguage(language) ? language : "plaintext";
-      return hljs.highlight(validLanguage, code).value;
-    },
-    pedantic: false,
-    gfm: true,
-    breaks: false,
-    sanitize: false,
-    smartLists: true,
-    smartypants: false,
-    xhtml: false,
-  });
-
-  const htmlString = marked(parsedMd.content);
+  const filePath = path.join(FOLDER_PATH, `${slug}.md`);
+  const { data, htmlString } = parseMd(filePath);
 
   return {
     props: {
-      data: parsedMd.data,
+      data,
       htmlString,
     },
   };
