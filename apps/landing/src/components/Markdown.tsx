@@ -29,7 +29,7 @@ const Markdown: React.FC<MarkdownProps> = ({ htmlString }) => {
           fontWeight: "bold",
           mt: 4,
         },
-        p: { textAlign: "justify", mb: 4 },
+        p: { textAlign: "justify", mt: 2 },
         a: {
           color: useColorModeValue("blue.400", "cyan.200"),
           transition: "color ease 0.3s",
@@ -69,6 +69,7 @@ const Markdown: React.FC<MarkdownProps> = ({ htmlString }) => {
         },
         ul: {
           pl: "20px",
+          mb: "10px",
         },
         blockquote: {
           my: "10px",
