@@ -84,6 +84,7 @@ function getPath(extension: string) {
     case "ico":
     case "jpg":
     case "jpeg":
+    case "heic":
       path = mdiImageOutline;
       break;
     case "json":
