@@ -5,8 +5,19 @@ import prisma from "../lib/prisma";
 import { deletePreviews } from "./image-preview-service";
 
 export const create = async () => {
-  const buf = crypto.randomBytes(3);
-  const code = buf.toString("hex").toUpperCase();
+  let code: string | null = null;
+  while (!code) {
+    const buf = crypto.randomBytes(3);
+    const candidate = buf.toString("hex").toUpperCase();
+    if (candidate.includes("0") || candidate.includes("O")) {
+      continue;
+    }
+    if (await prisma.space.findUnique({ where: { code: candidate } })) {
+      continue;
+    }
+    code = candidate;
+  }
+
   const space = await prisma.space.create({
     data: {
       code,
