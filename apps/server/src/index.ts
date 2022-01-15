@@ -3,9 +3,11 @@ import path from "path";
 import logger from "./lib/logger";
 import { PORT, NODE_ENV } from "./config";
 import app from "./app";
-export * from "./rpc";
+import { scheduleJobs } from "./crons";
 
 (async function () {
+  scheduleJobs();
+
   if (NODE_ENV === "prod" || NODE_ENV === "staging") {
     const APP_OUT_DIRECTORY = path.join(__dirname, "..", "..", "client", "out");
     const APP_INDEX = path.join(APP_OUT_DIRECTORY, "index.html");
