@@ -4,15 +4,10 @@ import { NextSeo } from "next-seo";
 import matter from "gray-matter";
 import marked from "marked";
 import React from "react";
-import {
-  Box,
-  Text,
-  chakra,
-  Heading,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, Text, Heading, useColorModeValue } from "@chakra-ui/react";
 import Footer from "components/footer";
 import NavigationBar from "components/navigation-bar";
+import Markdown from "components/Markdown";
 
 const Post: React.FC<{
   data: any;
@@ -45,32 +40,7 @@ const Post: React.FC<{
           >
             <Heading>{data.title}</Heading>
             <Text mb={4}>Last Updated: {data.lastUpdated}</Text>
-
-            <chakra.div
-              sx={{
-                h1: {
-                  fontSize: "2rem",
-                  fontWeight: "bold",
-                },
-                h2: {
-                  fontSize: "1.75rem",
-                  fontWeight: "bold",
-                },
-                h3: {
-                  fontSize: "1.5rem",
-                  fontWeight: "bold",
-                },
-                p: {
-                  mb: 2,
-                  color: useColorModeValue("black", "white"),
-                  textAlign: "justify",
-                },
-                ul: {
-                  pl: "20px",
-                },
-              }}
-              dangerouslySetInnerHTML={{ __html: htmlString }}
-            />
+            <Markdown htmlString={htmlString} />
           </Box>
         </Box>
       </Box>

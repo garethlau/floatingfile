@@ -15,6 +15,7 @@ import {
   Divider,
   useBreakpointValue,
 } from "@chakra-ui/react";
+import Markdown from "components/Markdown";
 
 interface ChangelogRecord {
   version: string;
@@ -46,78 +47,7 @@ const ChangelogPage: React.FC<{ changelog: ChangelogRecord[] }> = ({
               <Text as="i">
                 {version} - {data.date}
               </Text>
-              <chakra.div
-                sx={{
-                  h1: {
-                    fontSize: "3rem",
-                    fontWeight: "bold",
-                    mt: 4,
-                  },
-                  h2: {
-                    fontSize: "2rem",
-                    fontWeight: "bold",
-                    mt: 4,
-                  },
-                  h3: {
-                    fontSize: "1.5rem",
-                    fontWeight: "bold",
-                    mt: 4,
-                  },
-                  a: {
-                    color: "blue.400",
-                    transition: "color ease 0.3s",
-                  },
-                  "a:hover": {
-                    color: "blue.600",
-                  },
-                  table: {
-                    border: "1px solid #ddd",
-                    margin: "10px auto",
-                    tableLayout: "fixed",
-                    overflow: "auto",
-                    borderCollapse: "collapse",
-                    width: "100%",
-                    display: "inline-table",
-                  },
-                  th: {
-                    backgroundColor: "blue.200",
-                    padding: "5px",
-                    minWidth: "50px",
-                  },
-                  td: {
-                    padding: "5px",
-                  },
-                  tr: {
-                    "&:nth-child(even)": {
-                      backgroundColor: "blue.50",
-                    },
-                  },
-                  img: {
-                    width: useBreakpointValue({ base: "100%", md: "80%" }),
-                    mx: "auto",
-                    borderRadius: "md",
-                    shadow: "md",
-                    my: 4,
-                  },
-                  ul: {
-                    pl: "20px",
-                  },
-                  p: { textAlign: "justify" },
-                  blockquote: {
-                    my: "10px",
-                    pl: "10px",
-                    fontStyle: "italic",
-                    borderLeftColor: "blue.300",
-                    borderLeftStyle: "solid",
-                    borderLeftWidth: "5px",
-                  },
-                  code: {
-                    bg: "gray.100",
-                    px: "3px",
-                  },
-                }}
-                dangerouslySetInnerHTML={{ __html: htmlString }}
-              />
+              <Markdown htmlString={htmlString} />
             </Box>
             <Divider my={10} />
           </EnterInView>
