@@ -55,11 +55,11 @@ export const endUpload = async (
     type: string;
     ext: string;
     size: string;
-  }
+  },
+  onPreviewComplete?: () => void
 ) => {
   const { key, name, type, ext, size } = file;
-  const previewUrl = await createPreview({ key, type });
-  await prisma.file.create({
+  const { id } = await prisma.file.create({
     data: {
       belongsTo: code,
       key,
@@ -67,9 +67,27 @@ export const endUpload = async (
       type,
       ext,
       size: parseInt(size, 10),
-      previewUrl,
     },
   });
+
+  if (type.includes("image")) {
+    // will need to create image prevew
+    createPreview({ key, type }).then((previewUrl) => {
+      prisma.file
+        .update({
+          where: {
+            id,
+          },
+          data: {
+            previewUrl,
+          },
+        })
+        .then(() => {
+          onPreviewComplete();
+        });
+    });
+  }
+  return;
 };
 export const prepDownload = async (id: string) => {
   const file = await prisma.file.findUnique({ where: { id } });

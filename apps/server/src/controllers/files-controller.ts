@@ -127,7 +127,10 @@ export const postupload: PostuploadFn = async (params: {
   };
 }) => {
   const { code, username, file } = params;
-  await endUpload(code, file);
+  await endUpload(code, file, () => {
+    // this is called when the image preview is complete
+    notifyAll(code, NotificationTypes.SPACE_UPDATED);
+  });
   await prisma.event.create({
     data: {
       belongsTo: code,
