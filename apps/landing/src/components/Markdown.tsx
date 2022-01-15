@@ -2,6 +2,7 @@ import React from "react";
 import {
   chakra,
   useBreakpointValue,
+  useColorModePreference,
   useColorModeValue,
 } from "@chakra-ui/react";
 
@@ -30,14 +31,15 @@ const Markdown: React.FC<MarkdownProps> = ({ htmlString }) => {
         },
         p: { textAlign: "justify", mb: 4 },
         a: {
-          color: "blue.400",
+          color: useColorModeValue("blue.400", "cyan.200"),
           transition: "color ease 0.3s",
         },
         "a:hover": {
-          color: "blue.600",
+          color: useColorModeValue("blue.600", "cyan.500"),
         },
         table: {
-          border: "1px solid #ddd",
+          border: "1px solid",
+          borderColor: useColorModeValue("blue.200", "gray.50"),
           margin: "10px auto",
           tableLayout: "fixed",
           overflow: "auto",
@@ -46,8 +48,8 @@ const Markdown: React.FC<MarkdownProps> = ({ htmlString }) => {
           display: "inline-table",
         },
         th: {
-          backgroundColor: "blue.200",
-          padding: "5px",
+          backgroundColor: useColorModeValue("blue.200", "blue.800"),
+          padding: "10px",
           minWidth: "50px",
         },
         td: {
@@ -55,7 +57,7 @@ const Markdown: React.FC<MarkdownProps> = ({ htmlString }) => {
         },
         tr: {
           "&:nth-child(even)": {
-            backgroundColor: "blue.50",
+            backgroundColor: useColorModeValue("blue.50", "gray.700"),
           },
         },
         img: {
