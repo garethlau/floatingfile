@@ -9,9 +9,7 @@ export type FindSpaceFn = (params: { code: string }) => Promise<
   | null
 >;
 
-export type CreateSpaceFn = (params: {
-  username: string;
-}) => Promise<{
+export type CreateSpaceFn = (params: { username: string }) => Promise<{
   code: string;
   createdAt: string;
   files: File[];
