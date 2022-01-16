@@ -1,10 +1,8 @@
 import path from "path";
 import { NextSeo } from "next-seo";
 import React from "react";
-import { Button, Container, Box, Text, Heading, Link } from "@chakra-ui/react";
+import { Button, Box, Text, Heading, Link } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import Footer from "components/footer";
-import NavigationBar from "components/navigation-bar";
 import Markdown from "components/Markdown";
 import { NextPage } from "next";
 import { getPaths, parseMd } from "src/utils/markdown";

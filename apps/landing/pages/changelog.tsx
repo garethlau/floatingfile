@@ -1,12 +1,9 @@
 import { NextSeo } from "next-seo";
-import Footer from "components/footer";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { marked } from "marked";
-import NavigationBar from "components/navigation-bar";
-import PageTitle from "components/PageTitle";
-import { Box, Container, Text, Divider } from "@chakra-ui/react";
+import { Box, Text, Divider } from "@chakra-ui/react";
 import Markdown from "components/Markdown";
 import React from "react";
 import Page from "components/Page";

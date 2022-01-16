@@ -2,8 +2,6 @@ import path from "path";
 import { NextSeo } from "next-seo";
 import React from "react";
 import { Box, Text, Heading, useColorModeValue } from "@chakra-ui/react";
-import Footer from "components/footer";
-import NavigationBar from "components/navigation-bar";
 import Markdown from "components/Markdown";
 import { getPaths, parseMd } from "src/utils/markdown";
 import Page from "components/Page";

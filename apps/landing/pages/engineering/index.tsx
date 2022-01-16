@@ -1,17 +1,7 @@
-import Footer from "components/footer";
-import NavigationBar from "components/navigation-bar";
 import { NextSeo } from "next-seo";
 import React from "react";
-import {
-  Box,
-  Heading,
-  useColorModeValue,
-  Container,
-  Text,
-  Stack,
-} from "@chakra-ui/react";
+import { Box, Heading, useColorModeValue, Text, Stack } from "@chakra-ui/react";
 import { NextPage } from "next";
-import PageTitle from "components/PageTitle";
 import { getPaths, parseMd } from "src/utils/markdown";
 import path from "path";
 import Link from "next/link";
@@ -26,6 +16,31 @@ interface Article {
   readTime: string;
 }
 
+const ArticleCard: React.FC<{ article: Article }> = ({ article }) => (
+  <Link passHref href={`/engineering/${article.slug}`}>
+    <Box
+      bg={useColorModeValue("blue.50", "blue.700")}
+      as="article"
+      p={6}
+      borderRadius="md"
+      _hover={{
+        cursor: "pointer",
+      }}
+    >
+      <Heading
+        fontSize="3xl"
+        color={useColorModeValue("blue.400", "gray.100")}
+        as="h2"
+      >
+        {article.title}
+      </Heading>
+      <Text>{article.readTime} min read</Text>
+      <Text color="gray.500">Posted {article.createdAt}</Text>
+      <Text color="gray.500">Updated: {article.updatedAt}</Text>
+    </Box>
+  </Link>
+);
+
 const EngineeringPage: NextPage<{ articles: Article[] }> = ({ articles }) => {
   return (
     <>
@@ -33,28 +48,7 @@ const EngineeringPage: NextPage<{ articles: Article[] }> = ({ articles }) => {
       <Page title="Engineering Notes">
         <Stack spacing={6}>
           {articles.map((article) => (
-            <Link href={`/engineering/${article.slug}`} key={article.slug}>
-              <Box
-                bg={useColorModeValue("blue.50", "blue.700")}
-                as="article"
-                p={6}
-                borderRadius="md"
-                _hover={{
-                  cursor: "pointer",
-                }}
-              >
-                <Heading
-                  fontSize="3xl"
-                  color={useColorModeValue("blue.400", "gray.100")}
-                  as="h2"
-                >
-                  {article.title}
-                </Heading>
-                <Text>{article.readTime} min read</Text>
-                <Text color="gray.500">Posted {article.createdAt}</Text>
-                <Text color="gray.500">Updated: {article.updatedAt}</Text>
-              </Box>
-            </Link>
+            <ArticleCard key={article.slug} article={article} />
           ))}
         </Stack>
       </Page>

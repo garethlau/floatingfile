@@ -56,7 +56,12 @@ const InstallAppButton: React.FC<InstallAppButtonProps> = ({
         {store === "apple" ? (
           <Icon mr="7px" as={RiAppleFill} color={textColor} h="32px" w="32px" />
         ) : (
-          <Image mr="7px" h="32px" src={`/logos/${STORES[store].logo}`} />
+          <Image
+            mr="7px"
+            h="32px"
+            src={`/logos/${STORES[store].logo}`}
+            alt=""
+          />
         )}
         <Box>
           <chakra.p opacity={0.7} fontSize="12px" color={textColor}>

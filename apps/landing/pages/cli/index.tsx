@@ -1,9 +1,6 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-import PageTitle from "components/PageTitle";
-import NavigationBar from "components/navigation-bar";
-import { Container, Text, Heading, HStack, Tag, Link } from "@chakra-ui/react";
-import Footer from "components/footer";
+import { Text, Heading, HStack, Tag, Link } from "@chakra-ui/react";
 import path from "path";
 import { getPaths, parseMd } from "src/utils/markdown";
 import Markdown from "components/Markdown";

@@ -1,11 +1,7 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-import PageTitle from "components/PageTitle";
-import NavigationBar from "components/navigation-bar";
-import Footer from "components/footer";
 import InstallAppButton from "components/install-app-button";
 import {
-  Container,
   Image,
   Text,
   Box,
@@ -75,6 +71,7 @@ const IosPage: React.FC = () => {
                   maxH="300px"
                   borderRadius="md"
                   src="/images/ios-app.png"
+                  alt=""
                 />
                 <InstallAppButton store="apple" />
               </Flex>
@@ -113,6 +110,7 @@ const IosPage: React.FC = () => {
                   maxH="300px"
                   borderRadius="md"
                   src="/images/cli-preview.png"
+                  alt=""
                 />
                 <Button
                   bg="black"

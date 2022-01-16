@@ -8,9 +8,7 @@ import {
   useColorModeValue,
   Button,
 } from "@chakra-ui/react";
-import Footer from "components/footer";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import NavigationBar from "components/navigation-bar";
 import Markdown from "components/Markdown";
 import "highlight.js/styles/github.css";
 import { getPaths, parseMd } from "src/utils/markdown";

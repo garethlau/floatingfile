@@ -93,6 +93,7 @@ const Home: React.FC = () => {
 
       <Box mb="-300px">
         <Image
+          alt=""
           borderRadius="md"
           w="90%"
           mx="auto"

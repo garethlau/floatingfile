@@ -2,7 +2,6 @@ import React from "react";
 import {
   Container,
   ContainerProps,
-  Box,
   Heading,
   useColorModeValue,
 } from "@chakra-ui/react";
@@ -19,6 +18,7 @@ const PageContainer: React.FC<PageContainerProps> = ({
   ...rest
 }) => {
   const minH = title ? "calc(100vh - 300px - 200px)" : "calc(100vh - 300px)";
+  const headingColor = useColorModeValue("gray.700", "white");
   return (
     <>
       <NavigationBar />
@@ -35,7 +35,7 @@ const PageContainer: React.FC<PageContainerProps> = ({
             fontWeight="extrabold"
             mb="16px"
             lineHeight="1.2"
-            color={useColorModeValue("gray.700", "white")}
+            color={headingColor}
           >
             {title}
           </Heading>
