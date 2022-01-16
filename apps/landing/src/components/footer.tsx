@@ -35,8 +35,8 @@ const RESOURCES = [
         href: "https://github.com/garethlau/floatingfile",
       },
       {
-        label: "CLI",
-        href: "https://github.com/garethlau/floatingfile-cli",
+        label: "CLI Docs",
+        href: "https://floatingfile.space/cli",
       },
     ],
   },
