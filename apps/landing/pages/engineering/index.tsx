@@ -33,7 +33,7 @@ const EngineeringPage: NextPage<{ articles: Article[] }> = ({ articles }) => {
       <NavigationBar />
 
       <Container maxW="container.md" mb={12}>
-        <PageTitle>Engineering Articles</PageTitle>
+        <PageTitle>Engineering Notes</PageTitle>
 
         <Stack spacing={6}>
           {articles.map((article) => (

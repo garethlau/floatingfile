@@ -19,10 +19,13 @@ const RESOURCES = [
       { label: "Changelog", href: "/changelog" },
       { label: "Frequently Asked Questions", href: "/faq" },
       { label: "Download", href: "/download" },
-      { label: "Engineering", href: "/engineering" },
       {
         label: "Product Hunt",
         href: "https://www.producthunt.com/posts/floatingfile",
+      },
+      {
+        label: "Command Line Interface",
+        href: "/cli",
       },
     ],
   },
@@ -34,10 +37,7 @@ const RESOURCES = [
         label: "Repository",
         href: "https://github.com/garethlau/floatingfile",
       },
-      {
-        label: "CLI Docs",
-        href: "https://floatingfile.space/cli",
-      },
+      { label: "Engineering Notes", href: "/engineering" },
     ],
   },
   {
