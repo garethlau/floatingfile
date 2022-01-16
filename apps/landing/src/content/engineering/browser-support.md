@@ -6,9 +6,9 @@ updatedAt: Jan 15, 2022
 
 **TLDR: Use any browser on mac or windows, use Safari on iPhones, use Google Chrome on Android.**
 
-In release [v3.1](#v3.1), the decision was made to disable the ability to download files on mobile browsers due to inconsistent support.
+In release [v3.1](/changelog#v3.1), the decision was made to disable the ability to download files on mobile browsers due to inconsistent support.
 
-> "All browsers now open the requested file in a new tab. To visually reflect this change, using the mobile version of floatingfile will show different buttons indicating the functionality (download or open)."<br><br> -[v3.1 Release Note](#v3.1)
+> "All browsers now open the requested file in a new tab. To visually reflect this change, using the mobile version of floatingfile will show different buttons indicating the functionality (download or open)."<br><br> -[v3.1 Release Note](/changelog#v3.1)
 
 A comprehensive list is now being generated for each device and browser so you can expect, beforehand, which browsers will enable the best experience. Notice something wrong? Don't see your OS or browser? Please submit [a ticket](https://github.com/garethlau/floatingfile/issues) or message me.
 Here are the results as of v3.4:
