@@ -4,7 +4,7 @@ import "@fontsource/dm-sans/700.css";
 import React from "react";
 import Head from "next/head";
 import { DefaultSeo } from "next-seo";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, LightMode } from "@chakra-ui/react";
 import { theme } from "@floatingfile/ui";
 
 // This default export is required in a new `pages/_app.js` file.
@@ -12,6 +12,7 @@ const App: React.FC<{ Component: any; pageProps: any }> = ({
   Component,
   pageProps,
 }) => {
+  console.log(theme);
   return (
     <React.Fragment>
       <Head>
@@ -71,7 +72,9 @@ const App: React.FC<{ Component: any; pageProps: any }> = ({
         />
       </Head>
       <ChakraProvider theme={theme}>
-        <Component {...pageProps} />
+        <LightMode>
+          <Component {...pageProps} />
+        </LightMode>
       </ChakraProvider>
     </React.Fragment>
   );

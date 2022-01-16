@@ -118,7 +118,7 @@ const NavigationBar: React.FC = () => {
                 icon={<FaGithub />}
                 aria-label="View on Github"
               />
-              <IconButton
+              {/* <IconButton
                 size="md"
                 fontSize="lg"
                 aria-label={`Switch to ${text} mode`}
@@ -127,7 +127,7 @@ const NavigationBar: React.FC = () => {
                 colorScheme="whiteAlpha"
                 onClick={toggleMode}
                 icon={<SwitchIcon />}
-              />
+              /> */}
             </Flex>
             <IconButton
               color="white"
