@@ -28,5 +28,8 @@
     "react-dom": "^16.13.1",
     "react-icons": "^4.2.0",
     "react-intersection-observer": "^8.31.0"
+  },
+  "devDependencies": {
+    "@types/marked": "^4.0.1"
   }
 }

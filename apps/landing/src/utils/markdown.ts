@@ -1,8 +1,7 @@
 import fs from "fs";
 import matter from "gray-matter";
-import marked from "marked";
+import { marked } from "marked";
 import hljs from "highlight.js";
-import path from "path";
 import "highlight.js/styles/github.css";
 
 export async function getPaths(folderPath: string) {
@@ -33,7 +32,7 @@ export function parseMd(filePath: string) {
     xhtml: false,
   });
 
-  const htmlString = marked(parsedMd.content);
+  const htmlString = marked.parse(parsedMd.content);
 
   return {
     data: parsedMd.data,

@@ -3,7 +3,7 @@ import Footer from "components/footer";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import marked from "marked";
+import { marked } from "marked";
 import NavigationBar from "components/navigation-bar";
 import PageTitle from "components/page-title";
 import { Box, Container, Text, Divider } from "@chakra-ui/react";
@@ -60,7 +60,7 @@ export async function getStaticProps() {
         path.join("src", "content", "changelog", filename)
       );
       const parsedMd = matter(rawMd);
-      const htmlString = marked(parsedMd.content);
+      const htmlString = marked.parse(parsedMd.content);
 
       return {
         version: "v" + filename.replace(".md", ""),
