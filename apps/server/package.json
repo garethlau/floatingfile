@@ -26,7 +26,6 @@
     "express": "^4.17.1",
     "express-easy-zip": "^1.1.5",
     "heic-convert": "^1.2.4",
-    "morgan": "^1.10.0",
     "node-cron": "^3.0.0",
     "sharp": "^0.27.2",
     "uuid": "^8.3.2",
