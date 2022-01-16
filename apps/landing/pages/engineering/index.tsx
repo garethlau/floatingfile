@@ -9,7 +9,6 @@ import {
   Container,
   Text,
   Stack,
-  chakra,
 } from "@chakra-ui/react";
 import { NextPage } from "next";
 import PageTitle from "components/page-title";

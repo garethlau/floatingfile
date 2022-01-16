@@ -9,7 +9,6 @@ import {
   AccordionIcon,
   Box,
   Container,
-  Text,
   Heading,
 } from "@chakra-ui/react";
 import PageTitle from "components/page-title";
