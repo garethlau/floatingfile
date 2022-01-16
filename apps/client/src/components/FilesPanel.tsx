@@ -54,7 +54,7 @@ const FilesPanel: React.FC = () => {
         {files.length > 0 ? (
           <AnimatePresence>
             <AnimateSharedLayout>
-              <Stack spacing={2} p={2} maxW="100vw">
+              <Stack spacing={2} p={2} maxW="100vw" h="100%">
                 {files.map((file) => (
                   <motion.div
                     layout
@@ -66,6 +66,7 @@ const FilesPanel: React.FC = () => {
                     <FileListItem file={file} />
                   </motion.div>
                 ))}
+                <FileDrop isFullHeight />
               </Stack>
             </AnimateSharedLayout>
           </AnimatePresence>
