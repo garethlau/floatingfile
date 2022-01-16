@@ -29,11 +29,11 @@ const CodeBlock: React.FC<{ htmlString?: string }> = ({
 
 const docs = [
   {
-    name: "Create space",
+    name: "Create Space",
     command: "create",
   },
   {
-    name: "Destroy space",
+    name: "Destroy Space",
     command: "destroy",
     options: [
       {
@@ -45,7 +45,7 @@ const docs = [
     ],
   },
   {
-    name: "List recently accessed spaces",
+    name: "List Recently Accessed Spaces",
     command: "spaces",
     options: [
       {
@@ -57,7 +57,7 @@ const docs = [
     ],
   },
   {
-    name: "Upload files",
+    name: "Upload Files",
     command: "create [dir]",
     positionals: [
       {
@@ -84,7 +84,7 @@ const docs = [
     ],
   },
   {
-    name: "Remove files",
+    name: "Remove Files",
     command: "remove",
     options: [
       {
@@ -101,7 +101,7 @@ const docs = [
     ],
   },
   {
-    name: "List files",
+    name: "List Files",
     command: "files",
     options: [
       {
@@ -113,7 +113,7 @@ const docs = [
     ],
   },
   {
-    name: "Download files",
+    name: "Download Files",
     command: "download [dir]",
     positionals: [
       {
@@ -167,14 +167,14 @@ const CliPage: React.FC = () => {
         }}
       />
       <NavigationBar />
-      <PageTitle>floatingfile CLI docs</PageTitle>
+      <PageTitle>CLI</PageTitle>
       <Container mb={12} maxW="4xl">
         <Stack spacing={4}>
           <Heading as="h1" id="installation">
             Installation
           </Heading>
           <Heading as="h2" size="lg" id="macos">
-            macos
+            macOS
           </Heading>
           <Text>
             The easiest way to install the floatingfile CLI on macos is with
@@ -195,12 +195,12 @@ const CliPage: React.FC = () => {
           </Text>
 
           <Heading as="h2" size="lg" id="windows">
-            windows
+            Windows
           </Heading>
           <Text>Working on this...</Text>
 
           <Heading as="h2" size="lg" id="windows">
-            linux
+            Linux
           </Heading>
           <Text>Also working on this...</Text>
 
@@ -273,7 +273,7 @@ const CliPage: React.FC = () => {
             Configurations
           </Heading>
           <Heading as="h3" size="md">
-            Available configurations
+            Available Configurations
           </Heading>
           <Box>
             <UnorderedList>
@@ -295,7 +295,7 @@ const CliPage: React.FC = () => {
           </Box>
 
           <Heading as="h3" size="md">
-            Read a property
+            Read a Property
           </Heading>
           <Text>
             To read a specific property, supply the field name. For example:
@@ -321,7 +321,7 @@ const CliPage: React.FC = () => {
           </CodeBlock>
 
           <Heading as="h3" size="md">
-            Update a property
+            Update a Property
           </Heading>
           <Text>
             To update a property, supply the field name <b>and the new value</b>

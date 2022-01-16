@@ -1,7 +1,6 @@
 ---
 title: Terms and Conditions
-iconType: mdiFileDocument
-lastUpdated: 07/05/2020
+updatedAt: July 5, 2020
 seo_title: floatingfile | Terms and Conditions
 seo_description": Stay informed on the terms and conditions of use.
 seo_url: https://www.floatingfile.space/terms

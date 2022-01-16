@@ -37,7 +37,7 @@ const Post: React.FC<{
             shadow="lg"
           >
             <Heading>{data.title}</Heading>
-            <Text mb={4}>Last Updated: {data.lastUpdated}</Text>
+            <Text mb={4}>Last Updated: {data.updatedAt}</Text>
             <Markdown htmlString={htmlString} />
           </Box>
         </Box>

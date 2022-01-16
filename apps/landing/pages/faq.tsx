@@ -16,6 +16,7 @@ import PageTitle from "components/page-title";
 import NavigationBar from "components/navigation-bar";
 import Footer from "components/footer";
 import { faqs } from "src/scaffold";
+import Markdown from "components/Markdown";
 
 const FaqPage: React.FC = () => {
   const router = useRouter();
@@ -79,7 +80,7 @@ const FaqPage: React.FC = () => {
                   </AccordionButton>
                 </h2>
                 <AccordionPanel pb={4}>
-                  <Text dangerouslySetInnerHTML={{ __html: a }} />
+                  <Markdown htmlString={a} />
                 </AccordionPanel>
               </AccordionItem>
             ))}

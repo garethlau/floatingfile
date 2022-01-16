@@ -1,7 +1,6 @@
 ---
 title: Privacy Policy
-iconType: mdiLock
-lastUpdated: 07/05/2020
+updatedAt: July 5, 2020
 seo_title: floatingfile | Privacy Policy
 seo_description: Stay informed on how floatingfile interacts with your data.
 seo_url: https://www.floatingfile.space/privacy

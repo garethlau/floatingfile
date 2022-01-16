@@ -347,7 +347,7 @@ export const faqs = [
   },
   {
     q: "What are the storage constraints?",
-    a: "The total file sizes within an individual space cannot exceed 1 GB. As such, each individual file cannot exceed 1 GB.",
+    a: "Each space can store 5 GB.",
   },
   {
     q: "How long do spaces and files last?",
@@ -367,7 +367,7 @@ export const faqs = [
   },
   {
     q: "Who built floatingfile?",
-    a: "floatingfile is collaboration between Gareth Lau (https://garethlau.me) and Alan Yan (https://alanyan.ca)! The landing page, web application, and backend services were built and are managed by Gareth. The iOS application was built entirely by Alan Yan. ",
+    a: `floatingfile is collaboration between <a href="https://garethlau.me">Gareth Lau</a> and <a href="https://alayan.ca">Alan Yan</a>! The landing page, web application, and backend services were built and are managed by Gareth. The iOS application was built entirely by Alan Yan. `,
   },
   { q: "Is there an Android app?", a: "No." },
   {
