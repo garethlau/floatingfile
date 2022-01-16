@@ -5,10 +5,11 @@ import path from "path";
 import matter from "gray-matter";
 import { marked } from "marked";
 import NavigationBar from "components/navigation-bar";
-import PageTitle from "components/page-title";
+import PageTitle from "components/PageTitle";
 import { Box, Container, Text, Divider } from "@chakra-ui/react";
 import Markdown from "components/Markdown";
 import React from "react";
+import Page from "components/Page";
 
 interface ChangelogRecord {
   version: string;
@@ -30,10 +31,7 @@ const ChangelogPage: React.FC<{ changelog: ChangelogRecord[] }> = ({
           description: "Stay up-to-date on changes to floatingfile.",
         }}
       />
-      <NavigationBar />
-      <PageTitle>Changelog</PageTitle>
-
-      <Container maxW="3xl">
+      <Page maxW="container.sm" title="Changelog">
         {changelog.map(({ version, data, htmlString }) => (
           <React.Fragment key={version}>
             <Box id={version}>
@@ -45,9 +43,7 @@ const ChangelogPage: React.FC<{ changelog: ChangelogRecord[] }> = ({
             <Divider my={10} />
           </React.Fragment>
         ))}
-      </Container>
-
-      <Footer />
+      </Page>
     </>
   );
 };

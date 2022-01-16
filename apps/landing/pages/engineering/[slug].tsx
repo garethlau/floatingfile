@@ -1,12 +1,20 @@
 import path from "path";
 import { NextSeo } from "next-seo";
 import React from "react";
-import { Box, Text, Heading, useColorModeValue } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Heading,
+  useColorModeValue,
+  Button,
+} from "@chakra-ui/react";
 import Footer from "components/footer";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import NavigationBar from "components/navigation-bar";
 import Markdown from "components/Markdown";
 import "highlight.js/styles/github.css";
 import { getPaths, parseMd } from "src/utils/markdown";
+import Page from "components/Page";
 
 const Post: React.FC<{
   data: any;
@@ -24,28 +32,36 @@ const Post: React.FC<{
           description: data.seo_description,
         }}
       />
-      <NavigationBar />
-
-      <Box bg={useColorModeValue("gray.100", "gray.700")}>
-        <Box px={4} py="120px">
-          <Box
-            maxW="960px"
-            mx="auto"
-            bg={useColorModeValue("white", "black")}
-            py={16}
-            px={14}
-            borderRadius="md"
-            shadow="lg"
-          >
-            <Heading>{data.title}</Heading>
-            <Text>Posted: {data.createdAt}</Text>
-            <Text mb={4}>Updated: {data.updatedAt}</Text>
-            <Markdown htmlString={htmlString} />
+      <Page maxW="100vw" p={0} m={0}>
+        <Box bg={useColorModeValue("gray.100", "gray.700")}>
+          <Box px={4} py="120px">
+            <Box
+              maxW="960px"
+              mx="auto"
+              bg={useColorModeValue("white", "black")}
+              py={16}
+              px={[4, 6, 8, 14]}
+              borderRadius="md"
+              shadow="lg"
+            >
+              <Button
+                variant="link"
+                as="a"
+                href="/engineering"
+                leftIcon={<ArrowBackIcon />}
+              >
+                Back
+              </Button>
+              <Heading>{data.title}</Heading>
+              <Text color="gray.500">Posted: {data.createdAt}</Text>
+              <Text color="gray.500" mb={4}>
+                Updated: {data.updatedAt}
+              </Text>
+              <Markdown htmlString={htmlString} />
+            </Box>
           </Box>
         </Box>
-      </Box>
-
-      <Footer />
+      </Page>
     </>
   );
 };

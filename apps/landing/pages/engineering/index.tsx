@@ -11,11 +11,12 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { NextPage } from "next";
-import PageTitle from "components/page-title";
+import PageTitle from "components/PageTitle";
 import { getPaths, parseMd } from "src/utils/markdown";
 import path from "path";
 import Link from "next/link";
 import { calcReadTime } from "src/utils/article";
+import Page from "components/Page";
 
 interface Article {
   title: string;
@@ -29,11 +30,7 @@ const EngineeringPage: NextPage<{ articles: Article[] }> = ({ articles }) => {
   return (
     <>
       <NextSeo />
-      <NavigationBar />
-
-      <Container maxW="container.md" mb={12}>
-        <PageTitle>Engineering Notes</PageTitle>
-
+      <Page title="Engineering Notes">
         <Stack spacing={6}>
           {articles.map((article) => (
             <Link href={`/engineering/${article.slug}`} key={article.slug}>
@@ -54,16 +51,13 @@ const EngineeringPage: NextPage<{ articles: Article[] }> = ({ articles }) => {
                   {article.title}
                 </Heading>
                 <Text>{article.readTime} min read</Text>
-                <Text>
-                  Posted {article.createdAt}, modified: {article.updatedAt}
-                </Text>
+                <Text color="gray.500">Posted {article.createdAt}</Text>
+                <Text color="gray.500">Updated: {article.updatedAt}</Text>
               </Box>
             </Link>
           ))}
         </Stack>
-      </Container>
-
-      <Footer />
+      </Page>
     </>
   );
 };

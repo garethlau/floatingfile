@@ -11,7 +11,7 @@ import {
   Container,
   Heading,
 } from "@chakra-ui/react";
-import PageTitle from "components/page-title";
+import PageTitle from "components/PageTitle";
 import NavigationBar from "components/navigation-bar";
 import Footer from "components/footer";
 import { faqs } from "src/scaffold";

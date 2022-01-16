@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Container, chakra, useColorModeValue } from "@chakra-ui/react";
 
 const PageTitle: React.FC = ({ children }) => (
-  <Box as="section" w="100%" h="auto" py="120px">
+  <Box as="section" w="100%" h="auto" pt="80px" pb="40px">
     <Container>
       <Box textAlign="center">
         <chakra.h1

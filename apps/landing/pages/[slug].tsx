@@ -6,6 +6,7 @@ import Footer from "components/footer";
 import NavigationBar from "components/navigation-bar";
 import Markdown from "components/Markdown";
 import { getPaths, parseMd } from "src/utils/markdown";
+import Page from "components/Page";
 
 const Post: React.FC<{
   data: any;
@@ -23,27 +24,27 @@ const Post: React.FC<{
           description: data.seo_description,
         }}
       />
-      <NavigationBar />
-
-      <Box bg={useColorModeValue("gray.100", "gray.700")}>
-        <Box px={4} py="120px">
-          <Box
-            maxW="960px"
-            mx="auto"
-            bg={useColorModeValue("white", "black")}
-            py={16}
-            px={14}
-            borderRadius="md"
-            shadow="lg"
-          >
-            <Heading>{data.title}</Heading>
-            <Text mb={4}>Last Updated: {data.updatedAt}</Text>
-            <Markdown htmlString={htmlString} />
+      <Page maxW="100vw" p={0} m={0}>
+        <Box bg={useColorModeValue("gray.100", "gray.700")}>
+          <Box px={4} py="120px">
+            <Box
+              maxW="960px"
+              mx="auto"
+              bg={useColorModeValue("white", "black")}
+              py={16}
+              px={14}
+              borderRadius="md"
+              shadow="lg"
+            >
+              <Heading>{data.title}</Heading>
+              <Text color="gray.500" mb={4}>
+                Updated: {data.updatedAt}
+              </Text>
+              <Markdown htmlString={htmlString} />
+            </Box>
           </Box>
         </Box>
-      </Box>
-
-      <Footer />
+      </Page>
     </>
   );
 };

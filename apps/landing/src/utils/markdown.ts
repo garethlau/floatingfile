@@ -4,7 +4,7 @@ import { marked } from "marked";
 import hljs from "highlight.js";
 import "highlight.js/styles/github.css";
 
-export async function getPaths(folderPath: string) {
+export function getPaths(folderPath: string) {
   const filenames = fs.readdirSync(folderPath);
   const paths = filenames.map((filename) => ({
     params: {

@@ -1,6 +1,6 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-import PageTitle from "components/page-title";
+import PageTitle from "components/PageTitle";
 import NavigationBar from "components/navigation-bar";
 import Footer from "components/footer";
 import InstallAppButton from "components/install-app-button";
@@ -16,6 +16,7 @@ import {
   Button,
   useColorModeValue,
 } from "@chakra-ui/react";
+import Page from "components/Page";
 
 const Card: React.FC = ({ children }) => (
   <Box
@@ -47,10 +48,8 @@ const IosPage: React.FC = () => {
           description: "Download floatingfile on your device!",
         }}
       />
-      <NavigationBar />
-      <PageTitle>Download floatingfile</PageTitle>
 
-      <Container maxW="container.lg" mb={12}>
+      <Page title="Download">
         <Grid
           gap={4}
           templateColumns={{ base: "1fr", md: "1fr 1fr" }}
@@ -122,17 +121,15 @@ const IosPage: React.FC = () => {
                   _active={{}}
                   size="lg"
                   as="a"
-                  href="https://github.com/garethlau/floatingfile-cli"
+                  href="/cli"
                 >
-                  View on Github
+                  Learn More
                 </Button>
               </Flex>
             </Card>
           </GridItem>
         </Grid>
-      </Container>
-
-      <Footer />
+      </Page>
     </>
   );
 };

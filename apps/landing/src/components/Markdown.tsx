@@ -87,13 +87,14 @@ const Markdown: React.FC<MarkdownProps> = ({ htmlString }) => {
           fontSize: "14px",
           overflowX: "auto",
         },
-        "p > code": {
+        "p > code, li > code": {
           color: useColorModeValue("white", "black"),
           bg: useColorModeValue("gray.600", "gray.50"),
           px: "5px",
           py: "2px",
           borderRadius: "3px",
           fontSize: "14px",
+          mx: "2px",
         },
       }}
       dangerouslySetInnerHTML={{ __html: htmlString }}
