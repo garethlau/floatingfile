@@ -80,8 +80,8 @@ const Markdown: React.FC<MarkdownProps> = ({ htmlString }) => {
         },
         "pre > code": {
           fontFamily: "monospace",
-          color: useColorModeValue("white", "black"),
-          bg: useColorModeValue("gray.600", "gray.50"),
+          color: useColorModeValue("black", "white"),
+          bg: useColorModeValue("gray.50", "gray.900"),
           borderRadius: "5px",
           display: "block",
           padding: "20px",
