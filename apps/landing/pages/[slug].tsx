@@ -1,8 +1,5 @@
-import fs from "fs";
 import path from "path";
 import { NextSeo } from "next-seo";
-import matter from "gray-matter";
-import marked from "marked";
 import React from "react";
 import { Box, Text, Heading, useColorModeValue } from "@chakra-ui/react";
 import Footer from "components/footer";
