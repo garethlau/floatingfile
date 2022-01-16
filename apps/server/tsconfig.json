@@ -14,10 +14,13 @@
     "paths": {
       "*": ["node_modules/*"]
     },
+    "lib": ["es2019"],
+    "incremental": true,
+    "rootDir": "src",
     "typeRoots": [
       "src/types",
       "src/node_modules/@types"
     ] /* List of folders to include type definitions from. */
   },
-  "include": ["src/**/*"]
+  "include": ["src"]
 }

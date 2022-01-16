@@ -5,9 +5,12 @@ import React, {
   useRef,
   useEffect,
 } from "react";
-import axios, { CancelToken, CancelTokenSource } from "axios";
+import axios, { CancelTokenSource } from "axios";
 import Honeybadger from "../lib/honeybadger";
 import { v4 as uuidv4 } from "uuid";
+import useSpace from "../hooks/useSpace";
+import { WrappedFile } from "../interfaces";
+import { useToast } from "@chakra-ui/react";
 
 interface Context {
   enqueueMany: (files: File[]) => void;
@@ -23,13 +26,7 @@ interface Context {
   currentUpload: string;
 }
 
-export interface WrappedFile {
-  file: File;
-  // ID used soley by the client to keep track of uploads
-  id: string;
-  ext: string;
-}
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export const UploadServiceContext = createContext<Context>({
   enqueueMany: (files: File[]) => {},
   peek: () => null,
@@ -43,6 +40,7 @@ export const UploadServiceContext = createContext<Context>({
   setCode: () => {},
   currentUpload: "",
 });
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -51,77 +49,51 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
   const [code, setCode] = useState<string>("");
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [currentUpload, setCurrentUpload] = useState<string>("");
+  const { uploadFile } = useSpace(code);
+  const toast = useToast();
 
   const sourceRef = useRef<CancelTokenSource | null>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line
-    (async function () {
+    (async () => {
       if (size() > 0) {
         const wrappedFile = peek();
-        const { file, id, ext } = wrappedFile;
 
         if (!sourceRef.current) {
           sourceRef.current = axios.CancelToken.source();
         }
 
         try {
-          await new Promise((resolve, reject) => {
-            // Generate a signed URL to upload file directly from client
-            // The file meta data is provided to ensure that the space has capacity to upload the file
-            axios
-              .post(`/api/v5/signed-urls`, {
-                file,
-                code,
-              })
-              .then((response) => {
-                const { signedUrl, key } = response.data;
-                setCurrentUpload(id);
-
-                // Upload the file using the signed URL. The signed URL generated is for the returned key.
-                axios
-                  .put(signedUrl, file, {
-                    onUploadProgress: (event) => {
-                      // Set upload progress for current file
-                      updateProgress(id, event.loaded, event.total);
-                    },
-                    cancelToken: sourceRef.current?.token,
-                  })
-                  .then(() => {
-                    setCurrentUpload("");
-
-                    // Create data object which is used by the server to create the file object.
-                    const data = {
-                      size: file.size,
-                      name: file.name,
-                      type: file.type,
-                      ext,
-                      key,
-                    };
-                    // Adds a file object to the file array of the space
-                    axios
-                      .patch(`/api/v5/spaces/${code}/files`, data)
-                      .then(resolve)
-                      .catch(reject);
-                  })
-                  .catch((error) => {
-                    reject(error);
-                  });
-              })
-              .catch((error) => {
-                reject(error);
-              });
+          await uploadFile(wrappedFile, {
+            cancelToken: sourceRef.current?.token,
+            onPreupload: () => {
+              setCurrentUpload(wrappedFile.id);
+            },
+            onUpload: () => {
+              setCurrentUpload("");
+            },
+            onPostupload: () => {},
+            onUploadProgress: (event) => {
+              // Set upload progress for current file
+              updateProgress(wrappedFile.id, event.loaded, event.total);
+            },
           });
         } catch (error) {
           if (axios.isCancel(error)) {
             // Cleanup logic
             Honeybadger.notify(error.messaage);
             sourceRef.current = null;
+          } else if (error instanceof Error) {
+            toast({
+              title: "File not uploaded.",
+              description: "This space has run out of available storage.",
+              status: "error",
+            });
           } else {
             Honeybadger.notify(error);
           }
         } finally {
-          complete(id);
+          complete(wrappedFile.id);
           dequeue();
         }
       }
@@ -211,11 +183,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   }
 
-  /**
-   *
-   * @param id ID of file to cancel upload
-   */
-  function cancel(id: string): void {
+  function cancel(): void {
     if (sourceRef.current) {
       sourceRef.current.cancel("Operation cancelled");
     }

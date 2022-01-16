@@ -1,26 +1,34 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "apps/*"
+    ],
+    "nohoist": [
+      "**/prisma",
+      "**/prisma/**"
+    ]
+  },
   "version": "0.0.0",
   "name": "floatingfile",
   "devDependencies": {
     "concurrently": "^6.2.0"
   },
   "scripts": {
-    "dev": "concurrently -n client,server,common \"yarn dev:client\" \"yarn dev:server\" \"yarn dev:common\"",
+    "dev": "concurrently -n client,server,packages \"yarn dev:client\" \"yarn dev:server\" \"yarn watch:packages\"",
+    "watch:packages": "concurrently \"yarn watch:types\" \"yarn watch:ui\"",
     "dev:server": "yarn --cwd apps/server dev",
     "dev:client": "yarn --cwd apps/client dev",
     "dev:landing": "yarn --cwd apps/landing dev",
-    "dev:common": "yarn --cwd packages/common dev",
+    "watch:ui": "yarn --cwd packages/ui watch",
+    "watch:types": "yarn --cwd packages/types watch",
     "build:server": "yarn --cwd apps/server build",
     "build:client": "yarn --cwd apps/client build",
     "deploy:app": "./scripts/deploy-app.sh",
     "deploy:landing": "./scripts/deploy-landing-site.sh",
     "clean": "./scripts/clean.sh",
-    "start:storage":"docker-compose -f ./docker/docker-compose.yml up"
+    "start:storage": "docker-compose -f ./docker/docker-compose.yml up"
   },
   "dependencies": {
     "@octokit/core": "^3.3.1"

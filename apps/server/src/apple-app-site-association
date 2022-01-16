@@ -1,11 +1,13 @@
 {
-    "applinks": {
-        "apps": [],
-        "details": [
-            {
-                "appID": "8VU5ULQ45F.com.alanyan.Floating-File",
-                "paths": [ "NOT /privacy/*", "NOT /terms/*", "NOT /donate/*", "NOT /support/*", "/*" ]
-            }
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "8VU5ULQ45F.com.alanyan.Floating-File",
+        "paths": [
+          "/*"
         ]
-    }
+      }
+    ]
+  }
 }

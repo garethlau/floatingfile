@@ -16,14 +16,19 @@ This respository is a monorepo containing packages that are responsible for the 
 
 **Please note that the codebases for the iOS application and CLI are not included in this monorepo.**
 
-- [floatingfile CLI Github Repository](https://github.com/garethlau/floatingfile-cli)
+| Application              | Description                                                                   | Technologies               |
+| ------------------------ | ----------------------------------------------------------------------------- | -------------------------- |
+| [client](/apps/client/)  | Frontend for the floatingfile application. Boostrapped with Create React App. | react, chakra-ui           |
+| [landing](/apps/landing) | floatingfile marketing/landing site.                                          | nextjs, react, chakra-ui   |
+| [server](/apps/server)   | Backend for the floatingfile application.                                     | express, mongoose, aws-sdk |
+| [cli](/apps/cli)         | Command line interface.                                                       | TypeScript                 |
 
-| Module                     | Description                                                                   | Technologies               |
-| -------------------------- | ----------------------------------------------------------------------------- | -------------------------- |
-| [client](/apps/client/)    | Frontend for the floatingfile application. Boostrapped with Create React App. | react, chakra-ui           |
-| [landing](/apps/landing)   | floatingfile marketing/landing site.                                          | nextjs, react, chakra-ui   |
-| [server](/apps/server)     | Backend for the floatingfile application.                                     | express, mongoose, aws-sdk |
-| [common](/packages/common) | Shared code (interfaces, enums, components, constants).                       |                            |
+| Package                  | Description                      | Technologies |
+| ------------------------ | -------------------------------- | ------------ |
+| [types](/packages/types) | Type defenitions.                |              |
+| [ui](/packages/ui)       | Shared UI components and themes. |              |
+
+![](/docs/floatingfile-endpoint-access.svg)
 
 ## Development
 

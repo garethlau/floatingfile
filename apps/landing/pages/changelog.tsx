@@ -1,20 +1,14 @@
 import { NextSeo } from "next-seo";
 import Footer from "components/footer";
-import EnterInView from "../src/wrappers/EnterInView";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import marked from "marked";
 import NavigationBar from "components/navigation-bar";
 import PageTitle from "components/page-title";
-import {
-  Box,
-  Container,
-  Text,
-  chakra,
-  Divider,
-  useBreakpointValue,
-} from "@chakra-ui/react";
+import { Box, Container, Text, Divider } from "@chakra-ui/react";
+import Markdown from "components/Markdown";
+import React from "react";
 
 interface ChangelogRecord {
   version: string;
@@ -41,45 +35,15 @@ const ChangelogPage: React.FC<{ changelog: ChangelogRecord[] }> = ({
 
       <Container maxW="3xl">
         {changelog.map(({ version, data, htmlString }) => (
-          <EnterInView key={version}>
-            <Box>
+          <React.Fragment key={version}>
+            <Box id={version}>
               <Text as="i">
                 {version} - {data.date}
               </Text>
-              <chakra.div
-                sx={{
-                  h1: {
-                    fontSize: "3rem",
-                    fontWeight: "bold",
-                    mt: 4,
-                  },
-                  h2: {
-                    fontSize: "2rem",
-                    fontWeight: "bold",
-                    mt: 4,
-                  },
-                  h3: {
-                    fontSize: "1.5rem",
-                    fontWeight: "bold",
-                    mt: 4,
-                  },
-                  img: {
-                    width: useBreakpointValue({ base: "100%", md: "80%" }),
-                    mx: "auto",
-                    borderRadius: "md",
-                    shadow: "md",
-                    my: 4,
-                  },
-                  ul: {
-                    pl: "20px",
-                  },
-                  p: { textAlign: "justify" },
-                }}
-                dangerouslySetInnerHTML={{ __html: htmlString }}
-              />
+              <Markdown htmlString={htmlString} />
             </Box>
             <Divider my={10} />
-          </EnterInView>
+          </React.Fragment>
         ))}
       </Container>
 

@@ -18,8 +18,9 @@ yarn install
 echo ">>> increase memory for build"
 export NODE_OPTIONS="--max-old-space-size=5120" # increase to 5gb
 
-echo ">>> building common"
-yarn --cwd packages/common build
+echo ">>> building packages"
+yarn --cwd packages/ui build
+yarn --cwd packages/types build
 
 echo ">>> building frontend"
 yarn --cwd apps/client build:$environment

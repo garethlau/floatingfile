@@ -20,7 +20,6 @@ import {
   mdiLanguageCpp,
   mdiLanguageCsharp,
   mdiLanguageGo,
-  mdiLanguageFortran,
   mdiLanguageHaskell,
   mdiLanguageTypescript,
   mdiLanguageJava,
@@ -85,6 +84,7 @@ function getPath(extension: string) {
     case "ico":
     case "jpg":
     case "jpeg":
+    case "heic":
       path = mdiImageOutline;
       break;
     case "json":

@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Space {
+  code    String   @id
+  events  Event[]
+  files   File[]
+  clients Client[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model File {
+  id         String  @id @default(uuid())
+  ext        String
+  key        String
+  name       String
+  size       Int
+  type       String
+  previewUrl String? @map("preview_url")
+
+  space     Space  @relation(fields: [belongsTo], references: [code], onUpdate: Cascade, onDelete: Cascade)
+  belongsTo String @map("belongs_to")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Event {
+  id      String  @id @default(uuid())
+  action  String
+  author  String
+  payload String?
+
+  space     Space  @relation(fields: [belongsTo], references: [code], onUpdate: Cascade, onDelete: Cascade)
+  belongsTo String @map("belongs_to")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Client {
+  id       String @id
+  username String
+
+
+  space       Space    @relation(fields: [connectedTo], references: [code], onUpdate: Cascade, onDelete: Cascade)
+  connectedTo String   @map("connected_to")
+  createdAt   DateTime @default(now()) @map("created_at")
+}

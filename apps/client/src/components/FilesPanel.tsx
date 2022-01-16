@@ -1,61 +1,24 @@
-import React, { useEffect, useCallback, useReducer } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import { AnimateSharedLayout, AnimatePresence, motion } from "framer-motion";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Button from "./Button";
-import { Colors } from "@floatingfile/common";
-import { useDropzone } from "react-dropzone";
+import { Colors } from "@floatingfile/ui";
 import useWindowWidth from "../hooks/useWindowWidth";
-import { useUploadService } from "../contexts/uploadService";
-import useSpace from "../queries/useSpace";
-import FileListItem from "./file-list-item";
+import useSpace from "../hooks/useSpace";
+import FileListItem from "./FileListItem";
 import { Stack, Box, Flex, chakra, CircularProgress } from "@chakra-ui/react";
 import useLayout, { Layouts } from "../hooks/useLayout";
-import Toolbar from "./toolbar";
+import Toolbar from "./Toolbar";
+import FileDrop from "./FileDrop";
 
 const FilesPanel: React.FC = () => {
   const windowWidth = useWindowWidth();
   const { code }: { code: string } = useParams();
-  const { data: space, isLoading } = useSpace(code);
+  const { space, isLoading } = useSpace(code);
   const layout = useLayout();
 
   const files = space?.files || [];
-
-  const uploadService = useUploadService();
-
-  useEffect(() => {
-    uploadService.setCode(code);
-  }, [code]);
-
-  const onDrop = useCallback(async (droppedFiles: File[]) => {
-    uploadService.enqueueMany(droppedFiles);
-  }, []);
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-  });
-
-  const dropZone = (
-    <chakra.div {...getRootProps()} flexGrow={1} display="flex" w="100%">
-      <input {...getInputProps()} />
-      <Flex align="center" justify="center" w="inherit" h="inherit">
-        <Box textAlign="center">
-          {windowWidth > 960 ? (
-            <chakra.p opacity={0.7}>
-              Drag and drop files
-              <br />
-              or
-            </chakra.p>
-          ) : (
-            <chakra.p opacity={0.7}>It&apos;s pretty empty here...</chakra.p>
-          )}
-          <Button colorScheme="green" leftIcon={<CloudUploadIcon />}>
-            Upload
-          </Button>
-        </Box>
-      </Flex>
-    </chakra.div>
-  );
 
   if (isLoading) {
     return (
@@ -79,9 +42,11 @@ const FilesPanel: React.FC = () => {
         {layout === Layouts.MOBILE && files.length > 0 && (
           // Upload button for mobile layout scrolls w/ file list
           <Box maxW="100vw" p={2}>
-            <Button colorScheme="green" isFullWidth>
-              Upload
-            </Button>
+            <FileDrop>
+              <Button colorScheme="green" isFullWidth>
+                Upload
+              </Button>
+            </FileDrop>
           </Box>
         )}
         {/* {windowWidth < 960 && files.length > 0 && (
@@ -89,7 +54,7 @@ const FilesPanel: React.FC = () => {
         {files.length > 0 ? (
           <AnimatePresence>
             <AnimateSharedLayout>
-              <Stack spacing={2} p={2} maxW="100vw">
+              <Stack spacing={2} p={2} maxW="100vw" h="100%">
                 {files.map((file) => (
                   <motion.div
                     layout
@@ -101,11 +66,31 @@ const FilesPanel: React.FC = () => {
                     <FileListItem file={file} />
                   </motion.div>
                 ))}
+                <FileDrop isFullHeight />
               </Stack>
             </AnimateSharedLayout>
           </AnimatePresence>
         ) : (
-          dropZone
+          <FileDrop isFullHeight>
+            <Flex align="center" justify="center" w="inherit" h="inherit">
+              <Box textAlign="center">
+                {windowWidth > 960 ? (
+                  <chakra.p opacity={0.7}>
+                    Drag and drop files
+                    <br />
+                    or
+                  </chakra.p>
+                ) : (
+                  <chakra.p opacity={0.7}>
+                    It&apos;s pretty empty here...
+                  </chakra.p>
+                )}
+                <Button colorScheme="green" leftIcon={<CloudUploadIcon />}>
+                  Upload
+                </Button>
+              </Box>
+            </Flex>
+          </FileDrop>
         )}
       </Box>
     </Flex>
