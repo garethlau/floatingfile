@@ -12,7 +12,6 @@ const App: React.FC<{ Component: any; pageProps: any }> = ({
   Component,
   pageProps,
 }) => {
-  console.log(theme);
   return (
     <React.Fragment>
       <Head>
