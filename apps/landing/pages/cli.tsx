@@ -157,7 +157,7 @@ const CliPage: React.FC = () => {
             "Documentation for the floatingfile command line interface",
           images: [
             {
-              url: "https://floatingfile.space/images/landing-banner.png",
+              url: "https://floatingfile.space/images/cli-banner-blue-1200x600.jpg",
               width: 1200,
               height: 630,
               alt: "Use floatingfile today!",
