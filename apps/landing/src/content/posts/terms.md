@@ -34,4 +34,4 @@ We may update our Terms and Conditions from time to time. Thus, you are advised 
 
 ### Contact Us
 
-If you have any questions or suggestions about my Terms and Conditions, do not hesitate to contact me at bugs.floatingfile@gmail.com.
+If you have any questions or suggestions about my Terms and Conditions, do not hesitate to contact me at bugs@floatingfile.space
