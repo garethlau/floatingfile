@@ -9,10 +9,12 @@ import { create, find, remove } from "../services/space-service";
 import { notifyAll } from "../services/notification-service";
 import prisma from "../lib/prisma";
 import Honeybadger from "../lib/honeybadger";
+import { accessLogger } from "../lib/logger";
 
 export const createSpace: CreateSpaceFn = async (params: {
   username: string;
 }) => {
+  accessLogger.info("createSpace");
   const { username } = params;
   const space = await create();
 
@@ -35,6 +37,7 @@ export const createSpace: CreateSpaceFn = async (params: {
 };
 
 export const findSpace: FindSpaceFn = async (params: { code: string }) => {
+  accessLogger.info("findSpace");
   const { code } = params;
   if (!code) return null;
   const space = await find(code);
@@ -84,6 +87,7 @@ export const findSpace: FindSpaceFn = async (params: { code: string }) => {
 export const destroySpace: DestroySpaceFn = async (params: {
   code: string;
 }) => {
+  accessLogger.info("destroySpace");
   const { code } = params;
   await notifyAll(code, NotificationTypes.SPACE_DESTROYED);
   try {
