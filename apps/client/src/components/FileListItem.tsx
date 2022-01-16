@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Colors } from "@floatingfile/ui";
 import { useParams } from "react-router-dom";
 import {
@@ -22,6 +22,7 @@ import FileIcon from "./FileIcon";
 import Honeybadger from "../lib/honeybadger";
 import useLayout, { Layouts } from "../hooks/useLayout";
 import { formatBytes } from "../utils";
+import useRect from "../hooks/useRect";
 
 const FileListItem: React.FC<{
   file: {
@@ -42,20 +43,8 @@ const FileListItem: React.FC<{
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
   const layout = useLayout();
   const ref = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState<number>(0);
   const sourceRef = useRef<CancelTokenSource | null>(null);
-
-  useEffect(() => {
-    function calcWidth() {
-      const clientRect = ref.current?.getBoundingClientRect();
-      const width = clientRect?.width || 0;
-      setContainerWidth(width);
-    }
-    // Calculate initial width of parent container
-    calcWidth();
-    window.addEventListener("resize", calcWidth);
-    return () => window.removeEventListener("resize", calcWidth);
-  }, []);
+  const { width: containerWidth } = useRect(ref);
 
   function cancel(e: React.SyntheticEvent) {
     e.stopPropagation();
@@ -103,11 +92,14 @@ const FileListItem: React.FC<{
     }
   }
 
+  const actionContainerWidth = containerWidth > 530 ? 230 : 140;
+
   return (
     <Flex
       ref={ref}
       p={2}
       w="100%"
+      h="66px"
       shadow="md"
       borderRadius="md"
       align="center"
@@ -121,11 +113,12 @@ const FileListItem: React.FC<{
       onClick={() => toggleSelect(id)}
       _hover={{ cursor: "pointer" }}
       transition="background-color ease 0.3s"
+      overflowY="hidden"
     >
       <Box w="50px" h="50px">
         <FileIcon extension={ext} previewUrl={previewUrl} />
       </Box>
-      <Box w="50%">
+      <Box maxW={containerWidth - 50 - actionContainerWidth}>
         <chakra.p textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
           {name}
         </chakra.p>
