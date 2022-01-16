@@ -10,6 +10,9 @@ version=$1
 zip_name=floatingfile-macos-x64-$version.tar.gz
 echo ">>> creating macos $version"
 
+echo ">>> building application"
+yarn build
+
 echo ">>> packaging application"
 yarn package
 
