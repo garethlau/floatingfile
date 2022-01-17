@@ -2,7 +2,6 @@ import React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import { ColorModeScript } from "@chakra-ui/react";
 import { theme } from "@floatingfile/ui";
-import Script from "next/script";
 import { GA_TRACKING_ID } from "src/lib/gtag";
 
 class MyDocument extends Document {
@@ -89,18 +88,18 @@ class MyDocument extends Document {
           <meta name="theme-color" content="#000000" />
           {process.env.NODE_ENV === "production" && (
             <>
-              <Script
+              <script
                 src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-                strategy="afterInteractive"
+                async
               />
-              <Script>
+              <script>
                 {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', ${GA_TRACKING_ID});
-            `}
-              </Script>
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', ${GA_TRACKING_ID});
+                `}
+              </script>
             </>
           )}
         </Head>
