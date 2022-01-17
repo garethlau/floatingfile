@@ -58,9 +58,6 @@ const CliPage: NextPage<{
         <Text>
           Version: <Tag colorScheme="green">v{versions[0]}</Tag>
         </Text>
-        <Text>
-          URL: <Link href={latest.data.url}>{latest.data.url}</Link>
-        </Text>
         <Text color="gray.500">Posted: {latest.data.createdAt}</Text>
         <Text color="gray.500" mb={4}>
           Updated: {latest.data.updatedAt}

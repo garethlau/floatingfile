@@ -27,9 +27,6 @@ const CliDocPage: NextPage<{
             Back
           </Button>
           <Heading>v{slug}</Heading>
-          <Text>
-            URL: <Link href={data.url}>{data.url}</Link>
-          </Text>
           <Text color="gray.500">Posted: {data.createdAt}</Text>
           <Text color="gray.500" mb={4}>
             Updated: {data.updatedAt}
