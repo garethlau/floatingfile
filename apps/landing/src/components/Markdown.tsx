@@ -66,7 +66,7 @@ const Markdown: React.FC<MarkdownProps> = ({ htmlString }) => {
           shadow: "md",
           my: 4,
         },
-        ul: {
+        "ul, ol": {
           pl: "20px",
           mb: "10px",
         },
