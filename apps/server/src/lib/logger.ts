@@ -4,7 +4,7 @@ const { combine, timestamp, json, colorize, simple, printf } = format;
 
 logger.add(
   new transports.File({
-    filename: "error.log",
+    filename: `${process.cwd()}/logs/error.log`,
     level: "error",
     format: combine(timestamp(), json()),
   })
@@ -29,7 +29,7 @@ export const accessLogger = createLogger({
     }),
 
     new transports.File({
-      filename: "access.log",
+      filename: `${process.cwd()}/logs/access.log`,
       level: "info",
       format: combine(timestamp(), json()),
     }),
