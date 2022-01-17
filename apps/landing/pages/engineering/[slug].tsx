@@ -11,7 +11,7 @@ import {
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import Markdown from "components/Markdown";
 import "highlight.js/styles/github.css";
-import { getPaths, parseMd } from "src/utils/markdown";
+import { getPaths, parseMd } from "utils/markdown";
 import Page from "components/Page";
 
 const Post: React.FC<{
@@ -64,7 +64,7 @@ const Post: React.FC<{
   );
 };
 
-const FOLDER_PATH = path.join("src", "content", "engineering");
+const FOLDER_PATH = path.join("content", "engineering");
 
 export async function getStaticPaths() {
   const paths = await getPaths(FOLDER_PATH);

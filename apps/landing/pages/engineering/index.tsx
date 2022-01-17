@@ -2,10 +2,10 @@ import { NextSeo } from "next-seo";
 import React from "react";
 import { Box, Heading, useColorModeValue, Text, Stack } from "@chakra-ui/react";
 import { NextPage } from "next";
-import { getPaths, parseMd } from "src/utils/markdown";
+import { getPaths, parseMd } from "utils/markdown";
 import path from "path";
 import Link from "next/link";
-import { calcReadTime } from "src/utils/article";
+import { calcReadTime } from "utils/article";
 import Page from "components/Page";
 
 interface Article {
@@ -56,7 +56,7 @@ const EngineeringPage: NextPage<{ articles: Article[] }> = ({ articles }) => {
   );
 };
 
-const FOLDER_PATH = path.join("src", "content", "engineering");
+const FOLDER_PATH = path.join("content", "engineering");
 export async function getStaticProps() {
   const paths = await getPaths(FOLDER_PATH);
 

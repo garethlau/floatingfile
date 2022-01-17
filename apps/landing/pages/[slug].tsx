@@ -3,7 +3,7 @@ import { NextSeo } from "next-seo";
 import React from "react";
 import { Box, Text, Heading, useColorModeValue } from "@chakra-ui/react";
 import Markdown from "components/Markdown";
-import { getPaths, parseMd } from "src/utils/markdown";
+import { getPaths, parseMd } from "utils/markdown";
 import Page from "components/Page";
 
 const Post: React.FC<{
@@ -47,7 +47,7 @@ const Post: React.FC<{
   );
 };
 
-const FOLDER_PATH = path.join("src", "content", "posts");
+const FOLDER_PATH = path.join("content", "posts");
 
 export async function getStaticPaths() {
   const paths = await getPaths(FOLDER_PATH);

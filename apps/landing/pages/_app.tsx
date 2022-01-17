@@ -7,7 +7,7 @@ import { DefaultSeo } from "next-seo";
 import { ChakraProvider, LightMode } from "@chakra-ui/react";
 import { theme } from "@floatingfile/ui";
 import { useRouter } from "next/router";
-import gtag from "../src/lib/gtag";
+import gtag from "lib/gtag";
 
 // This default export is required in a new `pages/_app.js` file.
 const App: React.FC<{ Component: any; pageProps: any }> = ({

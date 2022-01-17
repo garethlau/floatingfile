@@ -2,7 +2,7 @@ import React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import { ColorModeScript } from "@chakra-ui/react";
 import { theme } from "@floatingfile/ui";
-import { GA_TRACKING_ID } from "src/lib/gtag";
+import { GA_TRACKING_ID } from "lib/gtag";
 
 class MyDocument extends Document {
   render() {

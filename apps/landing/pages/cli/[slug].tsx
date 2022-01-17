@@ -5,7 +5,7 @@ import { Button, Box, Text, Heading, Link } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import Markdown from "components/Markdown";
 import { NextPage } from "next";
-import { getPaths, parseMd } from "src/utils/markdown";
+import { getPaths, parseMd } from "utils/markdown";
 import Page from "components/Page";
 
 const CliDocPage: NextPage<{
@@ -38,7 +38,7 @@ const CliDocPage: NextPage<{
   );
 };
 
-const FOLDER_PATH = path.join("src", "content", "cli");
+const FOLDER_PATH = path.join("content", "cli");
 
 export async function getStaticPaths() {
   const paths = getPaths(FOLDER_PATH);

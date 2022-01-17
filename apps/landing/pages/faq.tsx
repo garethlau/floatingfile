@@ -14,7 +14,7 @@ import {
 import PageTitle from "components/PageTitle";
 import NavigationBar from "components/navigation-bar";
 import Footer from "components/footer";
-import { faqs } from "src/scaffold";
+import { faqs } from "scaffold";
 import Markdown from "components/Markdown";
 
 const FaqPage: React.FC = () => {

@@ -1,8 +1,8 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-import { Text, Heading, HStack, Tag, Link } from "@chakra-ui/react";
+import { Text, Heading, HStack, Tag } from "@chakra-ui/react";
 import path from "path";
-import { getPaths, parseMd } from "src/utils/markdown";
+import { getPaths, parseMd } from "utils/markdown";
 import Markdown from "components/Markdown";
 import { NextPage } from "next";
 import NextLink from "next/link";
@@ -68,7 +68,7 @@ const CliPage: NextPage<{
   );
 };
 
-const FOLDER_PATH = path.join("src", "content", "cli");
+const FOLDER_PATH = path.join("content", "cli");
 export async function getStaticProps() {
   const versions = getPaths(FOLDER_PATH)
     .filter(({ params }) => {

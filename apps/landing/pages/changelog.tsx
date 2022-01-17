@@ -46,12 +46,11 @@ const ChangelogPage: React.FC<{ changelog: ChangelogRecord[] }> = ({
 };
 
 export async function getStaticProps() {
-  const filenames = fs.readdirSync(path.join("src", "content", "changelog"));
+  const FOLDER_PATH = path.join("content", "changelog");
+  const filenames = fs.readdirSync(FOLDER_PATH);
   const changelog = filenames
     .map((filename) => {
-      const rawMd = fs.readFileSync(
-        path.join("src", "content", "changelog", filename)
-      );
+      const rawMd = fs.readFileSync(path.join(FOLDER_PATH, filename));
       const parsedMd = matter(rawMd);
       const htmlString = marked.parse(parsedMd.content);
 
