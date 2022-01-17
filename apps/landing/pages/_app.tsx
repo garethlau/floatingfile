@@ -1,17 +1,32 @@
 import "@fontsource/dm-sans/400.css";
 import "@fontsource/dm-sans/500.css";
 import "@fontsource/dm-sans/700.css";
-import React from "react";
+import React, { useEffect } from "react";
 import Head from "next/head";
 import { DefaultSeo } from "next-seo";
 import { ChakraProvider, LightMode } from "@chakra-ui/react";
 import { theme } from "@floatingfile/ui";
+import { useRouter } from "next/router";
+import gtag from "../src/lib/gtag";
 
 // This default export is required in a new `pages/_app.js` file.
 const App: React.FC<{ Component: any; pageProps: any }> = ({
   Component,
   pageProps,
 }) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleRouteChange = (url: URL) => {
+      /* invoke analytics function only for production */
+      if (process.env.NODE_ENV === "production") gtag.pageview(url);
+    };
+    router.events.on("routeChangeComplete", handleRouteChange);
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
+
   return (
     <React.Fragment>
       <Head>
