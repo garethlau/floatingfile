@@ -21,17 +21,19 @@ const ConnectPanel: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<number>(0); // In seconds
   const toast = useToast();
 
-  async function close() {
+  const close = async () => {
     try {
       setIsDestroying(true);
       await destroy();
       history.push("/");
     } catch (error) {
-      Honeybadger.notify(error);
+      if (error instanceof Error) {
+        Honeybadger.notify(error);
+      }
     } finally {
       setIsDestroying(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (!space) return undefined;

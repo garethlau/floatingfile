@@ -125,7 +125,9 @@ const Toolbar: React.FC = () => {
         status: "success",
       });
     } catch (error) {
-      Honeybadger.notify(error);
+      if (error instanceof Error) {
+        Honeybadger.notify(error);
+      }
     }
   }
 
@@ -143,12 +145,14 @@ const Toolbar: React.FC = () => {
         title: "Successfully zipped and downloaded files",
         status: "success",
       });
-    } catch (err) {
-      toast({
-        title: "Error zipping selected files",
-        description: err.message,
-        status: "error",
-      });
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: "Error zipping selected files",
+          description: error.message,
+          status: "error",
+        });
+      }
     }
   }
 

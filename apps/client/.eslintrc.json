@@ -24,6 +24,8 @@
     "import/no-extraneous-dependencies": "off",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
+    "react/require-default-props":"off",
+    "react/jsx-no-bind":"off",
     "react/jsx-props-no-spreading": "off",
     "jsx-a11y/href-no-hash": "off",
     "import/order": "off",

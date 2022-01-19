@@ -81,7 +81,6 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
         } catch (error) {
           if (axios.isCancel(error)) {
             // Cleanup logic
-            Honeybadger.notify(error.messaage);
             sourceRef.current = null;
           } else if (error instanceof Error) {
             toast({
@@ -89,7 +88,7 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
               description: "This space has run out of available storage.",
               status: "error",
             });
-          } else {
+          } else if (error instanceof Error) {
             Honeybadger.notify(error);
           }
         } finally {

@@ -13,12 +13,12 @@ const Button = forwardRef<ButtonProps, "button">(
   ({ colorScheme, children, onClick, throttle = 1, ...rest }, ref) => {
     const [throttling, setThrottling] = useState(false);
 
-    function throttledOnClick(e: React.MouseEvent<HTMLButtonElement>) {
+    const throttledOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (throttling) return;
       setThrottling(true);
       setTimeout(() => setThrottling(false), throttle * 1000);
       if (typeof onClick === "function") onClick(e);
-    }
+    };
 
     if (colorScheme === "white") {
       return (

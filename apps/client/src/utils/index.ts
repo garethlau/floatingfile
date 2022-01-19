@@ -1,13 +1,3 @@
-export function getMobileOperatingSystem(): string {
-  // let userAgent = navigator.userAgent || navigator.vendor || window.opera;
-
-  const userAgent = navigator.userAgent || navigator.vendor;
-  if (/windows phone/i.test(userAgent)) return "Windows Phone";
-  if (/android/i.test(userAgent)) return "Android";
-  if (/ipad|iPhone|iPod/.test(userAgent) && !window.MSStream) return "iOS";
-  return "Unknown";
-}
-
 export function formatBytes(bytes: string | number, decimals = 2) {
   let _bytes: number;
   if (typeof bytes === "number") {
@@ -26,3 +16,7 @@ export function formatBytes(bytes: string | number, decimals = 2) {
 
   return `${parseFloat((_bytes / k ** 1).toFixed(dm))} ${sizes[i]}`;
 }
+
+export default {
+  formatBytes,
+};

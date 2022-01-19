@@ -71,7 +71,7 @@ const FileListItem: React.FC<{
     } catch (error) {
       if (axios.isCancel(error)) {
         sourceRef.current = null;
-      } else {
+      } else if (error instanceof Error) {
         Honeybadger.notify(error);
       }
     } finally {
@@ -87,7 +87,9 @@ const FileListItem: React.FC<{
     try {
       await removeFile(id);
     } catch (error) {
-      Honeybadger.notify(error);
+      if (error instanceof Error) {
+        Honeybadger.notify(error);
+      }
     }
   }
 

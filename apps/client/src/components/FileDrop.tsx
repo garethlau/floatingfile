@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { chakra, useDisclosure } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
