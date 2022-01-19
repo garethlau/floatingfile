@@ -58,9 +58,9 @@ const FileCard: React.FC<FileCardProps> = ({
 );
 
 const UploadQueue: React.FC = () => {
-  const uploadService = useUploadService();
   const [open, setOpen] = useState<boolean>(false);
   const [minimized, setMinimized] = useState<boolean>(false);
+  const uploadService = useUploadService();
 
   useEffect(() => {
     if (uploadService.size() > 0) {

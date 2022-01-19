@@ -17,12 +17,8 @@ const FileDrop: React.FC<FileDropProps> = ({
 }) => {
   const [files, setFiles] = useState<File[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const uploadService = useUploadService();
   const { code }: { code: string } = useParams();
-
-  useEffect(() => {
-    uploadService.setCode(code);
-  }, [code]);
+  const uploadService = useUploadService(code);
 
   const onDrop = useCallback(async (droppedFiles: File[]) => {
     if (droppedFiles.length > 5) {

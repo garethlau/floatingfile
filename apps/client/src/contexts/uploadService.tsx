@@ -210,12 +210,16 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useUploadService = () => {
+export const useUploadService = (code?: string) => {
   const context = useContext(UploadServiceContext);
+
   if (context === undefined) {
     throw new Error(
       "useUploadService must be used within a UploadServiceProvider"
     );
+  }
+  if (code) {
+    context.setCode(code);
   }
   return context;
 };
