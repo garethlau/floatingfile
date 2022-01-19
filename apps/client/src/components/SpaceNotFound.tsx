@@ -1,38 +1,43 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import { Colors } from "@floatingfile/ui";
-import Center from "./Center";
+import { Flex, Button, Box, Text, chakra } from "@chakra-ui/react";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 
-const useStyles = makeStyles(() => ({
-  page: {
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: Colors.LIGHT_SHADE,
-  },
-}));
-
-const SpaceNotFound: React.FC<{}> = () => {
-  const classes = useStyles();
-
+const SpaceNotFound: React.FC = () => {
   return (
-    <div className={classes.page}>
-      <Center>
-        <p style={{ opacity: 0.5 }}>
-          <span
+    <Flex
+      w="100vw"
+      h="100vh"
+      bg={Colors.LIGHT_SHADE}
+      align="center"
+      justify="center"
+    >
+      <Box>
+        <Text color="gray.500">
+          <chakra.span
             role="img"
             aria-label="Frowny face emoji"
             aria-labelledby="Frowny face emoji"
           >
             🙁{" "}
-          </span>
+          </chakra.span>
           Oops!
-        </p>
-        <p style={{ opacity: 0.5 }}>
-          It seems that the space you are trying to access does not exist.{" "}
-        </p>
-        <p style={{ opacity: 0.5 }}>Please double check the code.</p>
-      </Center>
-    </div>
+        </Text>
+        <Text color="gray.500">
+          It seems that the space you are trying to access does not exist.
+        </Text>
+        <Text color="gray.500">Please double check the code.</Text>
+        <Button
+          as="a"
+          href="/"
+          variant="link"
+          mt={4}
+          leftIcon={<ArrowBackIcon />}
+        >
+          Take me home
+        </Button>
+      </Box>
+    </Flex>
   );
 };
 
