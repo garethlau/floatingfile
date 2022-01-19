@@ -1,7 +1,5 @@
 import React, { useReducer } from "react";
 import { useParams } from "react-router-dom";
-import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
-import ClearIcon from "@material-ui/icons/Clear";
 import { FaTrash, FaCloudDownloadAlt } from "react-icons/fa";
 import { GrDocumentZip } from "react-icons/gr";
 import { MdCloudUpload, MdClear, MdPlaylistAddCheck } from "react-icons/md";

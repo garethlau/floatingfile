@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import FaceIcon from "@material-ui/icons/Face";
-import { Box, Stack, chakra, Flex } from "@chakra-ui/react";
+import { CgSmile } from "react-icons/cg";
+import { Box, Stack, chakra, Flex, Icon } from "@chakra-ui/react";
 import useSpace from "../hooks/useSpace";
 import Panel from "./Panel";
 
@@ -28,8 +28,11 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ myClientId }) => {
             p="5px"
           >
             <Box mr="10px">
-              <FaceIcon
-                style={{ color: username?.split("-")[0], fontSize: 36 }}
+              <Icon
+                as={CgSmile}
+                w="36px"
+                h="36px"
+                color={username?.split("-")[0]}
               />
             </Box>
             <Box>

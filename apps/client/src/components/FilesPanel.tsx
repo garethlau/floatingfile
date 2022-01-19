@@ -1,12 +1,19 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { AnimateSharedLayout, AnimatePresence, motion } from "framer-motion";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import { MdCloudUpload } from "react-icons/md";
 import Button from "./Button";
 import useWindowWidth from "../hooks/useWindowWidth";
 import useSpace from "../hooks/useSpace";
 import FileListItem from "./FileListItem";
-import { Stack, Box, Flex, chakra, CircularProgress } from "@chakra-ui/react";
+import {
+  Stack,
+  Box,
+  Flex,
+  chakra,
+  CircularProgress,
+  Icon,
+} from "@chakra-ui/react";
 import useLayout, { Layouts } from "../hooks/useLayout";
 import Toolbar from "./Toolbar";
 import FileDrop from "./FileDrop";
@@ -83,7 +90,10 @@ const FilesPanel: React.FC = () => {
                     It&apos;s pretty empty here...
                   </chakra.p>
                 )}
-                <Button colorScheme="green" leftIcon={<CloudUploadIcon />}>
+                <Button
+                  colorScheme="green"
+                  leftIcon={<Icon as={MdCloudUpload} />}
+                >
                   Upload
                 </Button>
               </Box>
