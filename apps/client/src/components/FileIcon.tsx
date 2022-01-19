@@ -1,141 +1,106 @@
 import React from "react";
+import { Icon } from "@chakra-ui/react";
 import {
-  mdiMicrosoftWord,
-  mdiMicrosoftPowerpoint,
-  mdiMicrosoftExcel,
-  mdiImageOutline,
-  mdiCodeJson,
-  mdiLanguageJavascript,
-  mdiLanguageHtml5,
-  mdiLanguagePython,
-  mdiFilePdfOutline,
-  mdiFileDocumentOutline,
-  mdiFileQuestionOutline,
-  mdiFolderZipOutline,
-  mdiSvg,
-  mdiLanguageSwift,
-  mdiLanguageCss3,
-  mdiGif,
-  mdiLanguageC,
-  mdiLanguageCpp,
-  mdiLanguageCsharp,
-  mdiLanguageGo,
-  mdiLanguageHaskell,
-  mdiLanguageTypescript,
-  mdiLanguageJava,
-  mdiLanguageKotlin,
-  mdiLanguageMarkdown,
-  mdiLanguagePhp,
-  mdiLanguageR,
-  mdiLanguageRuby,
-  mdiLanguageXaml,
-} from "@mdi/js";
-import Icon from "@mdi/react";
+  SiHtml5,
+  SiC,
+  SiSvg,
+  SiCplusplus,
+  SiCss3,
+  SiXaml,
+  SiHaskell,
+  SiMicrosoftword,
+  SiMicrosoftexcel,
+  SiMicrosoftpowerpoint,
+  SiJavascript,
+  SiMarkdown,
+  SiJava,
+  SiTypescript,
+  SiR,
+  SiCsharp,
+  SiPython,
+  SiPhp,
+  SiReact,
+  SiRuby,
+  SiKotlin,
+  SiSwift,
+} from "react-icons/si";
+import { AiOutlineFileUnknown } from "react-icons/ai";
+import { VscJson, VscFilePdf } from "react-icons/vsc";
+import { GrImage, GrDocumentTxt, GrDocumentZip } from "react-icons/gr";
+import { MdGif } from "react-icons/md";
 
-function getPath(extension: string) {
-  let path = mdiFileQuestionOutline;
+function getIcon(extension: string) {
   switch (extension) {
     case "c":
-      path = mdiLanguageC;
-      break;
+      return SiC;
     case "cpp":
-      path = mdiLanguageCpp;
-      break;
+      return SiCplusplus;
     case "cs":
-      path = mdiLanguageCsharp;
-      break;
-    case "go":
-      path = mdiLanguageGo;
-      break;
+      return SiCsharp;
     case "ts":
-      path = mdiLanguageTypescript;
-      break;
+      return SiTypescript;
     case "java":
-      path = mdiLanguageJava;
-      break;
+      return SiJava;
     case "rb":
-      path = mdiLanguageRuby;
-      break;
-    case "xml":
-      path = mdiLanguageXaml;
-      break;
+      return SiRuby;
     case "md":
-      path = mdiLanguageMarkdown;
-      break;
+      return SiMarkdown;
     case "kt":
     case "kts":
     case "ktm":
-      path = mdiLanguageKotlin;
-      break;
+      return SiKotlin;
     case "php":
-      path = mdiLanguagePhp;
-      break;
+      return SiPhp;
     case "hs":
-      path = mdiLanguageHaskell;
-      break;
+      return SiHaskell;
     case "r":
-      path = mdiLanguageR;
-      break;
-
+      return SiR;
     case "svg":
-      path = mdiSvg;
-      break;
+      return SiSvg;
     case "png":
     case "ico":
     case "jpg":
     case "jpeg":
     case "heic":
-      path = mdiImageOutline;
-      break;
+      return GrImage;
     case "json":
-      path = mdiCodeJson;
-      break;
+      return VscJson;
     case "pdf":
-      path = mdiFilePdfOutline;
-      break;
+      return VscFilePdf;
     case "txt":
-      path = mdiFileDocumentOutline;
-      break;
+      return GrDocumentTxt;
+    case "xml":
+    case "xaml":
+      return SiXaml;
     case "xlsx":
     case "xls":
-      path = mdiMicrosoftExcel;
-      break;
+      return SiMicrosoftexcel;
     case "docx":
     case "doc":
-      path = mdiMicrosoftWord;
-      break;
+      return SiMicrosoftword;
     case "pptx":
     case "ppt":
-      path = mdiMicrosoftPowerpoint;
-      break;
-    case "mp4":
-      break;
+      return SiMicrosoftpowerpoint;
     case "js":
-      path = mdiLanguageJavascript;
-      break;
+      return SiJavascript;
     case "py":
-      path = mdiLanguagePython;
-      break;
+      return SiPython;
     case "html":
-      path = mdiLanguageHtml5;
-      break;
+      return SiHtml5;
     case "zip":
-      path = mdiFolderZipOutline;
-      break;
+      return GrDocumentZip;
     case "swift":
-      path = mdiLanguageSwift;
-      break;
+      return SiSwift;
     case "css":
-      path = mdiLanguageCss3;
-      break;
+      return SiCss3;
     case "gif":
-      path = mdiGif;
-      break;
+      return MdGif;
+    case "jsx":
+    case "tsx":
+      return SiReact;
     default:
-      path = mdiFileQuestionOutline;
-      break;
+      return AiOutlineFileUnknown;
   }
-  return path;
 }
 
 const FileIcon: React.FC<{
@@ -153,8 +118,11 @@ const FileIcon: React.FC<{
   }
   return (
     <Icon
-      path={getPath(extension)}
-      size="42px"
+      as={getIcon(extension)}
+      w="38px"
+      h="38px"
+      mt="5px"
+      opacity={0.75}
       style={{ marginTop: "5px", opacity: 0.75 }}
     />
   );

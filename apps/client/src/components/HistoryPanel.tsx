@@ -1,16 +1,19 @@
 import React from "react";
 import { EventType } from "@floatingfile/types";
-import {
-  mdiUpload,
-  mdiDownload,
-  mdiDelete,
-  mdiAccountPlus,
-  mdiAccountMinus,
-  mdiDoorOpen,
-} from "@mdi/js";
-import Icon from "@mdi/react";
+import { GrStatusUnknown } from "react-icons/gr";
+import { MdFileUpload, MdFileDownload, MdDelete } from "react-icons/md";
+import { FaUserPlus, FaUserMinus } from "react-icons/fa";
+import { RiDoorOpenFill } from "react-icons/ri";
 import { useParams } from "react-router-dom";
-import { useTheme, Stack, Box, Flex, chakra, Tooltip } from "@chakra-ui/react";
+import {
+  Icon,
+  useTheme,
+  Stack,
+  Box,
+  Flex,
+  chakra,
+  Tooltip,
+} from "@chakra-ui/react";
 import useSpace from "../hooks/useSpace";
 import Panel from "./Panel";
 
@@ -40,22 +43,22 @@ function getLabel(args: {
   }
 }
 
-function getIconPath(action: string): string {
+function getIcon(action: string) {
   switch (action) {
     case EventType.UPLOAD:
-      return mdiUpload;
+      return MdFileUpload;
     case EventType.DOWNLOAD:
-      return mdiDownload;
+      return MdFileDownload;
     case EventType.REMOVE:
-      return mdiDelete;
+      return MdDelete;
     case EventType.LEAVE:
-      return mdiAccountMinus;
+      return FaUserMinus;
     case EventType.JOIN:
-      return mdiAccountPlus;
+      return FaUserPlus;
     case EventType.CREATE:
-      return mdiDoorOpen;
+      return RiDoorOpenFill;
     default:
-      return "";
+      return GrStatusUnknown;
   }
 }
 
@@ -87,8 +90,9 @@ const HistoryPanel: React.FC = () => {
                 <Flex align="center" justify="center" w="40px">
                   <Icon
                     color={theme.colors.primary}
-                    path={getIconPath(action)}
-                    size="24px"
+                    as={getIcon(action)}
+                    w="20px"
+                    h="20px"
                   />
                 </Flex>
                 <Box w="calc(100% - 40px)">
