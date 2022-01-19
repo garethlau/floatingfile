@@ -31,7 +31,11 @@ export const find = async (code: string) => {
   const space = await prisma.space.findUnique({
     where: { code },
     include: {
-      files: true,
+      files: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
       events: {
         orderBy: {
           createdAt: "desc",
