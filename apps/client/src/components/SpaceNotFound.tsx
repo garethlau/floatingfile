@@ -1,17 +1,10 @@
 import React from "react";
-import { Colors } from "@floatingfile/ui";
 import { Flex, Button, Box, Text, chakra } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 
 const SpaceNotFound: React.FC = () => {
   return (
-    <Flex
-      w="100vw"
-      h="100vh"
-      bg={Colors.LIGHT_SHADE}
-      align="center"
-      justify="center"
-    >
+    <Flex w="100vw" h="100vh" bg="lightShade" align="center" justify="center">
       <Box>
         <Text color="gray.500">
           <chakra.span

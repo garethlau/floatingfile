@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Colors } from "@floatingfile/ui";
 import QRCode from "qrcode.react";
-import MoonLoader from "react-spinners/MoonLoader";
 import { ORIGIN } from "../env";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import useSpace from "../hooks/useSpace";
@@ -121,7 +119,7 @@ const ConnectPanel: React.FC = () => {
             w="200px"
             m="10px auto"
             borderRadius="md"
-            bg={Colors.LIGHT_ACCENT}
+            bg="lightAccent"
             _hover={{ cursor: "pointer" }}
           >
             <chakra.p
@@ -154,23 +152,14 @@ const ConnectPanel: React.FC = () => {
         <Spacer />
         <Box textAlign="center">
           <chakra.p opacity={0.5}>Space will be destroyed in:</chakra.p>
-          {timeLeft > 0 ? (
-            <chakra.p
-              fontWeight="bold"
-              fontFamily="monospace"
-              fontSize="24px"
-              margin="10px"
-            >
-              {new Date(timeLeft * 1000).toISOString().substr(11, 8)}
-            </chakra.p>
-          ) : (
-            <MoonLoader
-              css="margin: auto; padding: 10px"
-              loading
-              color={Colors.MAIN_BRAND}
-              size={32}
-            />
-          )}
+          <chakra.p
+            fontWeight="bold"
+            fontFamily="monospace"
+            fontSize="24px"
+            margin="10px"
+          >
+            {new Date(timeLeft * 1000).toISOString().substr(11, 8)}
+          </chakra.p>
           <Button
             colorScheme="red"
             onClick={close}

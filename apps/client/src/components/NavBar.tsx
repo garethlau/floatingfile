@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import PublicIcon from "@material-ui/icons/Public";
-import HistoryIcon from "@material-ui/icons/History";
-import PeopleIcon from "@material-ui/icons/People";
-import FolderIcon from "@material-ui/icons/Folder";
+import { MdPublic, MdHistory, MdPeople, MdFolder } from "react-icons/md";
 import { useLocation, useHistory } from "react-router-dom";
 import { Flex, Icon } from "@chakra-ui/react";
+
+const LINKS = [
+  { name: "/files", icon: MdFolder },
+  { name: "", icon: MdPublic },
+  { name: `/history`, icon: MdHistory },
+  { name: `/users`, icon: MdPeople },
+];
 
 export interface NavBarProps {
   baseUrl: string;
@@ -30,13 +34,6 @@ const NavBar: React.FC<NavBarProps> = ({ baseUrl, orientation }) => {
     else if (panel === "settings") setActive(4);
   }, [location, orientation]);
 
-  const LINKS = [
-    { name: "/files", icon: FolderIcon },
-    { name: "", icon: PublicIcon },
-    { name: `/history`, icon: HistoryIcon },
-    { name: `/users`, icon: PeopleIcon },
-  ];
-
   return (
     <Flex
       direction={orientation === "vertical" ? "column" : "row"}
@@ -46,6 +43,7 @@ const NavBar: React.FC<NavBarProps> = ({ baseUrl, orientation }) => {
     >
       {LINKS.map(({ name, icon }, index) => (
         <Flex
+          key={name}
           onClick={() => history.push(baseUrl + name)}
           _hover={{ cursor: "pointer" }}
           align="center"
@@ -62,6 +60,8 @@ const NavBar: React.FC<NavBarProps> = ({ baseUrl, orientation }) => {
             transition="color 0.3s"
             color={active === index ? "blue.500" : "white"}
             as={icon}
+            w={6}
+            h={6}
           />
         </Flex>
       ))}

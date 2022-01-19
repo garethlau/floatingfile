@@ -1,5 +1,4 @@
 import React from "react";
-import { Colors } from "@floatingfile/ui";
 import { EventType } from "@floatingfile/types";
 import {
   mdiUpload,
@@ -11,7 +10,7 @@ import {
 } from "@mdi/js";
 import Icon from "@mdi/react";
 import { useParams } from "react-router-dom";
-import { Stack, Box, Flex, chakra, Tooltip } from "@chakra-ui/react";
+import { useTheme, Stack, Box, Flex, chakra, Tooltip } from "@chakra-ui/react";
 import useSpace from "../hooks/useSpace";
 import Panel from "./Panel";
 
@@ -63,6 +62,7 @@ function getIconPath(action: string): string {
 const HistoryPanel: React.FC = () => {
   const { code }: { code: string } = useParams();
   const { space } = useSpace(code);
+  const theme = useTheme();
   const events = space?.events || [];
   return (
     <Panel title="History">
@@ -77,7 +77,7 @@ const HistoryPanel: React.FC = () => {
             >
               <Flex
                 key={id}
-                bg={Colors.LIGHT_SHADE}
+                bg="lightShade"
                 borderRadius="md"
                 shadow="base"
                 align="center"
@@ -86,7 +86,7 @@ const HistoryPanel: React.FC = () => {
               >
                 <Flex align="center" justify="center" w="40px">
                   <Icon
-                    color={Colors.PRIMARY}
+                    color={theme.colors.primary}
                     path={getIconPath(action)}
                     size="24px"
                   />

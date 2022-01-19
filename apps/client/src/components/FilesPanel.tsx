@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { AnimateSharedLayout, AnimatePresence, motion } from "framer-motion";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Button from "./Button";
-import { Colors } from "@floatingfile/ui";
 import useWindowWidth from "../hooks/useWindowWidth";
 import useSpace from "../hooks/useSpace";
 import FileListItem from "./FileListItem";
@@ -30,8 +29,7 @@ const FilesPanel: React.FC = () => {
   return (
     <Flex
       direction="column"
-      bg={layout === Layouts.MOBILE ? "white" : Colors.LIGHT_SHADE}
-      // bg={windowWidth > 960 ? Colors.LIGHT_SHADE : "white"}
+      bg={layout === Layouts.MOBILE ? "white" : "lightShade"}
       h="100%"
       w="100%"
     >

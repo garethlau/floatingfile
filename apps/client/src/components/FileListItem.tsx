@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import { Colors } from "@floatingfile/ui";
 import { useParams } from "react-router-dom";
 import {
   Flex,
@@ -105,7 +104,7 @@ const FileListItem: React.FC<{
       align="center"
       bg={
         layout === Layouts.MOBILE
-          ? Colors.LIGHT_SHADE
+          ? "lightShade"
           : isSelected(id)
           ? "#DDE8F8"
           : "white"

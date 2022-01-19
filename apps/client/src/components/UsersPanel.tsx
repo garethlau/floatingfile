@@ -2,7 +2,6 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import FaceIcon from "@material-ui/icons/Face";
 import { Box, Stack, chakra, Flex } from "@chakra-ui/react";
-import { Colors } from "@floatingfile/ui";
 import useSpace from "../hooks/useSpace";
 import Panel from "./Panel";
 
@@ -21,7 +20,7 @@ const UsersPanel: React.FC<UsersPanelProps> = ({ myClientId }) => {
         {clients.map(({ username, id }) => (
           <Flex
             key={username}
-            bg={Colors.LIGHT_SHADE}
+            bg="lightShade"
             borderRadius="md"
             shadow="base"
             align="center"

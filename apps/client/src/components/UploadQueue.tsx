@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Colors } from "@floatingfile/ui";
 import { FaRegWindowMinimize } from "react-icons/fa";
 import { motion, AnimateSharedLayout } from "framer-motion";
 import {
@@ -33,7 +32,7 @@ const FileCard: React.FC<FileCardProps> = ({
   isActive,
   progress = 0,
 }) => (
-  <Box borderRadius="sm" shadow="base" bg={Colors.LIGHT_SHADE} p={2}>
+  <Box borderRadius="sm" shadow="base" bg="lightShade" p={2}>
     <Flex align="center">
       <Box>
         <chakra.p

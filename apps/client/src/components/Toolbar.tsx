@@ -4,7 +4,7 @@ import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import ClearIcon from "@material-ui/icons/Clear";
 import { FaTrash, FaCloudDownloadAlt } from "react-icons/fa";
 import { GrDocumentZip } from "react-icons/gr";
-import { MdCloudUpload } from "react-icons/md";
+import { MdCloudUpload, MdClear, MdPlaylistAddCheck } from "react-icons/md";
 import {
   Flex,
   chakra,
@@ -177,7 +177,7 @@ const Toolbar: React.FC = () => {
             {!isCollapsed ? (
               <Button
                 colorSheme="white"
-                leftIcon={<ClearIcon />}
+                throttle={0}
                 onClick={clearSelectedFiles}
               >
                 Deselect All
@@ -187,7 +187,7 @@ const Toolbar: React.FC = () => {
                 <IconButton
                   onClick={clearSelectedFiles}
                   aria-label="Deselect All"
-                  icon={<ClearIcon />}
+                  icon={<Icon as={MdClear} />}
                 />
               </Tooltip>
             )}
@@ -200,7 +200,7 @@ const Toolbar: React.FC = () => {
                 onClick={() => {
                   setSelected(files?.map((file) => file.id) || []);
                 }}
-                leftIcon={<PlaylistAddCheckIcon />}
+                throttle={0}
               >
                 Select All
               </Button>
@@ -211,7 +211,7 @@ const Toolbar: React.FC = () => {
                     setSelected(files?.map((file) => file.id) || []);
                   }}
                   aria-label="Select All"
-                  icon={<PlaylistAddCheckIcon />}
+                  icon={<Icon as={MdPlaylistAddCheck} />}
                 />
               </Tooltip>
             )}

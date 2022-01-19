@@ -1,16 +1,6 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core";
-import Center from "./Center";
 import MoonLoader from "react-spinners/MoonLoader";
-import { Colors } from "@floatingfile/ui";
-
-const useStyles = makeStyles({
-  page: {
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: Colors.LIGHT_SHADE,
-  },
-});
+import { useTheme, Text, Flex, Box } from "@chakra-ui/react";
 
 const phrases: string[] = [
   "Getting things ready...",
@@ -22,15 +12,19 @@ const phrases: string[] = [
 
 const FullPageLoader: React.FC = () => {
   const [rand] = useState(() => Math.floor(Math.random() * phrases.length));
-  const cls = useStyles();
+  const theme = useTheme();
 
   return (
-    <div className={cls.page}>
-      <Center>
-        <p style={{ opacity: 0.5 }}>{phrases[rand]}</p>
-        <MoonLoader css="margin: auto;" color={Colors.MAIN_BRAND} size={32} />
-      </Center>
-    </div>
+    <Flex w="100vw" h="100vh" bg="lightShade" align="center" justify="center">
+      <Box>
+        <Text color="gray.500">{phrases[rand]}</Text>
+        <MoonLoader
+          css="margin: auto;"
+          color={theme.colors.mainBrand}
+          size={32}
+        />
+      </Box>
+    </Flex>
   );
 };
 
