@@ -14,10 +14,10 @@ import { fetchConfig } from "../lib/storage";
 type Options = {
   code: string | undefined;
   all: boolean | undefined;
-  dir: string | undefined;
+  path: string | undefined;
 };
 
-export const command: string[] = ["upload [dir]", "ul [dir]"];
+export const command: string[] = ["upload [path]", "ul [path]"];
 export const desc: string = "Upload files to space";
 
 export const builder: CommandBuilder<Options, Options> = (yargs) =>
@@ -33,13 +33,14 @@ export const builder: CommandBuilder<Options, Options> = (yargs) =>
         description: "Upload all files within the directory.",
       },
     })
-    .default("dir", "./")
-    .positional("dir", { type: "string", demandOption: false })
+    .default("path", "./")
+    .positional("path", { type: "string", demandOption: false })
     .alias("a", "all");
 
 export const handler = async (argv: Arguments<Options>): Promise<void> => {
   let code = "";
-  const { code: inputCode, dir = "./", all } = argv;
+  const { code: inputCode, path: p = "./", all } = argv;
+  const isFile = fs.lstatSync(p).isFile();
 
   if (!inputCode) {
     const codes = await fetchCodes();
@@ -58,39 +59,43 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     process.exit();
   }
 
-  const candidates = fs
-    .readdirSync(dir)
-    .filter((name) => fs.lstatSync(path.join(dir, name)).isFile());
-
   let files = [];
-
-  if (all) {
-    // Upload all files
-    const confirm = await promptYesNo(
-      `Are you sure you want to upload all ${candidates.length} files? (y/n):`
-    );
-    if (!confirm) {
-      process.exit();
-    }
-    files = candidates;
+  if (isFile) {
+    // provided path is a path to a file
+    files.push(p);
   } else {
-    try {
-      candidates.forEach((file, index) => {
-        process.stdout.write(`(${index}) ${file}\n`);
-      });
-      const selections = await promptNums(
-        "Which files do you want to upload?",
-        {
-          min: 0,
-          max: candidates.length - 1,
-        }
+    // provided path is a path to a director
+    const candidates = fs
+      .readdirSync(p)
+      .filter((name) => fs.lstatSync(path.join(p, name)).isFile());
+    if (all) {
+      // Upload all files
+      const confirm = await promptYesNo(
+        `Are you sure you want to upload all ${candidates.length} files? (y/n):`
       );
-      files = selections.map((selection) => candidates[selection]);
-    } catch (error) {
-      if (error instanceof RangeError || error instanceof TypeError) {
-        process.stdout.write(chalk.red(`${error.message}\n`));
-      } else process.stdout.write(chalk.red(`Unexpected error occured.\n`));
-      process.exit();
+      if (!confirm) {
+        process.exit();
+      }
+      files = candidates;
+    } else {
+      try {
+        candidates.forEach((file, index) => {
+          process.stdout.write(`(${index}) ${file}\n`);
+        });
+        const selections = await promptNums(
+          "Which files do you want to upload?",
+          {
+            min: 0,
+            max: candidates.length - 1,
+          }
+        );
+        files = selections.map((selection) => candidates[selection]);
+      } catch (error) {
+        if (error instanceof RangeError || error instanceof TypeError) {
+          process.stdout.write(chalk.red(`${error.message}\n`));
+        } else process.stdout.write(chalk.red(`Unexpected error occured.\n`));
+        process.exit();
+      }
     }
   }
 
@@ -102,7 +107,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
   });
 
   const promises = files.map(async (file) => {
-    const filePath = path.join(dir, file);
+    const filePath = isFile ? p : path.join(p, file);
     const { size } = fs.statSync(filePath);
 
     // create an upload progress bar for this file
@@ -182,10 +187,12 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
       },
     });
     // return the path of the uploaded file
-    if (path.isAbsolute(dir)) {
-      return path.join(dir, file);
+    if (path.isAbsolute(p)) {
+      return filePath;
     } else {
-      return path.join(process.cwd(), dir, file);
+      return isFile
+        ? path.join(process.cwd(), p)
+        : path.join(process.cwd(), p, file);
     }
   });
 
