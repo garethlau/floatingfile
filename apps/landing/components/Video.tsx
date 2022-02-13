@@ -22,6 +22,7 @@ const Video: React.FC<VideoProps> = ({
       <video
         src={src}
         style={{ borderRadius: `var(--chakra-radii-${borderRadius})` }}
+        playsInline
         autoPlay={autoPlay}
         loop={loop}
         muted={muted}
