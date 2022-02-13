@@ -23,6 +23,7 @@ import {
 } from "@chakra-ui/react";
 import NavigationBar from "components/navigation-bar";
 import Footer from "components/footer";
+import Video from "components/Video";
 
 const Feature = ({ icon, title, children }) => (
   <Box
@@ -174,6 +175,52 @@ const Home: React.FC = () => {
               file transfer workflow to seconds.
             </Feature>
           </Grid>
+        </Box>
+      </Box>
+      <Box bg="gray.100" as="section" pt="140px" pb="60px" px={6}>
+        <Box maxW="1200px" mx="auto" textAlign="center">
+          <Heading mb="5" fontSize={["3rem", "4rem"]} color="gay.700">
+            How do I use floatingfile?
+          </Heading>
+          {[
+            { step: "create a space", src: "/videos/create-space.mov" },
+            {
+              step: "upload files you want to share",
+              src: "/videos/upload-files.mov",
+            },
+            {
+              step: "copy and send the link or use the QR code",
+              src: "/videos/copy-url.mov",
+            },
+          ].map(({ step, src }) => (
+            <React.Fragment key={step}>
+              <Video
+                borderRadius="md"
+                boxShadow="md"
+                maxW="600px"
+                src={src}
+                autoPlay
+                muted
+                loop
+                mx="auto"
+              />
+              <Text mt={2} mb={6} color="gray.700" fontSize="md">
+                {step}
+              </Text>
+            </React.Fragment>
+          ))}
+          <Text>
+            Woo-hoo 🎉 That's it! Anyone with the link can now download the
+            files in the space.
+          </Text>
+          <Button
+            mt={4}
+            colorScheme="blue"
+            as="a"
+            href="https://app.floatingfile.space"
+          >
+            Get Started
+          </Button>
         </Box>
       </Box>
 
