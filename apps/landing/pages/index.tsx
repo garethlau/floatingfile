@@ -20,10 +20,12 @@ import {
   Text,
   Skeleton,
   AspectRatio,
+  Link,
 } from "@chakra-ui/react";
 import NavigationBar from "components/navigation-bar";
 import Footer from "components/footer";
 import Video from "components/Video";
+import NextLink from "next/link";
 
 const Feature = ({ icon, title, children }) => (
   <Box
@@ -240,6 +242,31 @@ const Home: React.FC = () => {
               22
             </chakra.span>{" "}
             months.
+          </Text>
+        </Box>
+      </Box>
+
+      <Box bg="black" as="section" pt="140px" pb="140px" px={6}>
+        <Box maxW="1200px" mx="auto">
+          <Heading mb="5" fontSize={["3rem", "4rem"]} color="white">
+            Got a question?
+          </Heading>
+          <Text color="white">
+            Visit the{" "}
+            <NextLink href="/faq" passHref>
+              <Link fontWeight="bold" color="blue.300">
+                frequently asked questions
+              </Link>
+            </NextLink>{" "}
+            page or email us at{" "}
+            <Link
+              fontWeight="bold"
+              color="blue.300"
+              href="mailto:engineering@floatingfile.space"
+            >
+              engineering@floatingfile.space
+            </Link>
+            !
           </Text>
         </Box>
       </Box>
