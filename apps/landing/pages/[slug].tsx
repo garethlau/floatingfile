@@ -30,7 +30,7 @@ const Post: React.FC<{
               mx="auto"
               bg={useColorModeValue("white", "black")}
               py={16}
-              px={14}
+              px={[6, 10, 14]}
               borderRadius="md"
               shadow="lg"
             >

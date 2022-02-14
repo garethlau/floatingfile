@@ -27,6 +27,14 @@ import Footer from "components/footer";
 import Video from "components/Video";
 import NextLink from "next/link";
 
+function monthDiff(from: Date, to: Date) {
+  return (
+    to.getMonth() -
+    from.getMonth() +
+    12 * (to.getFullYear() - from.getFullYear())
+  );
+}
+
 const Feature = ({ icon, title, children }) => (
   <Box
     bg={useColorModeValue("white", "gray.800")}
@@ -239,7 +247,7 @@ const Home: React.FC = () => {
             </chakra.span>{" "}
             files in{" "}
             <chakra.span color="blue.500" fontWeight="bold">
-              22
+              {monthDiff(new Date("Jan 1, 2020"), new Date())}
             </chakra.span>{" "}
             months.
           </Text>

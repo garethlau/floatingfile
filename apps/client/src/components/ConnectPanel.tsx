@@ -95,10 +95,9 @@ const ConnectPanel: React.FC = () => {
   }, [space]);
 
   useEffect(() => {
-    if (!timeLeft) return undefined;
-    const intervalId = setInterval(() => setTimeLeft(timeLeft - 1), 1000);
+    const intervalId = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(intervalId);
-  }, [timeLeft]);
+  }, [setTimeLeft]);
 
   return (
     <Panel title="Connect">
