@@ -23,7 +23,7 @@ yarn --cwd packages/ui build
 yarn --cwd packages/types build
 
 echo ">>> building frontend"
-if ["$branch" = "master"]:
+if [ "$branch" = "master" ];
 then 
     yarn --cwd app/client build:master
 else 
