@@ -1,19 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { CorporateContactJsonLd, NextSeo } from "next-seo";
-import { useRouter } from "next/router";
-import {
-  Accordion,
-  AccordionButton,
-  AccordionPanel,
-  AccordionItem,
-  AccordionIcon,
-  Box,
-  Container,
-  Heading,
-  SimpleGrid,
-  Text,
-  GridItem,
-} from "@chakra-ui/react";
+import React, { useMemo } from "react";
+import { NextSeo } from "next-seo";
+import { Container, Heading, SimpleGrid, GridItem } from "@chakra-ui/react";
 import PageTitle from "components/PageTitle";
 import NavigationBar from "components/navigation-bar";
 import Footer from "components/footer";
@@ -30,7 +17,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { findIndex } from "lodash";
 
 interface Log {
   message: string;
@@ -42,7 +28,7 @@ interface Data {
   logs: Log[];
 }
 
-const PERIOD = 31;
+const PERIOD = 14;
 
 const DashboardPage: NextPage<Data> = ({ logs }) => {
   const accessDataPoints = useMemo(() => {
@@ -66,8 +52,6 @@ const DashboardPage: NextPage<Data> = ({ logs }) => {
         return false;
       }
     });
-
-    console.log("INDEX", index, logs.length);
 
     const weekLogs = logs.slice(index);
 
@@ -97,20 +81,19 @@ const DashboardPage: NextPage<Data> = ({ logs }) => {
           distribution[date].predownload - distribution[date].postdownload,
       });
     });
-    console.log(data);
     return data;
   }, [logs]);
 
   return (
     <>
       <NextSeo
-        title={"floatingfile | FAQ"}
-        description={"Frequently asked questions."}
+        title={"floatingfile | Status"}
+        description={"System status"}
         canonical={"https://www.floatingfile.space"}
         openGraph={{
           url: "https://www.floatingfile.space/faq",
-          title: "floatingfile | FAQ",
-          description: "Frequently asked questions.",
+          title: "floatingfile | Status",
+          description: "System status.",
           images: [
             {
               url: "https://floatingfile.space/images/banner-blue-1200x600.jpg",
@@ -128,7 +111,8 @@ const DashboardPage: NextPage<Data> = ({ logs }) => {
       <Container maxW="8xl">
         <SimpleGrid columns={[1, 1, 2]}>
           <GridItem colSpan={2} height="500px">
-            <ResponsiveContainer width="100%" height="100%">
+            <Heading>Past Week's Activity</Heading>
+            <ResponsiveContainer width="100%" height="90%">
               <LineChart
                 data={accessDataPoints}
                 margin={{ top: 10, right: 10, bottom: 20, left: 10 }}
@@ -169,26 +153,15 @@ const DashboardPage: NextPage<Data> = ({ logs }) => {
               </LineChart>
             </ResponsiveContainer>
           </GridItem>
-          <Box>
-            <Text>Nice</Text>
-          </Box>
-          <Box>
-            <Text>Nice</Text>
-          </Box>
-          <Box>
-            <Text>Nice</Text>
-          </Box>
         </SimpleGrid>
       </Container>
-
-      <Box mb="240px"></Box>
 
       <Footer />
     </>
   );
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps: GetStaticProps = async () => {
   const raw = fs.readFileSync(
     path.join("content", "logs", "access.log"),
     "utf-8"
