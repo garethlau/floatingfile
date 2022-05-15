@@ -5,12 +5,12 @@ die () {
 }
 
 [ "$#" -eq 1 ] || die "1 argument required, $# provided"
-environment=$1 # environment should be "staging" or "master"
+branch=$1 
 
 echo ">>> deploying floatingfile"
-echo ">>> environment: $environment"
+echo ">>> branch: $branch"
 
-git pull "https://github.com/garethlau/floatingfile.git" $environment
+git pull "https://github.com/garethlau/floatingfile.git" $branch
 
 echo ">>> installing dependencies"
 yarn install
@@ -23,15 +23,20 @@ yarn --cwd packages/ui build
 yarn --cwd packages/types build
 
 echo ">>> building frontend"
-yarn --cwd apps/client build:$environment
+if ["$branch" = "master"]:
+then 
+    yarn --cwd app/client build:master
+else 
+    yarn --cwd apps/client build:staging
+fi
 
 echo ">>> building backend"
 yarn --cwd apps/server build
 
 echo ">>> restarting application"
-if [ "$username" = "staging" ];
+if [ "$branch" = "master" ];
 then 
-    pm2 restart FLOATINGFILE_STAGING
-else
     pm2 restart FLOATINGFILE_PROD
+else
+    pm2 restart FLOATINGFILE_STAGING
 fi
