@@ -50,7 +50,11 @@ yarn --cwd apps/landing build
 
 echo ">>> starting landing server"
 if [ "$(pm2 id ${judy})" = "[]" ]; then
-    pm2 start yarn --interpreter bash  --name $judy -- start:landing
+    if [ "$branch" = "master" ]; then
+        pm2 start yarn --interpreter bash  --name $judy -- start:landing
+    else
+        pm2 start yarn --interpreter bash  --name $judy -- stage:landing
+    fi
 else
     pm2 reload $judy
 fi
