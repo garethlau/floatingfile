@@ -1,5 +1,10 @@
 import logger, { format, transports, createLogger } from "winston";
 import { NODE_ENV } from "../config";
+import DailyRotateFile from "winston-daily-rotate-file";
+("winston-daily-rotate-file");
+import path from "path";
+import fs from "fs";
+
 const { combine, timestamp, json, colorize, simple, printf } = format;
 
 logger.add(
@@ -18,6 +23,22 @@ if (NODE_ENV !== "production") {
   );
 }
 
+const transport: DailyRotateFile = new DailyRotateFile({
+  filename: "access-%DATE%.log",
+  datePattern: "YYYY-MM-DD",
+  zippedArchive: true,
+  format: combine(timestamp(), json()),
+  level: "info",
+});
+
+transport.on("rotate", (oldFilename, newFilename) => {
+  const srcDir = path.join(process.cwd(), "logs");
+  const destDir = path.join(process.cwd(), "..", "landing", "content", "logs");
+  const src = path.join(srcDir, oldFilename);
+  const dest = path.join(destDir, newFilename);
+  fs.copyFileSync(src, dest);
+});
+
 export const accessLogger = createLogger({
   transports: [
     new transports.Console({
@@ -27,12 +48,7 @@ export const accessLogger = createLogger({
         printf((info) => `${info.level}: ${[info.timestamp]}: ${info.message}`)
       ),
     }),
-
-    new transports.File({
-      filename: `${process.cwd()}/logs/access.log`,
-      level: "info",
-      format: combine(timestamp(), json()),
-    }),
+    transport,
   ],
 });
 
