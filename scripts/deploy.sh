@@ -23,11 +23,11 @@ echo ">>> increase memory for build"
 export NODE_OPTIONS="--max-old-space-size=5120" # increase to 5gb
 
 echo ">>> building packages"
-yarn --cwd packages/ui build
-yarn --cwd packages/types build
+ yarn --cwd packages/ui build
+ yarn --cwd packages/types build
 
 echo ">>> building frontend"
-if [ "$branch" = "master" ]; then 
+ if [ "$branch" = "master" ]; then 
     yarn --cwd app/client build:master
 else 
     yarn --cwd apps/client build:staging
@@ -38,7 +38,7 @@ yarn --cwd apps/server build
 
 echo ">>> restarting application"
 if [ "$(pm2 id ${peralta})" = "[]" ]; then 
-    pm2 start yarn --interpreter bash --name $perlata -- start:server
+    pm2 start yarn --interpreter bash --name $peralta -- start:server
 else 
     pm2 reload $peralta 
 fi
