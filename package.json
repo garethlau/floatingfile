@@ -16,7 +16,7 @@
     "concurrently": "^6.2.0"
   },
   "scripts": {
-    "dev": "concurrently -n client,server,packages \"yarn dev:client\" \"yarn dev:server\" \"yarn watch:packages\"",
+    "dev": "concurrently -n client,server,landing,packages \"yarn dev:client\" \"yarn dev:server\" \"yarn dev:landing\" \"yarn watch:packages\"",
     "watch:packages": "concurrently \"yarn watch:types\" \"yarn watch:ui\"",
     "dev:server": "yarn --cwd apps/server dev",
     "dev:client": "yarn --cwd apps/client dev",
