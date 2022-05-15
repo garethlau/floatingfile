@@ -45,8 +45,6 @@ interface Data {
 const PERIOD = 31;
 
 const DashboardPage: NextPage<Data> = ({ logs }) => {
-  console.log(logs);
-
   const accessDataPoints = useMemo(() => {
     const distribution = {};
     const data = [];
@@ -58,7 +56,6 @@ const DashboardPage: NextPage<Data> = ({ logs }) => {
 
     let index = 0;
 
-    console.log(logs[logs.length - 2]);
     logs.every((log) => {
       const date = new Date(log.timestamp);
 
@@ -66,7 +63,6 @@ const DashboardPage: NextPage<Data> = ({ logs }) => {
         index++;
         return true;
       } else {
-        console.log(weekAgo, date);
         return false;
       }
     });
@@ -194,7 +190,7 @@ const DashboardPage: NextPage<Data> = ({ logs }) => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const raw = fs.readFileSync(
-    path.join("content", "status", "05_14_2022.log"),
+    path.join("content", "logs", "access.log"),
     "utf-8"
   );
   const logs = raw
