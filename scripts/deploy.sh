@@ -6,10 +6,10 @@ die () {
 
 [ "$#" -eq 1 ] || die "1 argument required, $# provided"
 branch=$1 
-
 peralta="peralta_${branch}"
 judy="judy_${branch}"
-
+echo ">>> deploying: $peralta"
+echo ">>> deploy: $judy"
 
 echo ">>> deploying floatingfile"
 echo ">>> branch: $branch"
@@ -38,7 +38,7 @@ yarn --cwd apps/server build
 
 echo ">>> restarting application"
 if [ "$(pm2 id ${peralta})" = "[]" ]; then 
-    pm2 start yarn --interpreter bash  --name $perlata -- start:server
+    pm2 start yarn --interpreter bash --name $perlata -- start:server
 else 
     pm2 reload $peralta 
 fi
@@ -51,9 +51,9 @@ yarn --cwd apps/landing build
 echo ">>> starting landing server"
 if [ "$(pm2 id ${judy})" = "[]" ]; then
     if [ "$branch" = "master" ]; then
-        pm2 start yarn --interpreter bash  --name $judy -- start:landing
+        pm2 start yarn --interpreter bash --name $judy -- start:landing
     else
-        pm2 start yarn --interpreter bash  --name $judy -- stage:landing
+        pm2 start yarn --interpreter bash --name $judy -- stage:landing
     fi
 else
     pm2 reload $judy
