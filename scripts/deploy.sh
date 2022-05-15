@@ -27,18 +27,18 @@ yarn --cwd packages/ui build
 yarn --cwd packages/types build
 
 echo ">>> building frontend"
-# if [ "$branch" = "master" ]; then 
-    # yarn --cwd app/client build:master
-# else 
-   #  yarn --cwd apps/client build:staging
-# fi
+if [ "$branch" = "master" ]; then 
+    yarn --cwd app/client build:master
+else 
+    yarn --cwd apps/client build:staging
+fi
 
 echo ">>> building backend"
-# yarn --cwd apps/server build
+yarn --cwd apps/server build
 
 echo ">>> restarting application"
 if [ "$(pm2 id ${peralta})" = "[]" ]; then 
-    pm2 start npm --name $perlata -- start:server
+    pm2 start yarn --interpreter bash  --name $perlata -- start:server
 else 
     pm2 reload $peralta 
 fi
@@ -50,7 +50,7 @@ yarn --cwd apps/landing build
 
 echo ">>> starting landing server"
 if [ "$(pm2 id ${judy})" = "[]" ]; then
-    pm2 start npm --name $judy -- start:landing
+    pm2 start yarn --interpreter bash  --name $judy -- start:landing
 else
     pm2 reload $judy
 fi
