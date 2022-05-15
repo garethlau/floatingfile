@@ -24,7 +24,7 @@ if (NODE_ENV !== "production") {
 }
 
 const transport: DailyRotateFile = new DailyRotateFile({
-  filename: "access-%DATE%.log",
+  filename: `${process.cwd()}/logs/access-%DATE%.log`,
   datePattern: "YYYY-MM-DD",
   zippedArchive: true,
   format: combine(timestamp(), json()),
