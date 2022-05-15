@@ -9,7 +9,7 @@ branch=$1
 peralta="peralta_${branch}"
 judy="judy_${branch}"
 echo ">>> deploying: $peralta"
-echo ">>> deploy: $judy"
+echo ">>> deploying: $judy"
 
 echo ">>> deploying floatingfile"
 echo ">>> branch: $branch"
@@ -43,10 +43,8 @@ else
     pm2 reload $peralta 
 fi
 
-
 echo ">>> building landing site"
 yarn --cwd apps/landing build
-
 
 echo ">>> starting landing server"
 if [ "$(pm2 id ${judy})" = "[]" ]; then
