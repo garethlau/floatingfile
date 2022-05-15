@@ -27,6 +27,7 @@
     "express-easy-zip": "^1.1.5",
     "heic-convert": "^1.2.4",
     "node-cron": "^3.0.0",
+    "os-utils": "^0.0.14",
     "sharp": "^0.27.2",
     "uuid": "^8.3.2",
     "winston": "^3.3.3"
@@ -37,6 +38,7 @@
     "@types/honeybadger": "^1.4.0",
     "@types/morgan": "^1.9.3",
     "@types/node-cron": "^3.0.1",
+    "@types/os-utils": "^0.0.1",
     "@types/sharp": "^0.27.1",
     "nodemon": "^2.0.12",
     "prisma": "^3.7.0",
