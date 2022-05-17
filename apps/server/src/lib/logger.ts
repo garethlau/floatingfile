@@ -31,14 +31,6 @@ const transport: DailyRotateFile = new DailyRotateFile({
   level: "info",
 });
 
-transport.on("rotate", (oldFilename, newFilename) => {
-  const srcDir = path.join(process.cwd(), "logs");
-  const destDir = path.join(process.cwd(), "..", "landing", "content", "logs");
-  const src = path.join(srcDir, oldFilename);
-  const dest = path.join(destDir, newFilename);
-  fs.copyFileSync(src, dest);
-});
-
 export const accessLogger = createLogger({
   transports: [
     new transports.Console({
