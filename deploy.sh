@@ -28,7 +28,7 @@ echo ">>> building packages"
 
 echo ">>> building frontend"
  if [ "$branch" = "master" ]; then 
-    yarn --cwd app/client build:master
+    yarn --cwd apps/client build:master
 else 
     yarn --cwd apps/client build:staging
 fi
