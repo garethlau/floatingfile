@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@chakra-ui/react": "^1.6.5",
+    "@datadog/browser-logs": "^4.11.5",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@floatingfile/types": "0.0.1",

@@ -2469,6 +2469,18 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
+"@datadog/browser-core@4.11.5":
+  version "4.11.5"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.11.5.tgz#6b8628508c7df4a250cb1a170c2a7542df45b574"
+  integrity sha512-8FrfCVTQp9yQkXdBt7LM0Dkhnv16tdIL3MBt3MmivFN8F39w6cwyUfhGoJMMQQWrjIXoVuoRj6H04chboBvpqQ==
+
+"@datadog/browser-logs@^4.11.5":
+  version "4.11.5"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-logs/-/browser-logs-4.11.5.tgz#dbcc445880ba2bdafd95f4a811449c08141766fb"
+  integrity sha512-Flk4SbAdMJ9B3VZ6X0uv+yMyrFrQ+OUFtOfrYBOMqbpuH5BViRrKHe7A/vBCx5hGvPRnJSHWJHMrNMO6w5mD0A==
+  dependencies:
+    "@datadog/browser-core" "4.11.5"
+
 "@datadog/native-appsec@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@datadog/native-appsec/-/native-appsec-1.1.1.tgz#a9aff685217d47b1444f10529c7d442351b98486"
