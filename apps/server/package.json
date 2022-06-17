@@ -22,7 +22,7 @@
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "date-fns": "^2.28.0",
-    "dd-trace": "^2.7.1",
+    "dd-trace": "^2.9.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-easy-zip": "^1.1.5",
