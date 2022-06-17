@@ -9,31 +9,44 @@ import { create, find, remove } from "../services/space-service";
 import { notifyAll } from "../services/notification-service";
 import prisma from "../lib/prisma";
 import Honeybadger from "../lib/honeybadger";
-import { accessLogger } from "../lib/logger";
+import logger, { accessLogger } from "../lib/logger";
+import tracer from "../lib/tracer";
 
 export const createSpace: CreateSpaceFn = async (params: {
   username: string;
 }) => {
-  accessLogger.info("createSpace");
-  const { username } = params;
-  const space = await create();
+  const response = await tracer.trace(
+    "space-controller.createSpace",
+    async () => {
+      accessLogger.info("createSpace");
 
-  await prisma.event.create({
-    data: {
-      belongsTo: space.code,
-      author: username,
-      action: EventType.CREATE,
-    },
-  });
+      const { username } = params;
 
-  return {
-    code: space.code,
-    files: [],
-    events: [],
-    clients: [],
-    createdAt: space.createdAt.toString(),
-    updatedAt: space.updatedAt.toString(),
-  };
+      const space = await create();
+
+      await tracer.trace("prisma.event.create", async () => {
+        await prisma.event.create({
+          data: {
+            belongsTo: space.code,
+            author: username,
+            action: EventType.CREATE,
+          },
+        });
+      });
+
+      logger.info(`Created space: ${space.code}`);
+      return {
+        code: space.code,
+        files: [],
+        events: [],
+        clients: [],
+        createdAt: space.createdAt.toString(),
+        updatedAt: space.updatedAt.toString(),
+      };
+    }
+  );
+
+  return response;
 };
 
 export const findSpace: FindSpaceFn = async (params: { code: string }) => {

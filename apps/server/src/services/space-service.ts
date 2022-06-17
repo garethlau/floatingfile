@@ -3,26 +3,37 @@ import { S3_BUCKET_NAME } from "../config";
 import s3 from "../lib/s3";
 import prisma from "../lib/prisma";
 import { deletePreviews } from "./image-preview-service";
+import tracer from "../lib/tracer";
 
 export const create = async () => {
-  let code: string | null = null;
-  while (!code) {
-    const buf = crypto.randomBytes(3);
-    const candidate = buf.toString("hex").toUpperCase();
-    if (candidate.includes("0") || candidate.includes("O")) {
-      continue;
-    }
-    if (await prisma.space.findUnique({ where: { code: candidate } })) {
-      continue;
-    }
-    code = candidate;
-  }
+  const space = tracer.trace("space-service.create", async () => {
+    const code = await tracer.trace("generate_code", async () => {
+      let code: string | null = null;
+      while (!code) {
+        const buf = crypto.randomBytes(3);
+        const candidate = buf.toString("hex").toUpperCase();
+        if (candidate.includes("0") || candidate.includes("O")) {
+          continue;
+        }
+        if (await prisma.space.findUnique({ where: { code: candidate } })) {
+          continue;
+        }
+        code = candidate;
+        return code;
+      }
+    });
 
-  const space = await prisma.space.create({
-    data: {
-      code,
-    },
+    const space = tracer.trace("prisma.space.create", async () => {
+      const space = await prisma.space.create({
+        data: {
+          code,
+        },
+      });
+      return space;
+    });
+    return space;
   });
+
   return space;
 };
 

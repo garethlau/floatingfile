@@ -12,5 +12,6 @@ ecosystem.config.js
 .env
 .env.staging
 .env.prod
+*.env*
 
 tsconfig.tsbuildinfo

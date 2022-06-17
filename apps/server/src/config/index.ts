@@ -15,3 +15,4 @@ export const AWS_ACCESS_KEY_SECRET = process.env.AWS_ACCESS_KEY_SECRET!;
 export const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME!;
 
 export const HONEYBADGER_API_KEY = process.env.HONEYBADGER_API_KEY!;
+export const DD_API_KEY = process.env.DD_API_KEY!;
