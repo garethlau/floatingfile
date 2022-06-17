@@ -11,5 +11,6 @@ ecosystem.config.js
 
 .env
 .env.prod
+*.env*
 
 tsconfig.tsbuildinfo
