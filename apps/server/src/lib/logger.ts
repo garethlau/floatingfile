@@ -30,16 +30,16 @@ const transport: DailyRotateFile = new DailyRotateFile({
   level: "info",
 });
 
+const ddTransport = new transports.Http({
+  host: "http-intake.logs.datadoghq.com",
+  path: `/api/v2/logs?dd-api-key=${DD_API_KEY}&ddsource=nodejs&service=${SERVICE_NAME}`,
+  format: format.json(),
+  level: "info",
+  ssl: true,
+});
+
 if (NODE_ENV === "production") {
-  logger.add(
-    new transports.Http({
-      host: "http-intake.logs.datadoghq.com",
-      path: `/api/v2/logs?dd-api-key=${DD_API_KEY}&ddsource=nodejs&service=${SERVICE_NAME}`,
-      format: format.json(),
-      level: "info",
-      ssl: true,
-    })
-  );
+  logger.add(ddTransport);
 }
 
 export const accessLogger = createLogger({
@@ -52,6 +52,7 @@ export const accessLogger = createLogger({
       ),
     }),
     transport,
+    ddTransport,
     new transports.File({
       filename: `${process.cwd()}/logs/access.log`,
       level: "info",
