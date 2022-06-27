@@ -16,6 +16,7 @@ import {
   completeChunkUpload,
 } from "./controllers/files-controller";
 import { generateUsername } from "./controllers/username-controller";
+import logger from "./lib/logger";
 
 const router = Router();
 
@@ -29,6 +30,7 @@ router.post("/", async (req, res) => {
 
   const payload: Payload = req.body;
   const params = payload.params[0];
+  logger.info(`Invoking RPC: ${payload.endpoint}`);
 
   switch (payload.endpoint) {
     case "generateUsername": {

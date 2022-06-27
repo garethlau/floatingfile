@@ -24,12 +24,10 @@ import prisma from "../lib/prisma";
 import s3 from "../lib/s3";
 import { S3_BUCKET_NAME } from "../config";
 import Honeybadger from "../lib/honeybadger";
-import { accessLogger } from "../lib/logger";
 
 export const initChunkUpload: InitChunkUploadFn = async (params: {
   numChunks: string;
 }) => {
-  accessLogger.info("initChunkUpload");
   try {
     const { numChunks } = params;
     const key = uuidv4();
@@ -65,7 +63,6 @@ export const abortChunkUpload: AbortChunkUploadFn = async (params: {
   key: string;
   uploadId: string;
 }) => {
-  accessLogger.info("abortChunkUpload");
   const { uploadId, key } = params;
   await s3
     .abortMultipartUpload({
@@ -85,7 +82,6 @@ export const completeChunkUpload: CompleteChunkUploadFn = async (params: {
     number: string;
   }[];
 }) => {
-  accessLogger.info("completeChunkUpload");
   const { uploadId, key, parts } = params;
   try {
     await s3
@@ -112,7 +108,6 @@ export const preupload: PreuploadFn = async (params: {
   code: string;
   size: string;
 }) => {
-  accessLogger.info("preupload");
   const data = await prepUpload(params.code, params.size);
   if (!data) return null;
 
@@ -131,7 +126,6 @@ export const postupload: PostuploadFn = async (params: {
     size: string;
   };
 }) => {
-  accessLogger.info("postupload");
   const { code, username, file } = params;
   await endUpload(code, file, () => {
     // this is called when the image preview is complete
@@ -150,7 +144,6 @@ export const postupload: PostuploadFn = async (params: {
 };
 
 export const predownload: PredownloadFn = async (params: { id: string }) => {
-  accessLogger.info("predownload");
   const { id } = params;
   const { signedUrl } = await prepDownload(id);
   return { signedUrl };
@@ -161,7 +154,6 @@ export const postdownload: PostdownloadFn = async (params: {
   username: string;
   name: string;
 }) => {
-  accessLogger.info("postdownload");
   const { username, code, name } = params;
   await prisma.event.create({
     data: {
@@ -179,7 +171,6 @@ export const remove: RemoveFn = async (params: {
   username: string;
   id: string;
 }) => {
-  accessLogger.info("remove");
   const { username, id } = params;
   const file = await removeFile(id);
 
@@ -200,7 +191,6 @@ export const removeMany: RemoveManyFn = async (params: {
   username: string;
   ids: string[];
 }) => {
-  accessLogger.info("removeMany");
   const { ids, username } = params;
   const files = await removeFiles(ids);
 
