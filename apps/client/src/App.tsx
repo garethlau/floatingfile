@@ -14,6 +14,8 @@ import {
 import { SelectedFilesProvider } from "./contexts/selectedFiles";
 import { UploadServiceProvider } from "./contexts/uploadService";
 import rpcClient from "./lib/rpc";
+import CreateTunnel from "./pages/CreateTunnel";
+import Tunnel from "./pages/Tunnel";
 
 const Space = React.lazy(() => import("./pages/Space"));
 const Landing = React.lazy(() => import("./pages/Landing"));
@@ -71,6 +73,8 @@ const App: React.FC<{}> = () => {
                 <Switch>
                   <Route exact path="/" component={Landing} />
                   <Route path="/s/:code" component={Space} />
+                  <Route path="/tunnel" component={CreateTunnel} />
+                  <Route path="/t/:code" component={Tunnel} />
                   <Route component={NotFound} />
                 </Switch>
               </Suspense>
