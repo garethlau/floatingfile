@@ -29,6 +29,7 @@
     "heic-convert": "^1.2.4",
     "node-cron": "^3.0.0",
     "os-utils": "^0.0.14",
+    "redis": "^4.5.1",
     "sharp": "^0.27.2",
     "uuid": "^8.3.2",
     "winston": "^3.3.3",
