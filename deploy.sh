@@ -27,7 +27,7 @@ echo ">>> building packages"
  yarn --cwd packages/types build
 
 echo ">>> building frontend"
- if [ "$branch" = "master" ]; then 
+if [ "$branch" = "master" ]; then 
     yarn --cwd apps/client build:master
 else 
     yarn --cwd apps/client build:staging

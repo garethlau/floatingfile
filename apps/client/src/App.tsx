@@ -14,12 +14,12 @@ import {
 import { SelectedFilesProvider } from "./contexts/selectedFiles";
 import { UploadServiceProvider } from "./contexts/uploadService";
 import rpcClient from "./lib/rpc";
-import CreateTunnel from "./pages/CreateTunnel";
-import Tunnel from "./pages/Tunnel";
 
 const Space = React.lazy(() => import("./pages/Space"));
 const Landing = React.lazy(() => import("./pages/Landing"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
+const Tunnel = React.lazy(() => import("./pages/Tunnel"));
+const CreateTunnel = React.lazy(() => import("./pages/CreateTunnel"));
 
 ReactGA.initialize("UA-159864166-1", { debug: ENVIRONMENT === "development" });
 
