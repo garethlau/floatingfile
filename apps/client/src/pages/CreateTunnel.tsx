@@ -27,7 +27,9 @@ const CreateTunnel: React.FC = () => {
     setIsLoading(true);
     const response = await axios.post("/api/tunnels", { url });
     const { code } = response.data;
-    setTunnel(`${ORIGIN}/t/${code}`);
+    const tunnelUrl = `${ORIGIN}/t/${code}`;
+    setTunnel(tunnelUrl);
+    navigator.clipboard.writeText(tunnelUrl);
     toast({
       title: "URL copied to clipboard.",
       status: "success",
