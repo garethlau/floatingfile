@@ -65,7 +65,10 @@ const CreateTunnel: React.FC = () => {
       <Flex align="center" justify="center" w="100vw">
         <Stack spacing={4} w="400px" h="min-content">
           <Heading>Tunnel</Heading>
-          <Text>Use floatingfile Tunnel to generate a code for any URL.</Text>
+          <Text>
+            Use floatingfile Tunnel to generate a code for any URL. Tunnels last
+            6 hours.
+          </Text>
           <Input
             placeholder="URL"
             spellCheck={false}
