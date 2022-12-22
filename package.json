@@ -28,7 +28,7 @@
     "deploy:app": "./scripts/deploy-app.sh",
     "deploy:landing": "./scripts/deploy-landing-site.sh",
     "clean": "./scripts/clean.sh",
-    "start:storage": "docker-compose -f ./docker/docker-compose.yml up",
+    "start:storage": "docker-compose -p floatingfile-infra -f ./docker/docker-compose.yml up",
     "start:server": "yarn --cwd apps/server start",
     "start:landing": "yarn --cwd apps/landing start",
     "stage:landing": "yarn --cwd apps/landing stage"
