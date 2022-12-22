@@ -258,9 +258,9 @@ export const SpaceProvider: React.FC<{ children: React.ReactNode }> = ({
   const [values, setValues] = useState<string[]>([]);
 
   function select(key: string) {
-    // Prevent item select in mobile
-    if (isMobile) return;
-    setValues((prev) => [...prev, key]);
+    if (!isSelected(key)) {
+      setValues((prev) => [...prev, key]);
+    }
   }
 
   function unselect(key: string) {
@@ -272,7 +272,7 @@ export const SpaceProvider: React.FC<{ children: React.ReactNode }> = ({
 
   function toggleSelect(key: string) {
     // Item is already selected
-    if (values.includes(key)) {
+    if (isSelected(key)) {
       unselect(key);
     } else {
       select(key);
