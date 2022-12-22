@@ -35,5 +35,5 @@ export const expireSpaces = async () => {
     },
   });
 
-  logger.info(`Deleted ${count} spaces.`);
+  logger.info(`[Cron]: Deleted ${count} spaces.`);
 };
