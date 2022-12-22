@@ -2,7 +2,7 @@ import React, { useReducer } from "react";
 import { useParams } from "react-router-dom";
 import { FaTrash, FaCloudDownloadAlt } from "react-icons/fa";
 import { GrDocumentZip } from "react-icons/gr";
-import { MdCloudUpload, MdClear, MdPlaylistAddCheck } from "react-icons/md";
+import { MdCloudUpload } from "react-icons/md";
 import {
   Flex,
   chakra,
@@ -15,6 +15,7 @@ import {
   Icon,
   CircularProgressLabel,
   useToast,
+  Checkbox,
 } from "@chakra-ui/react";
 import Button from "./Button";
 import useSpace from "../hooks/useSpace";
@@ -71,15 +72,15 @@ const Toolbar: React.FC = () => {
   const { space, downloadFile, removeFiles, zipFiles } = useSpace(code);
   const isCollapsed = useBreakpointValue({ base: true, lg: false });
   const toast = useToast();
-
-  const files = space?.files || [];
-
   const {
     selected,
     isSelected,
     clear: clearSelectedFiles,
     setSelected,
   } = useSelectedFiles();
+
+  const files = space?.files || [];
+  const allSelected = selected.length === files.length;
 
   async function downloadSelected() {
     toast({
@@ -169,149 +170,109 @@ const Toolbar: React.FC = () => {
   }
 
   return (
-    <Flex align="center" p={2} bg="blue.500">
-      <HStack>
-        <FileDrop>
-          {!isCollapsed ? (
-            <Button colorScheme="green" leftIcon={<Icon as={MdCloudUpload} />}>
-              Upload
-            </Button>
-          ) : (
-            <Tooltip label="Upload files">
-              <IconButton
-                aria-label="Upload files"
-                icon={<Icon as={MdCloudUpload} />}
-                colorScheme="green"
-              />
-            </Tooltip>
-          )}
-        </FileDrop>
-        {selected.length === files?.length ? (
+    <Flex align="center" p={2} bg="white">
+      <HStack ml="2">
+        <Checkbox
+          colorScheme="blue"
+          isChecked={allSelected}
+          isIndeterminate={selected.length > 0 && !allSelected}
+          onChange={() => {
+            if (allSelected) {
+              clearSelectedFiles();
+            } else {
+              setSelected(files?.map((file) => file.id) || []);
+            }
+          }}
+        />
+        {selected.length > 0 && (
           <>
             {!isCollapsed ? (
               <Button
-                colorSheme="white"
-                throttle={0}
-                onClick={clearSelectedFiles}
+                disabled={selected.length === 0}
+                colorScheme="gray"
+                onClick={removeSelected}
               >
-                Deselect All
+                Remove
               </Button>
             ) : (
-              <Tooltip label="Deselect all files">
+              <Tooltip label="Remove selected files">
                 <IconButton
-                  onClick={clearSelectedFiles}
-                  aria-label="Deselect All"
-                  icon={<Icon as={MdClear} />}
+                  disabled={selected.length === 0}
+                  aria-label="Remove Selected Files"
+                  icon={<Icon as={FaTrash} />}
+                  onClick={removeSelected}
                 />
               </Tooltip>
             )}
-          </>
-        ) : (
-          <>
             {!isCollapsed ? (
               <Button
-                colorScheme="white"
-                onClick={() => {
-                  setSelected(files?.map((file) => file.id) || []);
-                }}
-                throttle={0}
+                colorScheme="gray"
+                disabled={selected.length === 0}
+                onClick={zipSelected}
               >
-                Select All
+                ZIP
               </Button>
             ) : (
-              <Tooltip label="Select all files">
+              <Tooltip label="ZIP selected files">
                 <IconButton
-                  onClick={() => {
-                    setSelected(files?.map((file) => file.id) || []);
-                  }}
-                  aria-label="Select All"
-                  icon={<Icon as={MdPlaylistAddCheck} />}
+                  disabled={selected.length === 0}
+                  aria-label="ZIP selected files"
+                  icon={<Icon as={GrDocumentZip} />}
+                  onClick={zipSelected}
                 />
               </Tooltip>
+            )}
+            {!isCollapsed ? (
+              <Button
+                disabled={selected.length === 0}
+                colorScheme="gray"
+                onClick={downloadSelected}
+              >
+                <chakra.span style={{ opacity: state.isDownloading ? 0 : 1 }}>
+                  Download
+                </chakra.span>
+                <chakra.span
+                  pos="absolute"
+                  top="50%"
+                  left="50%"
+                  transform="translate(-50%, -50%)"
+                >
+                  {state.isDownloading &&
+                    `${(state.progress * 100).toFixed()}%` +
+                      ` (${state.current}/${state.total})`}
+                </chakra.span>
+              </Button>
+            ) : (
+              <IconButton
+                disabled={selected.length === 0}
+                onClick={downloadSelected}
+                aria-label="Download selected files"
+                isLoading={state.isDownloading}
+                icon={<Icon as={FaCloudDownloadAlt} />}
+                spinner={
+                  <CircularProgress
+                    size="36px"
+                    value={state.progress * 100}
+                    color="green"
+                    capIsRound
+                  >
+                    <CircularProgressLabel>
+                      {state.current}/{state.total}
+                    </CircularProgressLabel>
+                  </CircularProgress>
+                }
+              />
             )}
           </>
         )}
       </HStack>
       <Spacer />
-      <HStack>
-        {!isCollapsed ? (
-          <Button
-            disabled={selected.length === 0}
-            colorScheme="white"
-            onClick={removeSelected}
-          >
-            Remove
-          </Button>
-        ) : (
-          <Tooltip label="Remove selected files">
-            <IconButton
-              disabled={selected.length === 0}
-              aria-label="Remove Selected Files"
-              icon={<Icon as={FaTrash} />}
-              onClick={removeSelected}
-            />
-          </Tooltip>
-        )}
-        {!isCollapsed ? (
-          <Button
-            colorScheme="white"
-            disabled={selected.length === 0}
-            onClick={zipSelected}
-          >
-            ZIP
-          </Button>
-        ) : (
-          <Tooltip label="ZIP selected files">
-            <IconButton
-              disabled={selected.length === 0}
-              aria-label="ZIP selected files"
-              icon={<Icon as={GrDocumentZip} />}
-              onClick={zipSelected}
-            />
-          </Tooltip>
-        )}
-        {!isCollapsed ? (
-          <Button
-            disabled={selected.length === 0}
-            colorScheme="white"
-            onClick={downloadSelected}
-          >
-            <chakra.span style={{ opacity: state.isDownloading ? 0 : 1 }}>
-              Download
-            </chakra.span>
-            <chakra.span
-              pos="absolute"
-              top="50%"
-              left="50%"
-              transform="translate(-50%, -50%)"
-            >
-              {state.isDownloading &&
-                `${(state.progress * 100).toFixed()}%` +
-                  ` (${state.current}/${state.total})`}
-            </chakra.span>
-          </Button>
-        ) : (
-          <IconButton
-            disabled={selected.length === 0}
-            onClick={downloadSelected}
-            aria-label="Download selected files"
-            isLoading={state.isDownloading}
-            icon={<Icon as={FaCloudDownloadAlt} />}
-            spinner={
-              <CircularProgress
-                size="36px"
-                value={state.progress * 100}
-                color="green"
-                capIsRound
-              >
-                <CircularProgressLabel>
-                  {state.current}/{state.total}
-                </CircularProgressLabel>
-              </CircularProgress>
-            }
-          />
-        )}
-      </HStack>
+
+      <FileDrop>
+        <Button colorScheme="green" leftIcon={<Icon as={MdCloudUpload} />}>
+          Upload
+        </Button>
+      </FileDrop>
     </Flex>
   );
 };

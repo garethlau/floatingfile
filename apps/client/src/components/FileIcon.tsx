@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon } from "@chakra-ui/react";
+import { Icon, Image } from "@chakra-ui/react";
 import {
   SiHtml5,
   SiC,
@@ -109,10 +109,12 @@ const FileIcon: React.FC<{
 }> = ({ extension, previewUrl }) => {
   if (previewUrl) {
     return (
-      <img
+      <Image
+        w="38px"
+        h="38px"
         alt="File preview"
         src={`${previewUrl}`}
-        style={{ width: "80%", marginTop: "5px", borderRadius: "5px" }}
+        style={{ borderRadius: "5px" }}
       />
     );
   }
@@ -121,9 +123,8 @@ const FileIcon: React.FC<{
       as={getIcon(extension)}
       w="38px"
       h="38px"
-      mt="5px"
       opacity={0.75}
-      style={{ marginTop: "5px", opacity: 0.75 }}
+      style={{ opacity: 0.75 }}
     />
   );
 };

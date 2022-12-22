@@ -11,6 +11,8 @@ import {
   Tooltip,
   CircularProgress,
   Progress,
+  Checkbox,
+  HStack,
 } from "@chakra-ui/react";
 import { FaTrash, FaCloudDownloadAlt } from "react-icons/fa";
 import { MdStop } from "react-icons/md";
@@ -37,7 +39,7 @@ const FileListItem: React.FC<{
   const size = parseInt(file.size, 10);
   const { code }: { code: string } = useParams();
   const { removeFile, downloadFile } = useSpace(code);
-  const { toggleSelect, isSelected } = useSelectedFiles();
+  const { toggleSelect, isSelected, selected } = useSelectedFiles();
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
   const layout = useLayout();
@@ -111,20 +113,28 @@ const FileListItem: React.FC<{
           ? "#DDE8F8"
           : "white"
       }
-      onClick={() => toggleSelect(id)}
       _hover={{ cursor: "pointer" }}
       transition="background-color ease 0.3s"
       overflowY="hidden"
     >
-      <Box w="50px" h="50px">
+      <HStack>
+        <Checkbox
+          isChecked={selected.includes(id)}
+          onChange={() => toggleSelect(id)}
+          colorScheme="blue"
+        />
         <FileIcon extension={ext} previewUrl={previewUrl} />
-      </Box>
-      <Box maxW={containerWidth - 50 - actionContainerWidth}>
-        <chakra.p textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
-          {name}
-        </chakra.p>
-        <chakra.p opacity={0.7}>{formatBytes(size)}</chakra.p>
-      </Box>
+        <Box maxW={containerWidth - 100 - actionContainerWidth}>
+          <chakra.p
+            textOverflow="ellipsis"
+            overflow="hidden"
+            whiteSpace="nowrap"
+          >
+            {name}
+          </chakra.p>
+          <chakra.p opacity={0.7}>{formatBytes(size)}</chakra.p>
+        </Box>
+      </HStack>
       <Spacer />
       <Box>
         {containerWidth > 540 ? (
