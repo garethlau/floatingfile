@@ -4,7 +4,6 @@ import { GrStatusUnknown } from "react-icons/gr";
 import { MdFileUpload, MdFileDownload, MdDelete } from "react-icons/md";
 import { FaUserPlus, FaUserMinus } from "react-icons/fa";
 import { RiDoorOpenFill } from "react-icons/ri";
-import { useParams } from "react-router-dom";
 import {
   Icon,
   useTheme,
@@ -14,7 +13,7 @@ import {
   chakra,
   Tooltip,
 } from "@chakra-ui/react";
-import useSpace from "../hooks/useSpace";
+import { useSpace } from "../contexts/space";
 import Panel from "./Panel";
 
 function getLabel(args: {
@@ -63,8 +62,7 @@ function getIcon(action: string) {
 }
 
 const HistoryPanel: React.FC = () => {
-  const { code }: { code: string } = useParams();
-  const { space } = useSpace(code);
+  const { space } = useSpace();
   const theme = useTheme();
   const events = space?.events || [];
   return (

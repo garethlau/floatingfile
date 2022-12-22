@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import QRCode from "qrcode.react";
 import { ORIGIN } from "../env";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import useSpace from "../hooks/useSpace";
+import { useSpace } from "../contexts/space";
 import { useParams, useHistory } from "react-router-dom";
 import floatingfileImg from "../assets/images/floatingfile.png";
 import { Flex, Spacer, Box, chakra, Button, useToast } from "@chakra-ui/react";
@@ -16,7 +16,7 @@ const FIVE_MINUTES: number = 5 * 60 * 1000;
 
 const ConnectPanel: React.FC = () => {
   const { code }: { code: string } = useParams();
-  const { space, destroy } = useSpace(code);
+  const { space, destroy } = useSpace();
   const history = useHistory();
   const [isDestroying, setIsDestroying] = useState(false);
   const [timeLeft, setTimeLeft] = useState<number>(0); // In seconds

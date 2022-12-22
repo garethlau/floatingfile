@@ -1,13 +1,72 @@
+import React, { createContext, useContext, useState } from "react";
 import axios, { CancelToken } from "axios";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import {
+  useMutation,
+  UseMutationResult,
+  useQuery,
+  useQueryClient,
+  UseQueryResult,
+} from "react-query";
 import { WrappedFile } from "../interfaces";
 import { USERNAME_STORAGE_KEY } from "../env";
 import rpcClient from "../lib/rpc";
 import { saveAs } from "file-saver";
+import { FindSpaceFn } from "@floatingfile/types";
+import { isMobile } from "react-device-detect";
 
-export default function useSpace(code: string) {
-  const queryClient = useQueryClient();
+interface ContextType {
+  code: string;
+  space?: Awaited<ReturnType<FindSpaceFn>>;
+  isLoading: boolean;
+  status: UseQueryResult["status"];
+  refetch: UseQueryResult["refetch"];
+  destroy: () => void;
+  removeFile: UseMutationResult<void, unknown, string, unknown>["mutateAsync"];
+  removeFiles: UseMutationResult<
+    void,
+    unknown,
+    string[],
+    unknown
+  >["mutateAsync"];
+  uploadFile: (
+    wrappedFile: WrappedFile,
+    options?: {
+      cancelToken?: CancelToken;
+      onPreupload?: () => void;
+      onUpload?: () => void;
+      onPostupload?: () => void;
+      onUploadProgress?: ((progressEvent: any) => void) | undefined;
+    }
+  ) => Promise<void>;
+  downloadFile: (
+    id: string,
+    filename: string,
+    options?: {
+      cancelToken?: CancelToken;
+      onPredownload?: () => void;
+      onDownload?: () => void;
+      onPostdownload?: () => void;
+      onDownloadProgress?: ((progressEvent: any) => void) | undefined;
+    }
+  ) => Promise<void>;
+  zipFiles: (ids: string[]) => Promise<void>;
+  selected: string[];
+  setSelected: React.Dispatch<React.SetStateAction<string[]>>;
+  toggleSelect: (key: string) => void;
+  select: (key: string) => void;
+  unselect: (key: string) => void;
+  clear: () => void;
+  isSelected: (key: string) => boolean;
+}
+
+export const SpaceContext = createContext<ContextType | undefined>(undefined);
+
+export const SpaceProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const code = window.location.href.split("/")[4];
   const queryKey = ["space", code];
+  const queryClient = useQueryClient();
 
   const {
     data: space,
@@ -196,16 +255,70 @@ export default function useSpace(code: string) {
     if (typeof onPostupload === "function") onPostupload();
   }
 
-  return {
-    space,
-    isLoading,
-    status,
-    refetch,
-    destroy,
-    removeFile,
-    removeFiles,
-    uploadFile,
-    downloadFile,
-    zipFiles,
-  };
-}
+  const [values, setValues] = useState<string[]>([]);
+
+  function select(key: string) {
+    // Prevent item select in mobile
+    if (isMobile) return;
+    setValues((prev) => [...prev, key]);
+  }
+
+  function unselect(key: string) {
+    setValues((prev) => {
+      const newValues = prev.filter((val) => val !== key);
+      return newValues;
+    });
+  }
+
+  function toggleSelect(key: string) {
+    // Item is already selected
+    if (values.includes(key)) {
+      unselect(key);
+    } else {
+      select(key);
+    }
+  }
+
+  function clear() {
+    setValues([]);
+  }
+
+  function isSelected(key: string) {
+    return values.includes(key);
+  }
+
+  return (
+    <SpaceContext.Provider
+      value={{
+        code,
+        space,
+        isLoading,
+        status,
+        refetch,
+        destroy,
+        removeFile,
+        removeFiles,
+        uploadFile,
+        downloadFile,
+        zipFiles,
+        selected: values,
+        setSelected: setValues,
+        toggleSelect,
+        select,
+        unselect,
+        clear,
+        isSelected,
+      }}
+    >
+      {children}
+    </SpaceContext.Provider>
+  );
+};
+
+export const useSpace = () => {
+  const context = useContext(SpaceContext);
+  if (context === undefined) {
+    throw new Error("useSpace must be used within a SpaceProvider");
+  }
+  return context;
+};

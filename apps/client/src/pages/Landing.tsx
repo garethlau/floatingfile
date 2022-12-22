@@ -18,6 +18,7 @@ import useDocumentTitle from "../hooks/useDocumentTitle";
 import useRandomElement from "../hooks/useRandomElement";
 import rpc from "../lib/rpc";
 import logger from "../lib/logger";
+import { useQueryClient } from "react-query";
 
 const Landing: React.FC = () => {
   useDocumentTitle("floatingfile");
@@ -25,6 +26,7 @@ const Landing: React.FC = () => {
   const [code, setCode] = useState("");
   const [isJoining, setIsJoining] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const queryClient = useQueryClient();
 
   const phrase = useRandomElement([
     "Simplify your file transfer workflow.",
@@ -119,6 +121,7 @@ const Landing: React.FC = () => {
       });
 
       if (space && space.code) {
+        queryClient.invalidateQueries(["space", space.code]);
         logger.info(`Created space`, { code: space.code });
         history.push(`/s/${space.code}`);
       }

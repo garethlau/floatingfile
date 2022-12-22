@@ -4,7 +4,7 @@ import { AnimateSharedLayout, AnimatePresence, motion } from "framer-motion";
 import { MdCloudUpload } from "react-icons/md";
 import Button from "./Button";
 import useWindowWidth from "../hooks/useWindowWidth";
-import useSpace from "../hooks/useSpace";
+import { useSpace } from "../contexts/space";
 import FileListItem from "./FileListItem";
 import {
   Stack,
@@ -20,8 +20,7 @@ import FileDrop from "./FileDrop";
 
 const FilesPanel: React.FC = () => {
   const windowWidth = useWindowWidth();
-  const { code }: { code: string } = useParams();
-  const { space, isLoading } = useSpace(code);
+  const { space, isLoading } = useSpace();
   const layout = useLayout();
 
   const files = space?.files || [];

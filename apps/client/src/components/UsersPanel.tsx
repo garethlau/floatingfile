@@ -1,8 +1,7 @@
 import React from "react";
-import { useParams } from "react-router-dom";
 import { CgSmile } from "react-icons/cg";
 import { Box, Stack, chakra, Flex, Icon } from "@chakra-ui/react";
-import useSpace from "../hooks/useSpace";
+import { useSpace } from "../contexts/space";
 import Panel from "./Panel";
 
 interface UsersPanelProps {
@@ -10,8 +9,7 @@ interface UsersPanelProps {
 }
 
 const UsersPanel: React.FC<UsersPanelProps> = ({ myClientId }) => {
-  const { code }: { code: string } = useParams();
-  const { space } = useSpace(code);
+  const { space } = useSpace();
   const clients = space?.clients || [];
 
   return (

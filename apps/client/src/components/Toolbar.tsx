@@ -18,8 +18,7 @@ import {
   Checkbox,
 } from "@chakra-ui/react";
 import Button from "./Button";
-import useSpace from "../hooks/useSpace";
-import { useSelectedFiles } from "../contexts/selectedFiles";
+import { useSpace } from "../contexts/space";
 import Honeybadger from "../lib/honeybadger";
 import FileDrop from "./FileDrop";
 import logger from "../lib/logger";
@@ -68,16 +67,19 @@ const initialState: State = {
 
 const Toolbar: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { code }: { code: string } = useParams();
-  const { space, downloadFile, removeFiles, zipFiles } = useSpace(code);
-  const isCollapsed = useBreakpointValue({ base: true, lg: false });
-  const toast = useToast();
   const {
+    code,
+    space,
+    downloadFile,
+    removeFiles,
+    zipFiles,
     selected,
     isSelected,
     clear: clearSelectedFiles,
     setSelected,
-  } = useSelectedFiles();
+  } = useSpace();
+  const isCollapsed = useBreakpointValue({ base: true, lg: false });
+  const toast = useToast();
 
   const files = space?.files || [];
   const allSelected = selected.length === files.length;

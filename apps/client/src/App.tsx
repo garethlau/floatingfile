@@ -11,8 +11,8 @@ import {
   ENVIRONMENT,
   LAST_VISIT_STORAGE_KEY,
 } from "./env";
-import { SelectedFilesProvider } from "./contexts/selectedFiles";
 import { UploadServiceProvider } from "./contexts/uploadService";
+import { SpaceProvider } from "./contexts/space";
 import rpcClient from "./lib/rpc";
 
 const Space = React.lazy(() => import("./pages/Space"));
@@ -66,9 +66,9 @@ const App: React.FC<{}> = () => {
   return (
     <ChakraProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-        <UploadServiceProvider>
-          <SelectedFilesProvider>
-            <Router history={history}>
+        <Router history={history}>
+          <SpaceProvider>
+            <UploadServiceProvider>
               <Suspense fallback={null}>
                 <Switch>
                   <Route exact path="/" component={Landing} />
@@ -78,9 +78,9 @@ const App: React.FC<{}> = () => {
                   <Route component={NotFound} />
                 </Switch>
               </Suspense>
-            </Router>
-          </SelectedFilesProvider>
-        </UploadServiceProvider>
+            </UploadServiceProvider>
+          </SpaceProvider>
+        </Router>
       </QueryClientProvider>
     </ChakraProvider>
   );

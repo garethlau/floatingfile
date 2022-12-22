@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect, Suspense } from "react";
 import {
   useHistory,
-  useParams,
   Switch,
   Route,
   RouteComponentProps,
@@ -23,7 +22,7 @@ import {
 import Button from "../components/Button";
 import IntroToast from "../components/IntroToast";
 import UploadQueue from "../components/UploadQueue";
-import useSpace from "../hooks/useSpace";
+import { useSpace } from "../contexts/space";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import FullPageLoader from "../components/FullPageLoader";
 import SpaceNotFound from "../components/SpaceNotFound";
@@ -31,7 +30,6 @@ import FilesPanel from "../components/FilesPanel";
 import NavBar from "../components/NavBar";
 import FadeIn from "../components/animations/FadeIn";
 import useLayout, { Layouts } from "../hooks/useLayout";
-import rpcClient from "../lib/rpc";
 
 const ConnectPanel = React.lazy(() => import("../components/ConnectPanel"));
 const HistoryPanel = React.lazy(() => import("../components/HistoryPanel"));
@@ -132,20 +130,20 @@ interface SpaceProps extends RouteComponentProps<MatchParams> {
 
 const Space: React.FC<SpaceProps> = (props) => {
   const history = useHistory();
-  const { code }: { code: string } = useParams();
   const layout = useLayout();
+  const {
+    code,
+    status: spaceStatus,
+    space,
+    refetch: refetchSpace,
+  } = useSpace();
 
   useDocumentTitle(`floatingfile | ${code}`);
-
-  const { status: spaceStatus, refetch: refetchSpace } = useSpace(code);
 
   const toast = useToast();
   const introToastRef = useRef<string | number | undefined | null>(null);
 
   const [myClientId, setMyClientId] = useState<string>("");
-
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [exists, setExists] = useState<boolean>(false);
 
   useEffect(() => {
     if (spaceStatus === "error") {
@@ -238,21 +236,10 @@ const Space: React.FC<SpaceProps> = (props) => {
     };
   }, [code]);
 
-  useEffect(() => {
-    (async () => {
-      if (await rpcClient.invoke("findSpace", { code })) {
-        setExists(true);
-      } else {
-        setExists(false);
-      }
-      setIsLoading(false);
-    })();
-  }, []);
-
-  if (isLoading) {
+  if (spaceStatus === "loading" || spaceStatus === "idle") {
     return <FullPageLoader />;
   }
-  if (!exists) {
+  if (spaceStatus === "error" || !space) {
     return <SpaceNotFound />;
   }
   return (

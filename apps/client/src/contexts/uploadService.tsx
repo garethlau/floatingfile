@@ -8,7 +8,7 @@ import React, {
 import axios, { CancelTokenSource } from "axios";
 import Honeybadger from "../lib/honeybadger";
 import { v4 as uuidv4 } from "uuid";
-import useSpace from "../hooks/useSpace";
+import { useSpace } from "./space";
 import { WrappedFile } from "../interfaces";
 import { useToast } from "@chakra-ui/react";
 
@@ -22,7 +22,6 @@ interface Context {
   pending: WrappedFile[];
   complete: (key: string) => void;
   cancel: (key: string) => void;
-  setCode: React.Dispatch<React.SetStateAction<string>>;
   currentUpload: string;
 }
 
@@ -37,7 +36,6 @@ export const UploadServiceContext = createContext<Context>({
   pending: [],
   complete: () => {},
   cancel: () => {},
-  setCode: () => {},
   currentUpload: "",
 });
 /* eslint-enable @typescript-eslint/no-unused-vars */
@@ -46,10 +44,9 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [pending, setPending] = useState<WrappedFile[]>([]);
-  const [code, setCode] = useState<string>("");
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [currentUpload, setCurrentUpload] = useState<string>("");
-  const { uploadFile } = useSpace(code);
+  const { uploadFile } = useSpace();
   const toast = useToast();
 
   const sourceRef = useRef<CancelTokenSource | null>(null);
@@ -200,7 +197,6 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
         pending,
         complete,
         cancel,
-        setCode,
         currentUpload,
       }}
     >
@@ -216,9 +212,6 @@ export const useUploadService = (code?: string) => {
     throw new Error(
       "useUploadService must be used within a UploadServiceProvider"
     );
-  }
-  if (code) {
-    context.setCode(code);
   }
   return context;
 };

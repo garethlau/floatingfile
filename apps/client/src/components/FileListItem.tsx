@@ -17,8 +17,7 @@ import {
 import { FaTrash, FaCloudDownloadAlt } from "react-icons/fa";
 import { MdStop } from "react-icons/md";
 import axios, { CancelTokenSource } from "axios";
-import { useSelectedFiles } from "../contexts/selectedFiles";
-import useSpace from "../hooks/useSpace";
+import { useSpace } from "../contexts/space";
 import FileIcon from "./FileIcon";
 import Honeybadger from "../lib/honeybadger";
 import useLayout, { Layouts } from "../hooks/useLayout";
@@ -37,9 +36,8 @@ const FileListItem: React.FC<{
 }> = ({ file }) => {
   const { id, previewUrl, name, ext } = file;
   const size = parseInt(file.size, 10);
-  const { code }: { code: string } = useParams();
-  const { removeFile, downloadFile } = useSpace(code);
-  const { toggleSelect, isSelected, selected } = useSelectedFiles();
+  const { downloadFile, removeFile, toggleSelect, isSelected, selected } =
+    useSpace();
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
   const layout = useLayout();
