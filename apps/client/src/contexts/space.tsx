@@ -12,7 +12,6 @@ import { USERNAME_STORAGE_KEY } from "../env";
 import rpcClient from "../lib/rpc";
 import { saveAs } from "file-saver";
 import { FindSpaceFn } from "@floatingfile/types";
-import { isMobile } from "react-device-detect";
 
 interface ContextType {
   code: string;
