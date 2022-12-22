@@ -9,14 +9,26 @@ import {
   Input,
   Stack,
   useToast,
+  Heading,
+  Text,
 } from "@chakra-ui/react";
 import { Colors } from "@floatingfile/ui";
 import Button from "../components/Button";
 import axios from "axios";
 import { ORIGIN } from "../env";
 
+function isValidURL(candidate: string) {
+  let url;
+  try {
+    url = new URL(candidate);
+  } catch {
+    return false;
+  }
+  return url.protocol === "http:" || url.protocol === "https:";
+}
+
 const CreateTunnel: React.FC = () => {
-  useDocumentTitle("Link");
+  useDocumentTitle("floatingfile | Tunnel");
   const toast = useToast();
 
   const [url, setUrl] = useState("");
@@ -25,6 +37,16 @@ const CreateTunnel: React.FC = () => {
 
   async function generateLink() {
     setIsLoading(true);
+
+    if (!isValidURL(url)) {
+      toast({
+        title: "Invalid URL",
+        status: "error",
+        isClosable: true,
+      });
+      setIsLoading(false);
+      return;
+    }
     const response = await axios.post("/api/tunnels", { url });
     const { code } = response.data;
     const tunnelUrl = `${ORIGIN}/t/${code}`;
@@ -42,6 +64,8 @@ const CreateTunnel: React.FC = () => {
     <Box height="100vh" display="flex" bg={Colors.LIGHT_SHADE}>
       <Flex align="center" justify="center" w="100vw">
         <Stack spacing={4} w="400px" h="min-content">
+          <Heading>Tunnel</Heading>
+          <Text>Use floatingfile Tunnel to generate a code for any URL.</Text>
           <Input
             placeholder="URL"
             spellCheck={false}
@@ -80,7 +104,7 @@ const CreateTunnel: React.FC = () => {
               _hover={{ cursor: "pointer" }}
             >
               <chakra.p fontSize="16px" color="white" textAlign="center">
-                {tunnel || "Your link will be here"}
+                {tunnel || "Your tunnel will be here"}
               </chakra.p>
             </chakra.div>
           </CopyToClipboard>
