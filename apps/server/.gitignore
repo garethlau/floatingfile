@@ -13,5 +13,6 @@ ecosystem.config.js
 .env.staging
 .env.prod
 *.env*
+report.*
 
 tsconfig.tsbuildinfo
