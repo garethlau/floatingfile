@@ -128,7 +128,7 @@ interface SpaceProps extends RouteComponentProps<MatchParams> {
   clientId: string;
 }
 
-const Space: React.FC<SpaceProps> = (props) => {
+const Space: React.FC<RouteComponentProps<MatchParams>> = (props) => {
   const history = useHistory();
   const layout = useLayout();
   const {
