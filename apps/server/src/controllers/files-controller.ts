@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import {
-  PostdownloadFn,
-  PostuploadFn,
-  PredownloadFn,
-  PreuploadFn,
+  PostDownloadFn,
+  PostUploadFn,
+  PreDownloadFn,
+  PreUploadFn,
   RemoveFn,
   RemoveManyFn,
   NotificationTypes,
@@ -104,7 +104,7 @@ export const completeChunkUpload: CompleteChunkUploadFn = async (params: {
   return;
 };
 
-export const preupload: PreuploadFn = async (params: {
+export const preUpload: PreUploadFn = async (params: {
   code: string;
   size: string;
 }) => {
@@ -115,7 +115,7 @@ export const preupload: PreuploadFn = async (params: {
   return { signedUrl, key };
 };
 
-export const postupload: PostuploadFn = async (params: {
+export const postUpload: PostUploadFn = async (params: {
   code: string;
   username: string;
   file: {
@@ -143,13 +143,13 @@ export const postupload: PostuploadFn = async (params: {
   return;
 };
 
-export const predownload: PredownloadFn = async (params: { id: string }) => {
+export const preDownload: PreDownloadFn = async (params: { id: string }) => {
   const { id } = params;
   const { signedUrl } = await prepDownload(id);
   return { signedUrl };
 };
 
-export const postdownload: PostdownloadFn = async (params: {
+export const postDownload: PostDownloadFn = async (params: {
   code: string;
   username: string;
   name: string;

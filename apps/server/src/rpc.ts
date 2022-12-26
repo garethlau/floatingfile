@@ -5,10 +5,10 @@ import {
   destroySpace,
 } from "./controllers/space-controller";
 import {
-  preupload,
-  postupload,
-  predownload,
-  postdownload,
+  preUpload,
+  postUpload,
+  preDownload,
+  postDownload,
   remove,
   removeMany,
   initChunkUpload,
@@ -49,20 +49,20 @@ router.post("/", async (req, res) => {
       const space = await createSpace(params);
       return reply(space);
     }
-    case "preupload": {
-      const result = await preupload(params);
+    case "preUpload": {
+      const result = await preUpload(params);
       return reply(result);
     }
-    case "postupload": {
-      const result = await postupload(params);
+    case "postUpload": {
+      const result = await postUpload(params);
       return reply(result);
     }
-    case "predownload": {
-      const result = await predownload(params);
+    case "preDownload": {
+      const result = await preDownload(params);
       return reply(result);
     }
-    case "postdownload": {
-      const result = await postdownload(params);
+    case "postDownload": {
+      const result = await postDownload(params);
       return reply(result);
     }
     case "removeFile": {

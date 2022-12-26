@@ -1,15 +1,15 @@
 // TODO: Better file name
 import {
+  GenerateUsernameFn,
   FindSpaceFn,
   CreateSpaceFn,
   DestroySpaceFn,
-  PredownloadFn,
-  PostuploadFn,
-  PostdownloadFn,
+  PreDownloadFn,
+  PostDownloadFn,
   RemoveFn,
   RemoveManyFn,
-  GenerateUsernameFn,
-  PreuploadFn,
+  PreUploadFn,
+  PostUploadFn,
 } from "@floatingfile/types";
 import axios from "axios";
 
@@ -18,10 +18,10 @@ type API = {
   createSpace: CreateSpaceFn;
   destroySpace: DestroySpaceFn;
   findSpace: FindSpaceFn;
-  preupload: PreuploadFn;
-  postupload: PostuploadFn;
-  predownload: PredownloadFn;
-  postdownload: PostdownloadFn;
+  preUpload: PreUploadFn;
+  postUpload: PostUploadFn;
+  preDownload: PreDownloadFn;
+  postDownload: PostDownloadFn;
   removeFile: RemoveFn;
   removeFiles: RemoveManyFn;
 };

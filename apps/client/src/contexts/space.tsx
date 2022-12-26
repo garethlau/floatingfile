@@ -31,9 +31,9 @@ interface ContextType {
     wrappedFile: WrappedFile,
     options?: {
       cancelToken?: CancelToken;
-      onPreupload?: () => void;
+      onPreUpload?: () => void;
       onUpload?: () => void;
-      onPostupload?: () => void;
+      onPostUpload?: () => void;
       onUploadProgress?: ((progressEvent: any) => void) | undefined;
     }
   ) => Promise<void>;
@@ -42,9 +42,9 @@ interface ContextType {
     filename: string,
     options?: {
       cancelToken?: CancelToken;
-      onPredownload?: () => void;
+      onPreDownload?: () => void;
       onDownload?: () => void;
-      onPostdownload?: () => void;
+      onPostDownload?: () => void;
       onDownloadProgress?: ((progressEvent: any) => void) | undefined;
     }
   ) => Promise<void>;
@@ -166,22 +166,22 @@ export const SpaceProvider: React.FC<{ children: React.ReactNode }> = ({
     filename: string,
     options?: {
       cancelToken?: CancelToken;
-      onPredownload?: () => void;
+      onPreDownload?: () => void;
       onDownload?: () => void;
-      onPostdownload?: () => void;
+      onPostDownload?: () => void;
       onDownloadProgress?: ((progressEvent: any) => void) | undefined;
     }
   ) {
     const {
       cancelToken,
-      onPredownload,
+      onPreDownload,
       onDownload,
-      onPostdownload,
+      onPostDownload,
       onDownloadProgress,
     } = options || {};
 
-    const { signedUrl } = await rpcClient.invoke("predownload", { id });
-    if (typeof onPredownload === "function") onPredownload();
+    const { signedUrl } = await rpcClient.invoke("preDownload", { id });
+    if (typeof onPreDownload === "function") onPreDownload();
 
     const response = await axios.get(signedUrl, {
       responseType: "blob",
@@ -198,33 +198,33 @@ export const SpaceProvider: React.FC<{ children: React.ReactNode }> = ({
 
     if (typeof onDownload === "function") onDownload();
 
-    await rpcClient.invoke("postdownload", {
+    await rpcClient.invoke("postDownload", {
       code,
       username: localStorage.getItem(USERNAME_STORAGE_KEY)!,
       name: filename,
     });
-    if (typeof onPostdownload === "function") onPostdownload();
+    if (typeof onPostDownload === "function") onPostDownload();
   }
 
   async function uploadFile(
     wrappedFile: WrappedFile,
     options?: {
       cancelToken?: CancelToken;
-      onPreupload?: () => void;
+      onPreUpload?: () => void;
       onUpload?: () => void;
-      onPostupload?: () => void;
+      onPostUpload?: () => void;
       onUploadProgress?: ((progressEvent: any) => void) | undefined;
     }
   ) {
     const {
       cancelToken,
-      onPreupload,
+      onPreUpload,
       onUpload,
-      onPostupload,
+      onPostUpload,
       onUploadProgress,
     } = options || {};
     const { ext, file } = wrappedFile;
-    const response = await rpcClient.invoke("preupload", {
+    const response = await rpcClient.invoke("preUpload", {
       code,
       size: file.size.toString(),
     });
@@ -233,14 +233,14 @@ export const SpaceProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     const { signedUrl, key } = response;
-    if (typeof onPreupload === "function") onPreupload();
+    if (typeof onPreUpload === "function") onPreUpload();
     await axios.put(signedUrl, file, {
       cancelToken,
       onUploadProgress,
     });
     if (typeof onUpload === "function") onUpload();
 
-    await rpcClient.invoke("postupload", {
+    await rpcClient.invoke("postUpload", {
       code,
       username: localStorage.getItem(USERNAME_STORAGE_KEY)!,
       file: {
@@ -251,7 +251,7 @@ export const SpaceProvider: React.FC<{ children: React.ReactNode }> = ({
         key,
       },
     });
-    if (typeof onPostupload === "function") onPostupload();
+    if (typeof onPostUpload === "function") onPostUpload();
   }
 
   const [values, setValues] = useState<string[]>([]);

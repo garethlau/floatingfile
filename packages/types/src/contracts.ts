@@ -20,12 +20,12 @@ export type CreateSpaceFn = (params: { username: string }) => Promise<{
 
 export type DestroySpaceFn = (params: { code: string }) => Promise<void>;
 
-export type PreuploadFn = (params: {
+export type PreUploadFn = (params: {
   code: string;
   size: string;
 }) => Promise<{ signedUrl: string; key: string } | null>;
 
-export type PostuploadFn = (params: {
+export type PostUploadFn = (params: {
   code: string;
   username: string;
   file: {
@@ -37,11 +37,11 @@ export type PostuploadFn = (params: {
   };
 }) => Promise<void>;
 
-export type PredownloadFn = (params: {
+export type PreDownloadFn = (params: {
   id: string;
 }) => Promise<{ signedUrl: string }>;
 
-export type PostdownloadFn = (params: {
+export type PostDownloadFn = (params: {
   code: string;
   username: string;
   name: string;

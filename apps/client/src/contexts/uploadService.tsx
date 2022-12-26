@@ -63,13 +63,13 @@ export const UploadServiceProvider: React.FC<{ children: React.ReactNode }> = ({
         try {
           await uploadFile(wrappedFile, {
             cancelToken: sourceRef.current?.token,
-            onPreupload: () => {
+            onPreUpload: () => {
               setCurrentUpload(wrappedFile.id);
             },
             onUpload: () => {
               setCurrentUpload("");
             },
-            onPostupload: () => {},
+            onPostUpload: () => {},
             onUploadProgress: (event) => {
               // Set upload progress for current file
               updateProgress(wrappedFile.id, event.loaded, event.total);
