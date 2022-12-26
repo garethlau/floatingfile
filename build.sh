@@ -21,4 +21,5 @@ yarn --cwd apps/server build
 
 echo ">>> Building landing site (4/4)"
 yarn --cwd apps/landing build
+yarn --cwd apps/landing export
 }
