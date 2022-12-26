@@ -67,19 +67,19 @@ const App: React.FC<{}> = () => {
     <ChakraProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <Router history={history}>
-          <SpaceProvider>
-            <UploadServiceProvider>
-              <Suspense fallback={null}>
-                <Switch>
-                  <Route exact path="/" component={Landing} />
+          <Suspense fallback={null}>
+            <Switch>
+              <Route exact path="/" component={Landing} />
+              <SpaceProvider>
+                <UploadServiceProvider>
                   <Route path="/s/:code" component={Space} />
-                  <Route path="/tunnel" component={CreateTunnel} />
-                  <Route path="/t/:code" component={Tunnel} />
-                  <Route component={NotFound} />
-                </Switch>
-              </Suspense>
-            </UploadServiceProvider>
-          </SpaceProvider>
+                </UploadServiceProvider>
+              </SpaceProvider>
+              <Route path="/tunnel" component={CreateTunnel} />
+              <Route path="/t/:code" component={Tunnel} />
+              <Route component={NotFound} />
+            </Switch>
+          </Suspense>
         </Router>
       </QueryClientProvider>
     </ChakraProvider>
