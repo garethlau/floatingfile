@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
 
   const payload: Payload = req.body;
   const params = payload.params[0];
-  logger.info(`Invoking RPC: ${payload.endpoint}`);
+  logger.info(`[RPC]: Invoking "${payload.endpoint}"`);
 
   switch (payload.endpoint) {
     case "generateUsername": {

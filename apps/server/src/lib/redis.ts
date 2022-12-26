@@ -16,14 +16,14 @@ redis.on("error", (err) => console.error("Redis Client Error", err));
 export function set(
   ...p: Parameters<typeof redis.set>
 ): ReturnType<typeof redis.set> {
-  logger.info(`[Redis]: Set key ${p[0]} with value ${p[1]}`);
+  logger.info(`[Redis]: Set key "${p[0]}" with value "${p[1]}"`);
   return redis.set(...p);
 }
 
 export function get(
   ...p: Parameters<typeof redis.get>
 ): ReturnType<typeof redis.get> {
-  logger.info(`[Redis]: Get value by key ${p[0]}`);
+  logger.info(`[Redis]: Get value by key "${p[0]}"`);
   return redis.get(...p);
 }
 
