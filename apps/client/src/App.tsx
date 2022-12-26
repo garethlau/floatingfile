@@ -70,11 +70,16 @@ const App: React.FC<{}> = () => {
           <Suspense fallback={null}>
             <Switch>
               <Route exact path="/" component={Landing} />
-              <SpaceProvider>
-                <UploadServiceProvider>
-                  <Route path="/s/:code" component={Space} />
-                </UploadServiceProvider>
-              </SpaceProvider>
+              <Route
+                path="/s/:code"
+                render={(routeProps) => (
+                  <SpaceProvider>
+                    <UploadServiceProvider>
+                      <Space {...routeProps} />
+                    </UploadServiceProvider>
+                  </SpaceProvider>
+                )}
+              />
               <Route path="/tunnel" component={CreateTunnel} />
               <Route path="/t/:code" component={Tunnel} />
               <Route component={NotFound} />
