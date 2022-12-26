@@ -1,9 +1,9 @@
 import { Router } from "express";
 import {
-  preupload,
-  postupload,
-  predownload,
-  postdownload,
+  preUpload,
+  postUpload,
+  preDownload,
+  postDownload,
   removeSingle,
   removeMany,
 } from "../controllers/files-controller";
@@ -12,27 +12,27 @@ const router = Router();
 
 router.post("/preupload", async (req, res) => {
   const { code, size } = req.body;
-  const { signedUrl, key } = await preupload({ code, size });
+  const { signedUrl, key } = await preUpload({ code, size });
   return res.status(200).send({ signedUrl, key });
 });
 
 router.post("/postupload", async (req, res) => {
   const { code, file } = req.body;
   const username = req.headers.username;
-  await postupload({ code, file, username });
+  await postUpload({ code, file, username });
   return res.status(200).send();
 });
 
 router.post("/predownload", async (req, res) => {
   const { id } = req.body;
-  const { signedUrl } = await predownload({ id });
+  const { signedUrl } = await preDownload({ id });
   return res.status(200).send({ signedUrl });
 });
 
 router.post("/postdownload", async (req, res) => {
   const username = req.headers.username;
   const { code, name } = req.body;
-  await postdownload({ code, username, name });
+  await postDownload({ code, username, name });
   return res.status(200).send();
 });
 
