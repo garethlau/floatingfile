@@ -121,7 +121,7 @@ const Landing: React.FC = () => {
       });
 
       if (space && space.code) {
-        queryClient.invalidateQueries(["space", space.code]);
+        await queryClient.invalidateQueries(["space"]);
         logger.info(`Created space`, { code: space.code });
         history.push(`/s/${space.code}`);
       }
