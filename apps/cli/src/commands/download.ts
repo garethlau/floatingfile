@@ -113,7 +113,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
     });
 
     // get the signed url
-    const { signedUrl } = await rpcClient.invoke("predownload", {
+    const { signedUrl } = await rpcClient.invoke("preDownload", {
       id: file.id,
     });
 
@@ -139,7 +139,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
         .on("error", reject);
     });
 
-    await rpcClient.invoke("postdownload", {
+    await rpcClient.invoke("postDownload", {
       code,
       username,
       name: file.name,

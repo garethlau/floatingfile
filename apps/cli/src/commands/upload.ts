@@ -175,7 +175,7 @@ export const handler = async (argv: Arguments<Options>): Promise<void> => {
       parts,
     });
 
-    await rpcClient.invoke("postupload", {
+    await rpcClient.invoke("postUpload", {
       code: code,
       username: fetchConfig("username"),
       file: {

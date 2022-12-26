@@ -2,13 +2,13 @@ import {
   FindSpaceFn,
   CreateSpaceFn,
   DestroySpaceFn,
-  PredownloadFn,
-  PostuploadFn,
-  PostdownloadFn,
+  PreDownloadFn,
+  PostUploadFn,
+  PostDownloadFn,
   RemoveFn,
   RemoveManyFn,
   GenerateUsernameFn,
-  PreuploadFn,
+  PreUploadFn,
   InitChunkUploadFn,
   CompleteChunkUploadFn,
   AbortChunkUploadFn,
@@ -21,10 +21,10 @@ type API = {
   createSpace: CreateSpaceFn;
   destroySpace: DestroySpaceFn;
   findSpace: FindSpaceFn;
-  preupload: PreuploadFn;
-  postupload: PostuploadFn;
-  predownload: PredownloadFn;
-  postdownload: PostdownloadFn;
+  preUpload: PreUploadFn;
+  postUpload: PostUploadFn;
+  preDownload: PreDownloadFn;
+  postDownload: PostDownloadFn;
   removeFile: RemoveFn;
   removeFiles: RemoveManyFn;
   initChunkUpload: InitChunkUploadFn;
