@@ -2,7 +2,7 @@ import React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import { ColorModeScript } from "@chakra-ui/react";
 import { theme } from "@floatingfile/ui";
-import { GA_TRACKING_ID } from "lib/gtag";
+import { MEASUREMENT_ID } from "lib/gtag";
 
 class MyDocument extends Document {
   render() {
@@ -89,7 +89,7 @@ class MyDocument extends Document {
           {process.env.NODE_ENV === "production" && (
             <>
               <script
-                src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+                src={`https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`}
                 async
               />
               <script
@@ -98,9 +98,7 @@ class MyDocument extends Document {
                     window.dataLayer = window.dataLayer || [];
                     function gtag(){dataLayer.push(arguments);}
                     gtag('js', new Date());
-                    gtag('config', '${GA_TRACKING_ID}', {
-                      page_path: window.location.pathname,
-                    });
+                    gtag('config', '${MEASUREMENT_ID}');
                   `,
                 }}
               />

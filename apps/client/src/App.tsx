@@ -3,7 +3,7 @@ import { Router, Switch, Route } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { theme } from "@floatingfile/ui";
 import axios from "axios";
-import ReactGA from "react-ga";
+import ReactGA from "react-ga4";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ChakraProvider } from "@chakra-ui/react";
 import {
@@ -21,7 +21,7 @@ const NotFound = React.lazy(() => import("./pages/NotFound"));
 const Tunnel = React.lazy(() => import("./pages/Tunnel"));
 const CreateTunnel = React.lazy(() => import("./pages/CreateTunnel"));
 
-ReactGA.initialize("UA-159864166-1", { debug: ENVIRONMENT === "development" });
+ReactGA.initialize("G-10HHH4M5JB");
 
 axios.defaults.headers.common["api-key"] = "secretcat";
 
@@ -29,9 +29,9 @@ const history = createBrowserHistory();
 
 history.listen((location) => {
   if (location.pathname && location.pathname.includes("/s")) {
-    ReactGA.pageview("/s/XXXXXX");
+    ReactGA.send({ hitType: "pageview", page: "/s/XXXXXX" });
   } else {
-    ReactGA.pageview(location.pathname);
+    ReactGA.send({ hitType: "pageview", page: location.pathname });
   }
 });
 
