@@ -4,9 +4,12 @@ import logger from "./lib/logger";
 import { PORT, NODE_ENV } from "./config";
 import app from "./app";
 import { scheduleJobs } from "./crons";
+import redis from "./lib/redis";
 
 (async function () {
   scheduleJobs();
+
+  await redis.connect();
 
   if (NODE_ENV === "prod" || NODE_ENV === "staging") {
     const APP_OUT_DIRECTORY = path.join(__dirname, "..", "..", "client", "out");

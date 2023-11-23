@@ -8,10 +8,10 @@ const redis = createClient({ url: REDIS_URL });
 
 redis.on("error", (err) => console.error("Redis Client Error", err));
 
-(async () => {
+export async function connect() {
   await redis.connect();
   console.log(`Successfully connected to Redis instance at ${REDIS_URL}.`);
-})();
+}
 
 export function set(
   ...p: Parameters<typeof redis.set>
@@ -28,6 +28,7 @@ export function get(
 }
 
 export default {
+  connect,
   set,
   get,
   client: redis,
