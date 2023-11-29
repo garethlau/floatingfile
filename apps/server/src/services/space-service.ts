@@ -2,24 +2,14 @@ import { S3_BUCKET_NAME } from "../config";
 import s3 from "../lib/s3";
 import prisma from "../lib/prisma";
 import { deletePreviews } from "./image-preview-service";
-import tracer from "../lib/tracer";
 import { generateCode } from "./code-service";
 
 export const create = async () => {
-  const space = tracer.trace("space-service.create", async () => {
-    const code = await tracer.trace("generate_code", async () => {
-      return await generateCode();
-    });
-
-    const space = tracer.trace("prisma.space.create", async () => {
-      const space = await prisma.space.create({
-        data: {
-          code,
-        },
-      });
-      return space;
-    });
-    return space;
+  const code = await generateCode();
+  const space = await prisma.space.create({
+    data: {
+      code,
+    },
   });
 
   return space;
