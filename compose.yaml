@@ -8,10 +8,18 @@
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
 services:
-  app:
-    image: floatingfile:3.5
+  landing:
+    image: floatingfile-landing:3.5
     build:
       context: .
+      dockerfile: landing.Dockerfile
+    ports:
+      - 3001:3001
+  app:
+    image: floatingfile-app:3.5
+    build:
+      context: .
+      dockerfile: app.Dockerfile
     ports:
       - 5000:5000
     depends_on:
