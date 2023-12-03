@@ -3,7 +3,7 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "target": "es6",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "moduleResolution": "node",
     "composite": true,
     "declaration": true,
@@ -16,6 +16,8 @@
     },
     "lib": ["es2019"],
     "rootDir": "src",
+    "noImplicitOverride": false,
+    "noImplicitUseStrict": false,
     "typeRoots": [
       "src/types",
       "src/node_modules/@types"

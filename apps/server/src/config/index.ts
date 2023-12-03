@@ -17,4 +17,4 @@ export const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME!;
 export const HONEYBADGER_API_KEY = process.env.HONEYBADGER_API_KEY!;
 export const DD_API_KEY = process.env.DD_API_KEY!;
 
-export const REDIS_URL = process.env.REDIS_URL || "redis://127.0.0.1:6379";
+export const REDIS_URL = process.env.REDIS_URL!;

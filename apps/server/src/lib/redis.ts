@@ -6,7 +6,10 @@ export enum RedisKeys {}
 
 const redis = createClient({ url: REDIS_URL });
 
-redis.on("error", (err) => console.error("Redis Client Error", err));
+redis.on("error", (err) => {
+  console.log("REDIS URL: ", REDIS_URL);
+  console.error("Redis Client Error", err);
+});
 
 export async function connect() {
   await redis.connect();

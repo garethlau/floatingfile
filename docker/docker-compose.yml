@@ -29,9 +29,8 @@ services:
     image: "postgres" # use latest official postgres version
     container_name: postgres
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=floatingfile_dev
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db
     volumes:
       - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
     ports:

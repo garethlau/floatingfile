@@ -6,13 +6,17 @@ import { generateCode } from "./code-service";
 
 export const create = async () => {
   const code = await generateCode();
-  const space = await prisma.space.create({
-    data: {
-      code,
-    },
-  });
+  try {
+    const space = await prisma.space.create({
+      data: {
+        code,
+      },
+    });
 
-  return space;
+    return space;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const find = async (code: string) => {

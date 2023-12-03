@@ -15,36 +15,27 @@ import tracer from "../lib/tracer";
 export const createSpace: CreateSpaceFn = async (params: {
   username: string;
 }) => {
-  const response = await tracer.trace(
-    "space-controller.createSpace",
-    async () => {
-      const { username } = params;
+  const { username } = params;
 
-      const space = await create();
+  const space = await create();
 
-      await tracer.trace("prisma.event.create", async () => {
-        await prisma.event.create({
-          data: {
-            belongsTo: space.code,
-            author: username,
-            action: EventType.CREATE,
-          },
-        });
-      });
+  await prisma.event.create({
+    data: {
+      belongsTo: space.code,
+      author: username,
+      action: EventType.CREATE,
+    },
+  });
 
-      logger.info(`Created space: ${space.code}`);
-      return {
-        code: space.code,
-        files: [],
-        events: [],
-        clients: [],
-        createdAt: space.createdAt.toString(),
-        updatedAt: space.updatedAt.toString(),
-      };
-    }
-  );
-
-  return response;
+  logger.info(`Created space: ${space.code}`);
+  return {
+    code: space.code,
+    files: [],
+    events: [],
+    clients: [],
+    createdAt: space.createdAt.toString(),
+    updatedAt: space.updatedAt.toString(),
+  };
 };
 
 export const findSpace: FindSpaceFn = async (params: { code: string }) => {

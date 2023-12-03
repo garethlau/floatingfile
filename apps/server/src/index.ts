@@ -7,6 +7,7 @@ import { scheduleJobs } from "./crons";
 import redis from "./lib/redis";
 
 (async function () {
+  console.log("ENV: ", process.env);
   scheduleJobs();
 
   await redis.connect();
