@@ -10,7 +10,6 @@ import { notifyAll } from "../services/notification-service";
 import prisma from "../lib/prisma";
 import Honeybadger from "../lib/honeybadger";
 import logger from "../lib/logger";
-import tracer from "../lib/tracer";
 
 export const createSpace: CreateSpaceFn = async (params: {
   username: string;

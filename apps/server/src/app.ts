@@ -3,7 +3,6 @@ import rpc from "./rpc";
 import router from "./router";
 import zip from "express-easy-zip";
 import Honeybadger from "./lib/honeybadger";
-import "./lib/tracer";
 
 const app = express();
 
