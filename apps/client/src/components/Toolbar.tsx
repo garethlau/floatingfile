@@ -21,7 +21,6 @@ import Button from "./Button";
 import { useSpace } from "../contexts/space";
 import Honeybadger from "../lib/honeybadger";
 import FileDrop from "./FileDrop";
-import logger from "../lib/logger";
 
 enum actionTypes {
   UPDATE_DOWNLOAD_PROGRESS,
@@ -115,10 +114,6 @@ const Toolbar: React.FC = () => {
         },
       });
     }
-    logger.info("Successfully downloaded files", {
-      code,
-      numFiles: downloadQueue.length,
-    });
     /* eslint-enable */
     dispatch({ type: actionTypes.COMPLETE_ALL_DOWNLOADS });
   }
@@ -128,12 +123,10 @@ const Toolbar: React.FC = () => {
       await removeFiles(selected);
     } catch (error) {
       if (error instanceof Error) {
-        logger.error("Failed to remove files", { numFiles: selected.length });
         Honeybadger.notify(error);
       }
       return;
     }
-    logger.info("Successfully removed files", { numFiles: selected.length });
     clearSelectedFiles();
     toast({
       title: "Files have been removed",
@@ -156,12 +149,8 @@ const Toolbar: React.FC = () => {
         title: "Successfully zipped and downloaded files",
         status: "success",
       });
-      logger.info("Successfully zipped and downloaded zipped files", {
-        numFiles: selected.length,
-      });
     } catch (error) {
       if (error instanceof Error) {
-        logger.error("Failed to zip and download files", { error });
         toast({
           title: "Error zipping selected files",
           description: error.message,

@@ -17,7 +17,6 @@ import Seperator from "../components/Seperator";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import useRandomElement from "../hooks/useRandomElement";
 import rpc from "../lib/rpc";
-import logger from "../lib/logger";
 import { useQueryClient } from "react-query";
 
 const Landing: React.FC = () => {
@@ -107,7 +106,6 @@ const Landing: React.FC = () => {
         isClosable: true,
         position: "top",
       });
-      logger.error("Failed to join space", { code, error });
     } finally {
       setIsJoining(false);
     }
@@ -122,11 +120,9 @@ const Landing: React.FC = () => {
 
       if (space && space.code) {
         await queryClient.invalidateQueries(["space"]);
-        logger.info(`Created space`, { code: space.code });
         history.push(`/s/${space.code}`);
       }
     } catch (error) {
-      logger.error("Failed to create space", { error });
       toast({
         title: "An unexpected error occured.",
         status: "error",

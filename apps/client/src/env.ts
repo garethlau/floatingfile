@@ -11,5 +11,3 @@ export const LAST_VISIT_STORAGE_KEY =
 export const EVENT_SOURCE = `${
   ENVIRONMENT === "development" ? BASE_API_URL : ""
 }/api/notifications`;
-
-export const DD_CLIENT_TOKEN = "pub5487d657e6198edac333bbe1f68b0d26";

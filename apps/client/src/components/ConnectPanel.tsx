@@ -9,7 +9,6 @@ import { Flex, Spacer, Box, chakra, Button, useToast } from "@chakra-ui/react";
 import Panel from "./Panel";
 import Honeybadger from "../lib/honeybadger";
 import add from "date-fns/add";
-import logger from "../lib/logger";
 
 const THIRTY_MINUTES: number = 30 * 60 * 1000;
 const FIVE_MINUTES: number = 5 * 60 * 1000;
@@ -26,11 +25,9 @@ const ConnectPanel: React.FC = () => {
     try {
       setIsDestroying(true);
       await destroy();
-      logger.info("Successfully destroyed space", { code });
       history.push("/");
     } catch (error) {
       if (error instanceof Error) {
-        logger.error("Failed to destroy space", { code, error });
         Honeybadger.notify(error);
       }
     } finally {
